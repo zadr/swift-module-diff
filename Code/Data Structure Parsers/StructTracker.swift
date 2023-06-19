@@ -27,6 +27,21 @@ class StructTracker: SyntaxVisitor, AnyTypeParser {
 		return super.visit(node)
 	}
 
+	override func visit(_ node: InitializerDeclSyntax) -> SyntaxVisitorContinueKind {
+		var member = ParseAnyType<FunctionTracker>(node: node).run()
+		member.name = "init"
+
+		if node.optionalMark?.tokenKind == .postfixQuestionMark {
+			member.name = member.name + "?"
+		} else if node.optionalMark?.tokenKind == .exclamationMark {
+			member.name = member.name + "!"
+		}
+
+		value.members.append(member)
+
+		return super.visit(node)
+	}
+
 	override func visit(_ node: InheritedTypeListSyntax) -> SyntaxVisitorContinueKind {
 		value.conformances = ParseAnyType<InheritanceTracker>(node: node).run()
 		return super.visit(node)
