@@ -1,7 +1,7 @@
 import Foundation
 
-struct DataType: CustomStringConvertible, Hashable {
-	enum Kind: Hashable {
+struct DataType: Codable, CustomStringConvertible, Hashable {
+	enum Kind: Codable, Hashable {
 		case unknown
 		case `class`
 		case `enum`

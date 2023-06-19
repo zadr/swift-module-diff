@@ -14,6 +14,9 @@ struct Compare: ParsableCommand {
 	@Option(name: .shortAndLong, help: "Path to the newer API. Default: /Applications/Xcode-beta.app")
 	var new: String = "/Applications/Xcode-beta.app"
 
+	@Option(name: .long, help: "Path to output results. Default: ~/Desktop/swiftmodule-diff/")
+	var output: String = "~/Desktop/swiftmodule-diff/"
+
 	mutating func run() throws {
 		print(Date())
 		var frameworks = Set<Framework>()
@@ -37,6 +40,9 @@ struct Compare: ParsableCommand {
 				}
 			}
 		}
+		print(Date())
+		let json = try JSONEncoder().encode(frameworks)
+		try json.write(to: URL(filePath: (output as NSString).expandingTildeInPath + "/blob.json"))
 		print(Date())
 	}
 }

@@ -1,6 +1,6 @@
 import Foundation
 
-struct Framework: Hashable, CustomStringConvertible {
+struct Framework: Codable, Hashable, CustomStringConvertible {
 	var attributes: Set<Attribute> = .init()
 	var availabilities = [Availability]()
 	var dependencies = [String]()
