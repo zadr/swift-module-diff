@@ -9,8 +9,8 @@ class OperatorTracker: SyntaxVisitor, AnyTypeParser {
 		super.init(viewMode: .sourceAccurate)
 	}
 
-	override func visit(_ node: ReturnClauseSyntax) -> SyntaxVisitorContinueKind {
-		value.returnType = ParseAnyType<DeclTypeNameTracker>(node: node).run()
+	override func visit(_ node: OperatorDeclSyntax) -> SyntaxVisitorContinueKind {
+		value.name = node.identifier.text
 		return super.visit(node)
 	}
 }
