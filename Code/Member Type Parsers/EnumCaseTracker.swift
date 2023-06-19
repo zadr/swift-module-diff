@@ -1,14 +1,15 @@
 import Foundation
 import SwiftSyntax
 
-class EnumCaseTracker: SyntaxVisitor, AnyTypeParser {
+class EnumCaseTracker: SyntaxVisitor, MultiTypeParser {
 	var value = Member()
-
+	var collection = [Member]()
+	
 	required init() {
 		self.value.kind = .case
 		super.init(viewMode: .sourceAccurate)
 	}
-
+	
 	override func visit(_ node: AttributeSyntax) -> SyntaxVisitorContinueKind {
 		let attribute = ParseAnyType<AttributeTracker>(node: node).run()
 		if attribute.name != "available" {
@@ -16,10 +17,14 @@ class EnumCaseTracker: SyntaxVisitor, AnyTypeParser {
 		}
 		return super.visit(node)
 	}
-
+	
 	override func visit(_ node: EnumCaseDeclSyntax) -> SyntaxVisitorContinueKind {
 		value.kind = .case
-		value.name = node.elements.first!.identifier.text
+		return super.visit(node)
+	}
+
+	override func visit(_ node: EnumCaseElementSyntax) -> SyntaxVisitorContinueKind {
+		value.name = node.identifier.text
 		return super.visit(node)
 	}
 
@@ -30,8 +35,14 @@ class EnumCaseTracker: SyntaxVisitor, AnyTypeParser {
 		}
 		parameter.type = ParseAnyType<DeclTypeNameTracker>(node: node.type).run()
 		parameter.isInout = ParseAnyType<InoutTracker>(node: node.type).run()
-
+		
 		value.parameters.append(parameter)
 		return super.visit(node)
+	}
+
+	// MARK: -
+
+	override func visitPost(_ node: EnumCaseElementSyntax) {
+		collection.append(value)
 	}
 }
