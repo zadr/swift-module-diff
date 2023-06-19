@@ -1,6 +1,6 @@
 import Foundation
 
-struct Framework: CustomStringConvertible {
+struct Framework: Hashable, CustomStringConvertible {
 	var availabilities = [Availability]()
 	var dependencies = [String]()
 	var dataTypes = [DataType]()

@@ -1,7 +1,7 @@
 import Foundation
 
-struct Member: CustomStringConvertible {
-	enum Kind {
+struct Member: CustomStringConvertible, Hashable {
+	enum Kind: Hashable {
 		case `unknown`
 		case `let`
 		case `var`
@@ -12,7 +12,7 @@ struct Member: CustomStringConvertible {
 		case `operator`
 	}
 
-	enum Accessor {
+	enum Accessor: Hashable {
 		case `get`
 		case `set`
 	}
