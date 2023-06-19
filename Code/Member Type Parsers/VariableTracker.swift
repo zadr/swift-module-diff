@@ -1,8 +1,9 @@
 import Foundation
 import SwiftSyntax
 
-class VariableTracker: SyntaxVisitor, AnyTypeParser {
+class VariableTracker: SyntaxVisitor, MultiTypeParser {
 	var value = Member()
+	var collection = [Member]()
 
 	required init() {
 		self.value.kind = .var
@@ -46,27 +47,25 @@ class VariableTracker: SyntaxVisitor, AnyTypeParser {
 			value.kind = .let
 		}
 
-		if let pattern = node.bindings.first {
+		for pattern in node.bindings {
+			var copy = value
 			if let name = pattern.pattern.as(IdentifierPatternSyntax.self)?.identifier.text {
-				value.name = name
+				copy.name = name
 			}
 
 			if let returnTypeAnnotation = pattern.typeAnnotation {
-				value.returnType = ParseAnyType<DeclTypeNameTracker>(node: returnTypeAnnotation).run()
+				copy.returnType = ParseAnyType<DeclTypeNameTracker>(node: returnTypeAnnotation).run()
 			}
 
 			if let attributes = pattern.typeAnnotation?.type.as(AttributedTypeSyntax.self)?.attributes {
 				for attribute in attributes {
 					let name = ParseAnyType<AttributeTracker>(node: attribute).run()
-					value.attributes.insert(name)
+					copy.attributes.insert(name)
 				}
 			}
-		}
-		return super.visit(node)
-	}
 
-	override func visit(_ node: ReturnClauseSyntax) -> SyntaxVisitorContinueKind {
-		value.returnType = ParseAnyType<DeclTypeNameTracker>(node: node).run()
+			collection.append(copy)
+		}
 		return super.visit(node)
 	}
 }

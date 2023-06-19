@@ -57,8 +57,8 @@ class EnumTracker: SyntaxVisitor, AnyTypeParser {
 	}
 
 	override func visit(_ node: VariableDeclSyntax) -> SyntaxVisitorContinueKind {
-		let member = ParseAnyType<VariableTracker>(node: node).run()
-		value.members.append(member)
+		let members = ParseMultiTypeCollection<VariableTracker>(node: node).run()
+		value.members += members
 		return super.visit(node)
 	}
 }
