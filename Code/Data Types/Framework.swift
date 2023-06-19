@@ -3,7 +3,7 @@ import Foundation
 struct Framework: Codable, Hashable, CustomStringConvertible {
 	var attributes: Set<Attribute> = .init()
 	var availabilities = [Availability]()
-	var dependencies = [String]()
+	var dependencies = [Import]()
 	var dataTypes = [DataType]()
 	var members = [Member]()
 

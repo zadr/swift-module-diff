@@ -29,7 +29,7 @@ private class SwiftmoduleTracker: SyntaxVisitor {
 		super.init(viewMode: .sourceAccurate)
 	}
 
-	override func visit(_ node: ImportPathSyntax) -> SyntaxVisitorContinueKind {
+	override func visit(_ node: ImportDeclSyntax) -> SyntaxVisitorContinueKind {
 		let name = ParsePrimitive<ImportTracker>(node: node).run()
 		framework.dependencies.append(name)
 		return super.visit(node)
