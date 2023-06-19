@@ -1,21 +1,28 @@
 import Foundation
 
 print(Date())
-let modules = SwiftmoduleFinder(app: "/Applications/Xcode-beta.app").run()
-for (platform, architectureToModules) in modules {
-	print(platform)
+var frameworks = Set<Framework>()
 
-	for (architecture, moduleList) in architectureToModules {
-		print(architecture)
+let paths = [
+	"/Applications/Xcode-beta.app",
+	"/Applications/Xcode.app"
+]
+for path in paths {
+	let modules = SwiftmoduleFinder(app: path).run()
+	for (platform, architectureToModules) in modules {
+		print(platform)
 
-		for module in moduleList {
-			print(module.absoluteString)
-		
-			let path = module.absoluteString.replacingOccurrences(of: "file://", with: "")
+		for (architecture, moduleList) in architectureToModules {
+			print(architecture)
 
-			let framework = ParseSwiftmodule(path: path).run()
-			print(framework)
-			exit(EXIT_SUCCESS)
+			for module in moduleList {
+				print(module.absoluteString)
+
+				let path = module.absoluteString.replacingOccurrences(of: "file://", with: "")
+				let framework = ParseSwiftmodule(path: path).run()
+				frameworks.insert(framework)
+				print(framework)
+			}
 		}
 	}
 }
