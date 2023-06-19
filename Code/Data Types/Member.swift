@@ -29,6 +29,7 @@ struct Member: CustomStringConvertible, Hashable {
 	var isAsync: Bool = false
 	var isWeak: Bool = false
 	var isUnsafe: Bool = false
+	var isUnowned: Bool = false
 	var parameters: [Parameter] = []
 
 	var description: String {
@@ -46,6 +47,7 @@ struct Member: CustomStringConvertible, Hashable {
     isAsync: \(isAsync)
     isWeak: \(isWeak)
     isUnsafe: \(isUnsafe)
+    isUnowned: \(isUnowned)
     parameters: \(parameters)
 ------
 """
