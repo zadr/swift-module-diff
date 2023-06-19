@@ -15,7 +15,8 @@
 		19D0EBD72A402CB4003C8B19 /* AttributeTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19D0EBD62A402CB4003C8B19 /* AttributeTracker.swift */; };
 		19D0EBD92A403C0B003C8B19 /* Attribute.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19D0EBD82A403C0B003C8B19 /* Attribute.swift */; };
 		19D0EBDB2A40505F003C8B19 /* BaseDeclParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19D0EBDA2A40505F003C8B19 /* BaseDeclParser.swift */; };
-		19D723312931945700B05410 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19D723302931945700B05410 /* main.swift */; };
+		19D0EBDE2A4057C8003C8B19 /* ArgumentParser in Frameworks */ = {isa = PBXBuildFile; productRef = 19D0EBDD2A4057C8003C8B19 /* ArgumentParser */; };
+		19D723312931945700B05410 /* Compare.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19D723302931945700B05410 /* Compare.swift */; };
 		19D723392931947700B05410 /* SwiftDiagnostics in Frameworks */ = {isa = PBXBuildFile; productRef = 19D723382931947700B05410 /* SwiftDiagnostics */; };
 		19D7233B2931947700B05410 /* SwiftOperators in Frameworks */ = {isa = PBXBuildFile; productRef = 19D7233A2931947700B05410 /* SwiftOperators */; };
 		19D7233D2931947700B05410 /* SwiftParser in Frameworks */ = {isa = PBXBuildFile; productRef = 19D7233C2931947700B05410 /* SwiftParser */; };
@@ -66,7 +67,7 @@
 		19D0EBD82A403C0B003C8B19 /* Attribute.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Attribute.swift; sourceTree = "<group>"; };
 		19D0EBDA2A40505F003C8B19 /* BaseDeclParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseDeclParser.swift; sourceTree = "<group>"; };
 		19D7232D2931945700B05410 /* swiftmodule-diff */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "swiftmodule-diff"; sourceTree = BUILT_PRODUCTS_DIR; };
-		19D723302931945700B05410 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
+		19D723302931945700B05410 /* Compare.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Compare.swift; sourceTree = "<group>"; };
 		19FF60D52A3F9EE6001303FB /* DeclTypeNameTracker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeclTypeNameTracker.swift; sourceTree = "<group>"; };
 		19FF60EF2A3FA270001303FB /* ClassTracker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClassTracker.swift; sourceTree = "<group>"; };
 		19FF60F12A3FA277001303FB /* EnumTracker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnumTracker.swift; sourceTree = "<group>"; };
@@ -95,6 +96,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				19D0EBDE2A4057C8003C8B19 /* ArgumentParser in Frameworks */,
 				19D7233F2931947700B05410 /* SwiftParserDiagnostics in Frameworks */,
 				19D7233B2931947700B05410 /* SwiftOperators in Frameworks */,
 				19D723412931947700B05410 /* SwiftSyntax in Frameworks */,
@@ -136,7 +138,7 @@
 		19D7232F2931945700B05410 /* Code */ = {
 			isa = PBXGroup;
 			children = (
-				19D723302931945700B05410 /* main.swift */,
+				19D723302931945700B05410 /* Compare.swift */,
 				19FF61012A3FA656001303FB /* Data Types */,
 				19FF60EE2A3FA250001303FB /* Framework Parsers */,
 				19FF60EC2A3FA233001303FB /* Data Type Parsers */,
@@ -229,6 +231,7 @@
 				19D7233C2931947700B05410 /* SwiftParser */,
 				19D7233E2931947700B05410 /* SwiftParserDiagnostics */,
 				19D723402931947700B05410 /* SwiftSyntax */,
+				19D0EBDD2A4057C8003C8B19 /* ArgumentParser */,
 			);
 			productName = 3;
 			productReference = 19D7232D2931945700B05410 /* swiftmodule-diff */;
@@ -260,6 +263,7 @@
 			mainGroup = 19D723242931945700B05410;
 			packageReferences = (
 				19D723372931947700B05410 /* XCRemoteSwiftPackageReference "swift-syntax" */,
+				19D0EBDC2A4057C8003C8B19 /* XCRemoteSwiftPackageReference "swift-argument-parser" */,
 			);
 			productRefGroup = 19D7232E2931945700B05410 /* Products */;
 			projectDirPath = "";
@@ -275,7 +279,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				19D723312931945700B05410 /* main.swift in Sources */,
+				19D723312931945700B05410 /* Compare.swift in Sources */,
 				19D0EBD72A402CB4003C8B19 /* AttributeTracker.swift in Sources */,
 				19D0EBDB2A40505F003C8B19 /* BaseDeclParser.swift in Sources */,
 				19FF60FA2A3FA52A001303FB /* VariableTracker.swift in Sources */,
@@ -482,6 +486,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		19D0EBDC2A4057C8003C8B19 /* XCRemoteSwiftPackageReference "swift-argument-parser" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/apple/swift-argument-parser.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.2.2;
+			};
+		};
 		19D723372931947700B05410 /* XCRemoteSwiftPackageReference "swift-syntax" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/apple/swift-syntax";
@@ -493,6 +505,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		19D0EBDD2A4057C8003C8B19 /* ArgumentParser */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 19D0EBDC2A4057C8003C8B19 /* XCRemoteSwiftPackageReference "swift-argument-parser" */;
+			productName = ArgumentParser;
+		};
 		19D723382931947700B05410 /* SwiftDiagnostics */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 19D723372931947700B05410 /* XCRemoteSwiftPackageReference "swift-syntax" */;
