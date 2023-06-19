@@ -23,6 +23,8 @@ struct ParseMember<T: SyntaxVisitor & MemberParser> {
 			tracker.walk(node)
 
 			var member = tracker.member
+
+			// for var decl's: avoid overwriting `kind = .let`
 			if member.kind == .unknown {
 				member.kind = T.kind
 			}
