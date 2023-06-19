@@ -18,6 +18,7 @@ struct Member: CustomStringConvertible, Hashable {
 	}
 
 	var accessors: Set<Accessor> = .init()
+	var attributes: Set<String> = .init()
 	var kind: Kind = .unknown
 	var isFinal: Bool = false
 	var isOpen: Bool = false
@@ -32,6 +33,7 @@ struct Member: CustomStringConvertible, Hashable {
 """
 ------
     accessors: \(accessors)
+    attributes: \(attributes)
     kind: \(kind)
     isFinal: \(isFinal)
     isOpen: \(isOpen)

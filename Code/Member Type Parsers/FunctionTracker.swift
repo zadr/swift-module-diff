@@ -31,11 +31,18 @@ class FunctionTracker: SyntaxVisitor, MemberParser {
 	}
 
 	override func visit(_ node: FunctionParameterSyntax) -> SyntaxVisitorContinueKind {
-		let parameter = Parameter(
-			name: node.firstName.text + (node.secondName != nil ? " " + node.secondName!.text : ""),
-			type: ParsePrimitive<DeclTypeNameTracker>(node: node.type).run(),
-			isInout: ParsePrimitive<InoutTracker>(node: node.type).run()
-		)
+		var parameter = Parameter()
+		parameter.name = node.firstName.text + (node.secondName != nil ? " " + node.secondName!.text : "")
+		parameter.type = ParsePrimitive<DeclTypeNameTracker>(node: node.type).run()
+		parameter.isInout = ParsePrimitive<InoutTracker>(node: node.type).run()
+
+		if let attributes = node.type.as(AttributedTypeSyntax.self)?.attributes {
+			for attribute in attributes {
+				let name = ParsePrimitive<AttributeTracker>(node: attribute).run()
+				parameter.attributes.insert(name)
+			}
+		}
+
 		member.parameters.append(parameter)
 		return super.visit(node)
 	}

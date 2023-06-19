@@ -42,8 +42,14 @@ class VariableTracker: SyntaxVisitor, MemberParser {
 			if let returnTypeAnnotation = pattern.typeAnnotation {
 				member.returnType = ParsePrimitive<DeclTypeNameTracker>(node: returnTypeAnnotation).run()
 			}
-		}
 
+			if let attributes = pattern.typeAnnotation?.type.as(AttributedTypeSyntax.self)?.attributes {
+				for attribute in attributes {
+					let name = ParsePrimitive<AttributeTracker>(node: attribute).run()
+					member.attributes.insert(name)
+				}
+			}
+		}
 		return super.visit(node)
 	}
 
