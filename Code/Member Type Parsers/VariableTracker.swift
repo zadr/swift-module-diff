@@ -36,6 +36,8 @@ class VariableTracker: SyntaxVisitor, MemberParser {
 		member.isThrowing = member.isThrowing || ParseDecl<DeclTracker>(node: node).run(keyword: .throws)
 		member.isOpen = member.isOpen || ParseDecl<DeclTracker>(node: node).run(keyword: .open)
 		member.isFinal = member.isFinal ||  ParseDecl<DeclTracker>(node: node).run(keyword: .final)
+		member.isWeak = member.isWeak ||  ParseDecl<DeclTracker>(node: node).run(keyword: .weak)
+		member.isUnsafe = member.isUnsafe ||  ParseDecl<DeclTracker>(node: node).run(keyword: .unsafe)
 		return super.visit(node)
 	}
 
