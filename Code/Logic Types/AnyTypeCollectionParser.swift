@@ -5,9 +5,7 @@ import SwiftSyntax
 protocol AnyTypeCollectionParser {
 	associatedtype AnyType
 
-	typealias AnyTypeCollection = [AnyType]
-
-	var collection: AnyTypeCollection { get }
+	var collection: [AnyType] { get }
 
 	init()
 }
@@ -21,7 +19,7 @@ struct ParseAnyTypeCollection<T: SyntaxVisitor & AnyTypeCollectionParser> {
 		self.node = node
 	}
 
-	func run() -> T.AnyTypeCollection {
+	func run() -> [T.AnyType] {
 		autoreleasepool {
 			let tracker = T()
 			tracker.walk(node)
