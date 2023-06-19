@@ -1,5 +1,4 @@
 import Foundation
-import SwiftParser
 import SwiftSyntax
 
 class FinalTracker: SyntaxVisitor, PrimitiveParser {

@@ -1,10 +1,3 @@
-//
-//  Parameter.swift
-//  swiftmodule-diff
-//
-//  Created by z on 6/18/23.
-//
-
 import Foundation
 
 struct Parameter {
