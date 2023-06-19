@@ -1,17 +1,16 @@
 import Foundation
 import SwiftSyntax
 
-class OperatorTracker: SyntaxVisitor, MemberParser {
-	static let kind: Member.Kind = .operator
-
-	var member = Member()
+class OperatorTracker: SyntaxVisitor, AnyTypeParser {
+	var value = Member()
 
 	required init() {
+		self.value.kind = .operator
 		super.init(viewMode: .sourceAccurate)
 	}
 
 	override func visit(_ node: ReturnClauseSyntax) -> SyntaxVisitorContinueKind {
-		member.returnType = ParsePrimitive<DeclTypeNameTracker>(node: node).run()
+		value.returnType = ParseAnyType<DeclTypeNameTracker>(node: node).run()
 		return super.visit(node)
 	}
 }

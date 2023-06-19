@@ -1,9 +1,7 @@
 import Foundation
 import SwiftSyntax
 
-class InoutTracker: SyntaxVisitor, PrimitiveParser {
-	typealias Value = Bool
-
+class InoutTracker: SyntaxVisitor, AnyTypeParser {
 	var value = false
 
 	required init() {

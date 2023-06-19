@@ -1,59 +1,58 @@
 import Foundation
 import SwiftSyntax
 
-class StructTracker: SyntaxVisitor, DataTypeParser {
-	static let kind: DataType.Kind = .struct
-
-	var dataType = DataType()
+class StructTracker: SyntaxVisitor, AnyTypeParser {
+	var value = DataType()
 
 	required init() {
+		self.value.kind = .struct
 		super.init(viewMode: .sourceAccurate)
 	}
 
 	override func visit(_ node: AvailabilityVersionRestrictionSyntax) -> SyntaxVisitorContinueKind {
-		dataType.availabilities += ParsePrimitive<AvailabilityTracker>(node: node).run()
+		value.availabilities += ParseAnyType<AvailabilityTracker>(node: node).run()
 		return super.visit(node)
 	}
 
 	override func visit(_ node: AttributeSyntax) -> SyntaxVisitorContinueKind {
-		let attribute = ParsePrimitive<AttributeTracker>(node: node).run()
+		let attribute = ParseAnyType<AttributeTracker>(node: node).run()
 		if attribute.name != "available" {
-			dataType.attributes.insert(attribute)
+			value.attributes.insert(attribute)
 		}
 		return super.visit(node)
 	}
 
 	override func visit(_ node: StructDeclSyntax) -> SyntaxVisitorContinueKind {
-		dataType.name = node.identifier.text
+		value.name = node.identifier.text
 		return super.visit(node)
 	}
 
 	override func visit(_ node: InheritedTypeListSyntax) -> SyntaxVisitorContinueKind {
-		dataType.conformances = ParsePrimitive<InheritanceTracker>(node: node).run()
+		value.conformances = ParseAnyType<InheritanceTracker>(node: node).run()
 		return super.visit(node)
 	}
 
 	override func visit(_ node: OperatorDeclSyntax) -> SyntaxVisitorContinueKind {
-		let member = ParseMember<OperatorTracker>(node: node).run()
-		dataType.members.append(member)
+		let member = ParseAnyType<OperatorTracker>(node: node).run()
+		value.members.append(member)
 		return super.visit(node)
 	}
 
 	override func visit(_ node: TypealiasDeclSyntax) -> SyntaxVisitorContinueKind {
-		let member = ParseMember<TypealiasTracker>(node: node).run()
-		dataType.members.append(member)
+		let member = ParseAnyType<TypealiasTracker>(node: node).run()
+		value.members.append(member)
 		return super.visit(node)
 	}
 
 	override func visit(_ node: FunctionDeclSyntax) -> SyntaxVisitorContinueKind {
-		let member = ParseMember<FunctionTracker>(node: node).run()
-		dataType.members.append(member)
+		let member = ParseAnyType<FunctionTracker>(node: node).run()
+		value.members.append(member)
 		return super.visit(node)
 	}
 
 	override func visit(_ node: VariableDeclSyntax) -> SyntaxVisitorContinueKind {
-		let member = ParseMember<VariableTracker>(node: node).run()
-		dataType.members.append(member)
+		let member = ParseAnyType<VariableTracker>(node: node).run()
+		value.members.append(member)
 		return super.visit(node)
 	}
 }

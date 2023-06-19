@@ -1,10 +1,8 @@
 import Foundation
 import SwiftSyntax
 
-class DeclTypeNameTracker: SyntaxVisitor, PrimitiveParser {
-	typealias Value = String
-
-	var value = Value()
+class DeclTypeNameTracker: SyntaxVisitor, AnyTypeParser {
+	var value = ""
 
 	required init() {
 		super.init(viewMode: .sourceAccurate)

@@ -1,17 +1,15 @@
 import Foundation
 import SwiftSyntax
 
-class AttributeTracker: SyntaxVisitor, PrimitiveParser {
-	typealias Value = Attribute
-
-	var value = Value()
+class AttributeTracker: SyntaxVisitor, AnyTypeParser {
+	var value = Attribute()
 
 	required init() {
 		super.init(viewMode: .sourceAccurate)
 	}
 
 	override func visit(_ node: AttributeSyntax) -> SyntaxVisitorContinueKind {
-		value.name = ParsePrimitive<DeclTypeNameTracker>(node: node.attributeName).run()
+		value.name = ParseAnyType<DeclTypeNameTracker>(node: node.attributeName).run()
 
 		if let argument = node.argument, case .token(let tokenSyntax) = argument {
 			var parameter = Parameter()

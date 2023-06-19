@@ -1,22 +1,21 @@
 import Foundation
 import SwiftSyntax
 
-class AssociatedTypeTracker: SyntaxVisitor, DataTypeParser {
-	static let kind: DataType.Kind = .associatedtype
-
-	var dataType = DataType()
+class AssociatedTypeTracker: SyntaxVisitor, AnyTypeParser {
+	var value = DataType()
 
 	required init() {
+		self.value.kind = .associatedtype
 		super.init(viewMode: .sourceAccurate)
 	}
 
 	override func visit(_ node: AssociatedtypeDeclSyntax) -> SyntaxVisitorContinueKind {
-		dataType.name = node.identifier.text
+		value.name = node.identifier.text
 		return super.visit(node)
 	}
 
 	override func visit(_ node: InheritedTypeListSyntax) -> SyntaxVisitorContinueKind {
-		dataType.conformances = ParsePrimitive<InheritanceTracker>(node: node).run()
+		value.conformances = ParseAnyType<InheritanceTracker>(node: node).run()
 		return super.visit(node)
 	}
 }

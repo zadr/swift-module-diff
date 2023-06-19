@@ -1,17 +1,15 @@
 import Foundation
 import SwiftSyntax
 
-class ImportTracker: SyntaxVisitor, PrimitiveParser {
-	typealias Value = Import
-	
-	var value = Value()
-	
+class ImportTracker: SyntaxVisitor, AnyTypeParser {
+	var value = Import()
+
 	required init() {
 		super.init(viewMode: .sourceAccurate)
 	}
 	
 	override func visit(_ node: AttributeSyntax) -> SyntaxVisitorContinueKind {
-		let attribute = ParsePrimitive<AttributeTracker>(node: node).run()
+		let attribute = ParseAnyType<AttributeTracker>(node: node).run()
 		if attribute.name != "available" {
 			value.attributes.insert(attribute)
 		}

@@ -1,10 +1,8 @@
 import Foundation
 import SwiftSyntax
 
-class AvailabilityTracker: SyntaxVisitor, PrimitiveParser {
-	typealias Value = [Availability]
-
-	var value = Value()
+class AvailabilityTracker: SyntaxVisitor, AnyTypeParser {
+	var value = [Availability]()
 
 	required init() {
 		super.init(viewMode: .sourceAccurate)

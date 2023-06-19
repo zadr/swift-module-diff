@@ -1,65 +1,64 @@
 import Foundation
 import SwiftSyntax
 
-class VariableTracker: SyntaxVisitor, MemberParser {
-	static let kind: Member.Kind = .var
-
-	var member = Member()
+class VariableTracker: SyntaxVisitor, AnyTypeParser {
+	var value = Member()
 
 	required init() {
+		self.value.kind = .var
 		super.init(viewMode: .sourceAccurate)
 	}
 
 	override func visit(_ node: AccessorBlockSyntax) -> SyntaxVisitorContinueKind {
 		for accessor in node.accessors {
 			if accessor.accessorKind.tokenKind == .keyword(.get) {
-				member.accessors.insert(.get)
+				value.accessors.insert(.get)
 			}
 			if accessor.accessorKind.tokenKind == .keyword(.set) {
-				member.accessors.insert(.set)
+				value.accessors.insert(.set)
 			}
 		}
 		return super.visit(node)
 	}
 
 	override func visit(_ node: AttributeSyntax) -> SyntaxVisitorContinueKind {
-		   let attribute = ParsePrimitive<AttributeTracker>(node: node).run()
+		   let attribute = ParseAnyType<AttributeTracker>(node: node).run()
 		   if attribute.name != "available" {
-			   member.attributes.insert(attribute)
+			   value.attributes.insert(attribute)
 		   }
 		   return super.visit(node)
 	   }
 
 	override func visit(_ node: DeclModifierSyntax) -> SyntaxVisitorContinueKind {
-		member.isAsync = member.isAsync || ParseDecl<DeclTracker>(node: node).run(keyword: .async)
-		member.isStatic = member.isStatic || ParseDecl<DeclTracker>(node: node).run(keyword: .static)
-		member.isThrowing = member.isThrowing || ParseDecl<DeclTracker>(node: node).run(keyword: .throws)
-		member.isOpen = member.isOpen || ParseDecl<DeclTracker>(node: node).run(keyword: .open)
-		member.isFinal = member.isFinal ||  ParseDecl<DeclTracker>(node: node).run(keyword: .final)
-		member.isWeak = member.isWeak ||  ParseDecl<DeclTracker>(node: node).run(keyword: .weak)
-		member.isUnsafe = member.isUnsafe ||  ParseDecl<DeclTracker>(node: node).run(keyword: .unsafe)
-		member.isUnowned = member.isUnowned ||  ParseDecl<DeclTracker>(node: node).run(keyword: .unowned)
+		value.isAsync = value.isAsync || ParseDecl<DeclTracker>(node: node).run(keyword: .async)
+		value.isStatic = value.isStatic || ParseDecl<DeclTracker>(node: node).run(keyword: .static)
+		value.isThrowing = value.isThrowing || ParseDecl<DeclTracker>(node: node).run(keyword: .throws)
+		value.isOpen = value.isOpen || ParseDecl<DeclTracker>(node: node).run(keyword: .open)
+		value.isFinal = value.isFinal ||  ParseDecl<DeclTracker>(node: node).run(keyword: .final)
+		value.isWeak = value.isWeak ||  ParseDecl<DeclTracker>(node: node).run(keyword: .weak)
+		value.isUnsafe = value.isUnsafe ||  ParseDecl<DeclTracker>(node: node).run(keyword: .unsafe)
+		value.isUnowned = value.isUnowned ||  ParseDecl<DeclTracker>(node: node).run(keyword: .unowned)
 		return super.visit(node)
 	}
 
 	override func visit(_ node: VariableDeclSyntax) -> SyntaxVisitorContinueKind {
 		if node.bindingKeyword.tokenKind == .keyword(.let) {
-			member.kind = .let
+			value.kind = .let
 		}
 
 		if let pattern = node.bindings.first {
 			if let name = pattern.pattern.as(IdentifierPatternSyntax.self)?.identifier.text {
-				member.name = name
+				value.name = name
 			}
 
 			if let returnTypeAnnotation = pattern.typeAnnotation {
-				member.returnType = ParsePrimitive<DeclTypeNameTracker>(node: returnTypeAnnotation).run()
+				value.returnType = ParseAnyType<DeclTypeNameTracker>(node: returnTypeAnnotation).run()
 			}
 
 			if let attributes = pattern.typeAnnotation?.type.as(AttributedTypeSyntax.self)?.attributes {
 				for attribute in attributes {
-					let name = ParsePrimitive<AttributeTracker>(node: attribute).run()
-					member.attributes.insert(name)
+					let name = ParseAnyType<AttributeTracker>(node: attribute).run()
+					value.attributes.insert(name)
 				}
 			}
 		}
@@ -67,7 +66,7 @@ class VariableTracker: SyntaxVisitor, MemberParser {
 	}
 
 	override func visit(_ node: ReturnClauseSyntax) -> SyntaxVisitorContinueKind {
-		member.returnType = ParsePrimitive<DeclTypeNameTracker>(node: node).run()
+		value.returnType = ParseAnyType<DeclTypeNameTracker>(node: node).run()
 		return super.visit(node)
 	}
 }
