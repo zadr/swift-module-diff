@@ -42,7 +42,7 @@
 		19FF61102A3FAB71001303FB /* AssociatedTypeTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19FF610F2A3FAB71001303FB /* AssociatedTypeTracker.swift */; };
 		19FF61122A3FABC2001303FB /* AnyTypeParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19FF61112A3FABC2001303FB /* AnyTypeParser.swift */; };
 		19FF61182A3FD4F5001303FB /* InheritanceTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19FF61172A3FD4F5001303FB /* InheritanceTracker.swift */; };
-		19FF611A2A3FD7FC001303FB /* ImportParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19FF61192A3FD7FC001303FB /* ImportParser.swift */; };
+		19FF611A2A3FD7FC001303FB /* ImportTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19FF61192A3FD7FC001303FB /* ImportTracker.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -88,7 +88,7 @@
 		19FF610F2A3FAB71001303FB /* AssociatedTypeTracker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssociatedTypeTracker.swift; sourceTree = "<group>"; };
 		19FF61112A3FABC2001303FB /* AnyTypeParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnyTypeParser.swift; sourceTree = "<group>"; };
 		19FF61172A3FD4F5001303FB /* InheritanceTracker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InheritanceTracker.swift; sourceTree = "<group>"; };
-		19FF61192A3FD7FC001303FB /* ImportParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImportParser.swift; sourceTree = "<group>"; };
+		19FF61192A3FD7FC001303FB /* ImportTracker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImportTracker.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -212,7 +212,7 @@
 			children = (
 				19FF60D52A3F9EE6001303FB /* DeclTypeNameTracker.swift */,
 				19FF61172A3FD4F5001303FB /* InheritanceTracker.swift */,
-				19FF61192A3FD7FC001303FB /* ImportParser.swift */,
+				19FF61192A3FD7FC001303FB /* ImportTracker.swift */,
 			);
 			path = "Primitive Parsers";
 			sourceTree = "<group>";
@@ -305,7 +305,7 @@
 				19FF60FC2A3FA530001303FB /* TypealiasTracker.swift in Sources */,
 				19FF61102A3FAB71001303FB /* AssociatedTypeTracker.swift in Sources */,
 				19FF60F22A3FA277001303FB /* EnumTracker.swift in Sources */,
-				19FF611A2A3FD7FC001303FB /* ImportParser.swift in Sources */,
+				19FF611A2A3FD7FC001303FB /* ImportTracker.swift in Sources */,
 				192C58C52A3FF864001873C9 /* Parameter.swift in Sources */,
 				19FF60F62A3FA286001303FB /* StructTracker.swift in Sources */,
 				192C58C72A3FFAA7001873C9 /* InoutTracker.swift in Sources */,
