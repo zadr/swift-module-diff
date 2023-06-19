@@ -22,7 +22,6 @@ Swift is a big language, and there is still more to track. Things missing includ
 - [ ] Track generics in type declarations (e.g. `struct TypeName<T> {}`)
 - [ ] Track generics in function parameters (e.g. `func functionName<T>() {}`)
 - [ ] Track generic constraints in extension declarations (e.g. `extension Array where Element == Int {}` or `extension Collection where Iterator.Element: Equatable {}`)
-- [ ] Track operators
 - [ ] Track nested type names (e.g. for `enum X { enum Y {} }`, consider the inner enum name to be X.Y)
 - [ ] Track tuple decl's
 
