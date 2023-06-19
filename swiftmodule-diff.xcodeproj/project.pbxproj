@@ -148,7 +148,7 @@
 				19FF61012A3FA656001303FB /* Data Types */,
 				19D0EBE12A40E682003C8B19 /* Logic Types */,
 				19FF60EE2A3FA250001303FB /* Framework Parsers */,
-				19FF60EC2A3FA233001303FB /* Data Type Parsers */,
+				19FF60EC2A3FA233001303FB /* Data Structure Parsers */,
 				19FF60ED2A3FA242001303FB /* Member Type Parsers */,
 				192C58992A3FE6DA001873C9 /* Decorator Parsers */,
 				19FF610C2A3FA956001303FB /* Primitive Parsers */,
@@ -156,7 +156,7 @@
 			path = Code;
 			sourceTree = "<group>";
 		};
-		19FF60EC2A3FA233001303FB /* Data Type Parsers */ = {
+		19FF60EC2A3FA233001303FB /* Data Structure Parsers */ = {
 			isa = PBXGroup;
 			children = (
 				19FF610F2A3FAB71001303FB /* AssociatedTypeTracker.swift */,
@@ -166,7 +166,7 @@
 				19FF60F32A3FA27E001303FB /* ProtocolTracker.swift */,
 				19FF60F52A3FA286001303FB /* StructTracker.swift */,
 			);
-			path = "Data Type Parsers";
+			path = "Data Structure Parsers";
 			sourceTree = "<group>";
 		};
 		19FF60ED2A3FA242001303FB /* Member Type Parsers */ = {
