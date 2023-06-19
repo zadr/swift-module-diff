@@ -7,11 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		192C589B2A3FE6F2001873C9 /* StaticTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 192C589A2A3FE6F2001873C9 /* StaticTracker.swift */; };
-		192C589D2A3FE7F8001873C9 /* AsyncTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 192C589C2A3FE7F8001873C9 /* AsyncTracker.swift */; };
-		192C589F2A3FE829001873C9 /* ThrowingTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 192C589E2A3FE829001873C9 /* ThrowingTracker.swift */; };
-		192C58C12A3FF0BA001873C9 /* FinalTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 192C58C02A3FF0BA001873C9 /* FinalTracker.swift */; };
-		192C58C32A3FF0D4001873C9 /* OpenTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 192C58C22A3FF0D4001873C9 /* OpenTracker.swift */; };
 		192C58C52A3FF864001873C9 /* Parameter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 192C58C42A3FF864001873C9 /* Parameter.swift */; };
 		192C58C72A3FFAA7001873C9 /* InoutTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 192C58C62A3FFAA7001873C9 /* InoutTracker.swift */; };
 		192C58C92A400360001873C9 /* AvailabilityTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 192C58C82A400360001873C9 /* AvailabilityTracker.swift */; };
@@ -19,6 +14,7 @@
 		1960819B2A2EE446006A6286 /* SwiftmoduleFinder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1960819A2A2EE446006A6286 /* SwiftmoduleFinder.swift */; };
 		19D0EBD72A402CB4003C8B19 /* AttributeTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19D0EBD62A402CB4003C8B19 /* AttributeTracker.swift */; };
 		19D0EBD92A403C0B003C8B19 /* Attribute.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19D0EBD82A403C0B003C8B19 /* Attribute.swift */; };
+		19D0EBDB2A40505F003C8B19 /* BaseDeclParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19D0EBDA2A40505F003C8B19 /* BaseDeclParser.swift */; };
 		19D723312931945700B05410 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19D723302931945700B05410 /* main.swift */; };
 		19D723392931947700B05410 /* SwiftDiagnostics in Frameworks */ = {isa = PBXBuildFile; productRef = 19D723382931947700B05410 /* SwiftDiagnostics */; };
 		19D7233B2931947700B05410 /* SwiftOperators in Frameworks */ = {isa = PBXBuildFile; productRef = 19D7233A2931947700B05410 /* SwiftOperators */; };
@@ -61,11 +57,6 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		192C589A2A3FE6F2001873C9 /* StaticTracker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StaticTracker.swift; sourceTree = "<group>"; };
-		192C589C2A3FE7F8001873C9 /* AsyncTracker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AsyncTracker.swift; sourceTree = "<group>"; };
-		192C589E2A3FE829001873C9 /* ThrowingTracker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThrowingTracker.swift; sourceTree = "<group>"; };
-		192C58C02A3FF0BA001873C9 /* FinalTracker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FinalTracker.swift; sourceTree = "<group>"; };
-		192C58C22A3FF0D4001873C9 /* OpenTracker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenTracker.swift; sourceTree = "<group>"; };
 		192C58C42A3FF864001873C9 /* Parameter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Parameter.swift; sourceTree = "<group>"; };
 		192C58C62A3FFAA7001873C9 /* InoutTracker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InoutTracker.swift; sourceTree = "<group>"; };
 		192C58C82A400360001873C9 /* AvailabilityTracker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AvailabilityTracker.swift; sourceTree = "<group>"; };
@@ -73,6 +64,7 @@
 		1960819A2A2EE446006A6286 /* SwiftmoduleFinder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftmoduleFinder.swift; sourceTree = "<group>"; };
 		19D0EBD62A402CB4003C8B19 /* AttributeTracker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttributeTracker.swift; sourceTree = "<group>"; };
 		19D0EBD82A403C0B003C8B19 /* Attribute.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Attribute.swift; sourceTree = "<group>"; };
+		19D0EBDA2A40505F003C8B19 /* BaseDeclParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseDeclParser.swift; sourceTree = "<group>"; };
 		19D7232D2931945700B05410 /* swiftmodule-diff */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "swiftmodule-diff"; sourceTree = BUILT_PRODUCTS_DIR; };
 		19D723302931945700B05410 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		19FF60D52A3F9EE6001303FB /* DeclTypeNameTracker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeclTypeNameTracker.swift; sourceTree = "<group>"; };
@@ -117,14 +109,10 @@
 		192C58992A3FE6DA001873C9 /* Decorator Parsers */ = {
 			isa = PBXGroup;
 			children = (
-				192C589C2A3FE7F8001873C9 /* AsyncTracker.swift */,
+				19D0EBDA2A40505F003C8B19 /* BaseDeclParser.swift */,
 				192C58C82A400360001873C9 /* AvailabilityTracker.swift */,
 				19D0EBD62A402CB4003C8B19 /* AttributeTracker.swift */,
-				192C58C02A3FF0BA001873C9 /* FinalTracker.swift */,
 				192C58C62A3FFAA7001873C9 /* InoutTracker.swift */,
-				192C58C22A3FF0D4001873C9 /* OpenTracker.swift */,
-				192C589A2A3FE6F2001873C9 /* StaticTracker.swift */,
-				192C589E2A3FE829001873C9 /* ThrowingTracker.swift */,
 			);
 			path = "Decorator Parsers";
 			sourceTree = "<group>";
@@ -289,8 +277,8 @@
 			files = (
 				19D723312931945700B05410 /* main.swift in Sources */,
 				19D0EBD72A402CB4003C8B19 /* AttributeTracker.swift in Sources */,
+				19D0EBDB2A40505F003C8B19 /* BaseDeclParser.swift in Sources */,
 				19FF60FA2A3FA52A001303FB /* VariableTracker.swift in Sources */,
-				192C589F2A3FE829001873C9 /* ThrowingTracker.swift in Sources */,
 				19FF610B2A3FA74D001303FB /* FunctionTracker.swift in Sources */,
 				196081992A2EC8BF006A6286 /* ParseSwiftmodule.swift in Sources */,
 				19FF61032A3FA66E001303FB /* Availability.swift in Sources */,
@@ -304,15 +292,11 @@
 				1960819B2A2EE446006A6286 /* SwiftmoduleFinder.swift in Sources */,
 				19FF61072A3FA68B001303FB /* DataType.swift in Sources */,
 				19FF60FC2A3FA530001303FB /* TypealiasTracker.swift in Sources */,
-				192C589D2A3FE7F8001873C9 /* AsyncTracker.swift in Sources */,
 				19FF61102A3FAB71001303FB /* AssociatedTypeTracker.swift in Sources */,
 				19FF60F22A3FA277001303FB /* EnumTracker.swift in Sources */,
-				192C58C12A3FF0BA001873C9 /* FinalTracker.swift in Sources */,
 				19FF611A2A3FD7FC001303FB /* ImportParser.swift in Sources */,
 				192C58C52A3FF864001873C9 /* Parameter.swift in Sources */,
 				19FF60F62A3FA286001303FB /* StructTracker.swift in Sources */,
-				192C58C32A3FF0D4001873C9 /* OpenTracker.swift in Sources */,
-				192C589B2A3FE6F2001873C9 /* StaticTracker.swift in Sources */,
 				192C58C72A3FFAA7001873C9 /* InoutTracker.swift in Sources */,
 				19FF61122A3FABC2001303FB /* BaseDataTypeParser.swift in Sources */,
 				192C58C92A400360001873C9 /* AvailabilityTracker.swift in Sources */,

@@ -27,6 +27,8 @@ struct Member: CustomStringConvertible, Hashable {
 	var returnType: String = ""
 	var isThrowing: Bool = false
 	var isAsync: Bool = false
+	var isWeak: Bool = false
+	var isUnsafe: Bool = false
 	var parameters: [Parameter] = []
 
 	var description: String {
@@ -42,6 +44,8 @@ struct Member: CustomStringConvertible, Hashable {
     returnType: \(returnType)
     isThrowing: \(isThrowing)
     isAsync: \(isAsync)
+    isWeak: \(isWeak)
+    isUnsafe: \(isUnsafe)
     parameters: \(parameters)
 ------
 """

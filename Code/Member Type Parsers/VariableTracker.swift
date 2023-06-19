@@ -31,11 +31,11 @@ class VariableTracker: SyntaxVisitor, MemberParser {
 	   }
 
 	override func visit(_ node: DeclModifierSyntax) -> SyntaxVisitorContinueKind {
-		member.isAsync = member.isAsync || ParsePrimitive<AsyncTracker>(node: node).run()
-		member.isStatic = member.isStatic || ParsePrimitive<StaticTracker>(node: node).run()
-		member.isThrowing = member.isThrowing || ParsePrimitive<ThrowingTracker>(node: node).run()
-		member.isOpen = member.isOpen || ParsePrimitive<OpenTracker>(node: node).run()
-		member.isFinal = member.isFinal || ParsePrimitive<FinalTracker>(node: node).run()
+		member.isAsync = member.isAsync || ParseDecl<DeclTracker>(node: node).run(keyword: .async)
+		member.isStatic = member.isStatic || ParseDecl<DeclTracker>(node: node).run(keyword: .static)
+		member.isThrowing = member.isThrowing || ParseDecl<DeclTracker>(node: node).run(keyword: .throws)
+		member.isOpen = member.isOpen || ParseDecl<DeclTracker>(node: node).run(keyword: .open)
+		member.isFinal = member.isFinal ||  ParseDecl<DeclTracker>(node: node).run(keyword: .final)
 		return super.visit(node)
 	}
 

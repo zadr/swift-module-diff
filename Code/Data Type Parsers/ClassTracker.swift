@@ -11,8 +11,8 @@ class ClassTracker: SyntaxVisitor, DataTypeParser {
 	}
 
 	override func visit(_ node: DeclModifierSyntax) -> SyntaxVisitorContinueKind {
-		dataType.isOpen = dataType.isOpen || ParsePrimitive<OpenTracker>(node: node).run()
-		dataType.isFinal = dataType.isFinal || ParsePrimitive<FinalTracker>(node: node).run()
+		dataType.isOpen = dataType.isOpen || ParseDecl<DeclTracker>(node: node).run(keyword: .open)
+		dataType.isFinal = dataType.isFinal || ParseDecl<DeclTracker>(node: node).run(keyword: .final)
 		return super.visit(node)
 	}
 
