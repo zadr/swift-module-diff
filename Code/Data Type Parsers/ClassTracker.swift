@@ -21,6 +21,14 @@ class ClassTracker: SyntaxVisitor, DataTypeParser {
 		return super.visit(node)
 	}
 
+	override func visit(_ node: AttributeSyntax) -> SyntaxVisitorContinueKind {
+		let attribute = ParsePrimitive<AttributeTracker>(node: node).run()
+		if attribute.name != "available" {
+			dataType.attributes.insert(attribute)
+		}
+		return super.visit(node)
+	}
+
 	override func visit(_ node: ClassDeclSyntax) -> SyntaxVisitorContinueKind {
 		dataType.name = node.identifier.text
 		return super.visit(node)

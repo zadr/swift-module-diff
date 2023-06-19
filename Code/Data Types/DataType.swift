@@ -11,6 +11,7 @@ struct DataType: CustomStringConvertible, Hashable {
 		case `associatedtype`
 	}
 
+	var attributes: Set<Attribute> = .init()
 	var availabilities: [Availability] = []
 	var kind: Kind = .unknown
 	var isFinal: Bool = false
@@ -28,6 +29,7 @@ struct DataType: CustomStringConvertible, Hashable {
 	var description: String {
 """
 ------
+    attributes: \(attributes)
     availability: \(availabilities)
     final > '\(isFinal)' || open > '\(isOpen)' for kind > '\(kind)' named > '\(name)'
     conformances: \(conformances.joined(separator: ", "))

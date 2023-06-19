@@ -18,7 +18,7 @@ struct Member: CustomStringConvertible, Hashable {
 	}
 
 	var accessors: Set<Accessor> = .init()
-	var attributes: Set<String> = .init()
+	var attributes: Set<Attribute> = .init()
 	var kind: Kind = .unknown
 	var isFinal: Bool = false
 	var isOpen: Bool = false

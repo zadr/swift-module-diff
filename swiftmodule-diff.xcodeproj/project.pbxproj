@@ -18,6 +18,7 @@
 		196081992A2EC8BF006A6286 /* ParseSwiftmodule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 196081982A2EC8BF006A6286 /* ParseSwiftmodule.swift */; };
 		1960819B2A2EE446006A6286 /* SwiftmoduleFinder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1960819A2A2EE446006A6286 /* SwiftmoduleFinder.swift */; };
 		19D0EBD72A402CB4003C8B19 /* AttributeTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19D0EBD62A402CB4003C8B19 /* AttributeTracker.swift */; };
+		19D0EBD92A403C0B003C8B19 /* Attribute.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19D0EBD82A403C0B003C8B19 /* Attribute.swift */; };
 		19D723312931945700B05410 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19D723302931945700B05410 /* main.swift */; };
 		19D723392931947700B05410 /* SwiftDiagnostics in Frameworks */ = {isa = PBXBuildFile; productRef = 19D723382931947700B05410 /* SwiftDiagnostics */; };
 		19D7233B2931947700B05410 /* SwiftOperators in Frameworks */ = {isa = PBXBuildFile; productRef = 19D7233A2931947700B05410 /* SwiftOperators */; };
@@ -71,6 +72,7 @@
 		196081982A2EC8BF006A6286 /* ParseSwiftmodule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParseSwiftmodule.swift; sourceTree = "<group>"; };
 		1960819A2A2EE446006A6286 /* SwiftmoduleFinder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftmoduleFinder.swift; sourceTree = "<group>"; };
 		19D0EBD62A402CB4003C8B19 /* AttributeTracker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttributeTracker.swift; sourceTree = "<group>"; };
+		19D0EBD82A403C0B003C8B19 /* Attribute.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Attribute.swift; sourceTree = "<group>"; };
 		19D7232D2931945700B05410 /* swiftmodule-diff */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "swiftmodule-diff"; sourceTree = BUILT_PRODUCTS_DIR; };
 		19D723302931945700B05410 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		19FF60D52A3F9EE6001303FB /* DeclTypeNameTracker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeclTypeNameTracker.swift; sourceTree = "<group>"; };
@@ -196,6 +198,7 @@
 		19FF61012A3FA656001303FB /* Data Types */ = {
 			isa = PBXGroup;
 			children = (
+				19D0EBD82A403C0B003C8B19 /* Attribute.swift */,
 				19FF61022A3FA66E001303FB /* Availability.swift */,
 				19FF61062A3FA68B001303FB /* DataType.swift */,
 				19FF61082A3FA6A0001303FB /* Framework.swift */,
@@ -316,6 +319,7 @@
 				19FF60D62A3F9EE6001303FB /* DeclTypeNameTracker.swift in Sources */,
 				19FF60F82A3FA2AC001303FB /* ExtensionTracker.swift in Sources */,
 				19FF610E2A3FAAF1001303FB /* EnumCaseTracker.swift in Sources */,
+				19D0EBD92A403C0B003C8B19 /* Attribute.swift in Sources */,
 				19FF61052A3FA679001303FB /* Member.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
