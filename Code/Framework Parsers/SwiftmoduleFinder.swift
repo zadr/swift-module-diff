@@ -18,11 +18,11 @@ struct SwiftmoduleFinder {
 
 		var name: String {
 			switch self {
-			case .arm64: return "arm64"
-			case .arm64e: return "arm64e"
-			case .arm64_32: return "arm64_32"
-			case .armv7k: return "armv7k"
-			case .other(let string): return string
+			case .arm64: "arm64"
+			case .arm64e: "arm64e"
+			case .arm64_32: "arm64_32"
+			case .armv7k: "armv7k"
+			case .other(let string): string
 			}
 		}
 	}
@@ -35,22 +35,22 @@ struct SwiftmoduleFinder {
 
 		var paths: [String] {
 			switch self {
-			case .iOS: return [
+			case .iOS: [
 				"Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks",
 				"Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/usr/lib/swift",
 				"Contents/Developer/Platforms/iPhoneOS.platform/Developer/usr/lib" // find XCTest changes
 			]
-			case .macOS: return [
+			case .macOS: [
 				"Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks",
 				"Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/lib/swift",
 				"Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib" // find XCTest changes
 			]
-			case .tvOS: return [
+			case .tvOS: [
 				"Contents/Developer/Platforms/AppleTVOS.platform/Developer/SDKs/AppleTVOS.sdk/System/Library/Frameworks",
 				"Contents/Developer/Platforms/AppleTVOS.platform/Developer/SDKs/AppleTVOS.sdk/usr/lib/swift",
 				"Contents/Developer/Platforms/AppleTVOS.platform/Developer/usr/lib" // find XCTest changes
 			]
-			case .watchOS: return [
+			case .watchOS: [
 				"Contents/Developer/Platforms/WatchOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks",
 				"Contents/Developer/Platforms/WatchOS.platform/Developer/SDKs/WatchOS.sdk/usr/lib/swift",
 				"Contents/Developer/Platforms/WatchOS.platform/Developer/usr/lib" // find XCTest changes
