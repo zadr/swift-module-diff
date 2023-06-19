@@ -33,7 +33,8 @@ struct DataType: CustomStringConvertible, Hashable {
     availability: \(availabilities)
     final > '\(isFinal)' || open > '\(isOpen)' for kind > '\(kind)' named > '\(name)'
     conformances: \(conformances.joined(separator: ", "))
-    has:\n \(members.map { $0.description + "\n" })
+    has:
+\(members)
 ------
 """
 	}
