@@ -3,13 +3,13 @@ import SwiftSyntax
 
 class AttributeTracker: SyntaxVisitor, PrimitiveParser {
 	typealias Value = Attribute
-	
+
 	var value = Value()
-	
+
 	required init() {
 		super.init(viewMode: .sourceAccurate)
 	}
-	
+
 	override func visit(_ node: AttributeSyntax) -> SyntaxVisitorContinueKind {
 		value.name = ParsePrimitive<DeclTypeNameTracker>(node: node.attributeName).run()
 
