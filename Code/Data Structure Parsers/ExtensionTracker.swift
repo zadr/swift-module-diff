@@ -51,7 +51,7 @@ class ExtensionTracker: SyntaxVisitor, AnyTypeParser {
 	}
 
 	override func visit(_ node: VariableDeclSyntax) -> SyntaxVisitorContinueKind {
-		let members = ParseMultiTypeCollection<VariableTracker>(node: node).run()
+		let members = ParseAnyTypeCollection<VariableTracker>(node: node).run()
 		value.members += members
 		return super.visit(node)
 	}

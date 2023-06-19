@@ -82,7 +82,7 @@ private class SwiftmoduleTracker: SyntaxVisitor {
 	}
 
 	override func visit(_ node: VariableDeclSyntax) -> SyntaxVisitorContinueKind {
-		let v = ParseMultiTypeCollection<VariableTracker>(node: node).run()
+		let v = ParseAnyTypeCollection<VariableTracker>(node: node).run()
 		framework.members += v
 		return super.visit(node)
 	}

@@ -1,7 +1,7 @@
 import Foundation
 import SwiftSyntax
 
-class VariableTracker: SyntaxVisitor, MultiTypeParser {
+class VariableTracker: SyntaxVisitor, AnyTypeCollectionParser {
 	var value = Member()
 	var collection = [Member]()
 

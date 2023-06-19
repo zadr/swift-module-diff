@@ -2,7 +2,7 @@ import Foundation
 import SwiftParser
 import SwiftSyntax
 
-protocol MultiTypeParser {
+protocol AnyTypeCollectionParser {
 	associatedtype AnyType
 
 	typealias AnyTypeCollection = [AnyType]
@@ -14,7 +14,7 @@ protocol MultiTypeParser {
 
 extension AnyTypeParser where Self: SyntaxVisitor {}
 
-struct ParseMultiTypeCollection<T: SyntaxVisitor & MultiTypeParser> {
+struct ParseAnyTypeCollection<T: SyntaxVisitor & AnyTypeCollectionParser> {
 	let node: any SyntaxProtocol
 
 	init(node: any SyntaxProtocol) {

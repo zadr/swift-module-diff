@@ -1,7 +1,7 @@
 import Foundation
 import SwiftSyntax
 
-class EnumCaseTracker: SyntaxVisitor, MultiTypeParser {
+class EnumCaseTracker: SyntaxVisitor, AnyTypeCollectionParser {
 	var value = Member()
 	var collection = [Member]()
 	
