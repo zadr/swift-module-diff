@@ -3,10 +3,15 @@ import Foundation
 
 @main
 struct Compare: ParsableCommand {
-	@Option(name: .shortAndLong, help: "Path to the older API")
+	static var configuration = CommandConfiguration(
+		abstract: "A utility for diffing two Swift APIs",
+		version: "0.1.0"
+	)
+
+	@Option(name: .shortAndLong, help: "Path to the older API. Default: /Applications/Xcode.app")
 	var old: String = "/Applications/Xcode.app"
 
-	@Option(name: .shortAndLong, help: "Path to the newer API")
+	@Option(name: .shortAndLong, help: "Path to the newer API. Default: /Applications/Xcode-beta.app")
 	var new: String = "/Applications/Xcode-beta.app"
 
 	mutating func run() throws {
