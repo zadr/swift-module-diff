@@ -34,17 +34,8 @@ class ClassTracker: SyntaxVisitor, AnyTypeParser {
 	}
 
 	override func visit(_ node: InitializerDeclSyntax) -> SyntaxVisitorContinueKind {
-		var member = ParseAnyType<FunctionTracker>(node: node).run()
-		member.name = "init"
-
-		if node.optionalMark?.tokenKind == .postfixQuestionMark {
-			member.name = member.name + "?"
-		} else if node.optionalMark?.tokenKind == .exclamationMark {
-			member.name = member.name + "!"
-		}
-
+		var member = ParseAnyType<InitializerTracker>(node: node).run()
 		value.members.append(member)
-
 		return super.visit(node)
 	}
 
