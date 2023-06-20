@@ -27,6 +27,12 @@ class EnumTracker: SyntaxVisitor, AnyTypeParser {
 		return super.visit(node)
 	}
 
+	override func visit(_ node: InitializerDeclSyntax) -> SyntaxVisitorContinueKind {
+		var member = ParseAnyType<InitializerTracker>(node: node).run()
+		value.members.append(member)
+		return super.visit(node)
+	}
+
 	override func visit(_ node: InheritedTypeListSyntax) -> SyntaxVisitorContinueKind {
 		value.conformances = ParseAnyType<InheritanceTracker>(node: node).run()
 		return super.visit(node)
