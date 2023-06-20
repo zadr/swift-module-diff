@@ -18,11 +18,19 @@ class FunctionTracker: SyntaxVisitor, AnyTypeParser {
 	}
 
 	override func visit(_ node: DeclModifierSyntax) -> SyntaxVisitorContinueKind {
-		value.isAsync = value.isAsync || ParseDecl<DeclTracker>(node: node).run(keyword: .async)
-		value.isStatic = value.isStatic || ParseDecl<DeclTracker>(node: node).run(keyword: .static)
-		value.isThrowing = value.isThrowing || ParseDecl<DeclTracker>(node: node).run(keyword: .throws)
-		value.isOpen = value.isOpen || ParseDecl<DeclTracker>(node: node).run(keyword: .open)
-		value.isFinal = value.isFinal ||  ParseDecl<DeclTracker>(node: node).run(keyword: .final)
+		let pairs: [Keyword: Decorator] = [
+			.async: .async,
+			.static: .static,
+			.throws: .throwing,
+			.open: .open,
+			.final: .final,
+		]
+
+		for (keyword, decorator) in pairs {
+			if ParseDecl<DeclTracker>(node: node).run(keyword: keyword) {
+				value.decorators.insert(decorator)
+			}
+		}
 		return super.visit(node)
 	}
 

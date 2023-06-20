@@ -1,5 +1,16 @@
 import Foundation
 
+enum Decorator: Codable, Hashable, Sendable {
+	case `final`
+	case `open`
+	case `static`
+	case `throwing`
+	case `async`
+	case `weak`
+	case `unsafe`
+	case `unowned`
+}
+
 struct Member: Codable, CustomStringConvertible, Hashable, Sendable {
 	enum Kind: Codable, Hashable, Sendable {
 		case `unknown`
@@ -20,16 +31,9 @@ struct Member: Codable, CustomStringConvertible, Hashable, Sendable {
 	var accessors: Set<Accessor> = .init()
 	var attributes: Set<Attribute> = .init()
 	var kind: Kind = .unknown
-	var isFinal: Bool = false
-	var isOpen: Bool = false
+	var decorators: Set<Decorator> = .init()
 	var name: String = ""
-	var isStatic: Bool = false
 	var returnType: String = ""
-	var isThrowing: Bool = false
-	var isAsync: Bool = false
-	var isWeak: Bool = false
-	var isUnsafe: Bool = false
-	var isUnowned: Bool = false
 	var parameters: [Parameter] = []
 
 	var description: String {
@@ -37,17 +41,10 @@ struct Member: Codable, CustomStringConvertible, Hashable, Sendable {
 ------
     accessors: \(accessors)
     attributes: \(attributes)
+    decorators: \(decorators)
     kind: \(kind)
-    isFinal: \(isFinal)
-    isOpen: \(isOpen)
     name: \(name)
-    isStatic: \(isStatic)
     returnType: \(returnType)
-    isThrowing: \(isThrowing)
-    isAsync: \(isAsync)
-    isWeak: \(isWeak)
-    isUnsafe: \(isUnsafe)
-    isUnowned: \(isUnowned)
     parameters: \(parameters)
 ------
 """
