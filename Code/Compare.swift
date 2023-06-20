@@ -38,14 +38,15 @@ struct Compare: ParsableCommand {
 				print(architecture)
 
 				var architectureFrameworks = Set<Framework>()
-				DispatchQueue.concurrentPerform(iterations: moduleList.count) { i in
+//				DispatchQueue.concurrentPerform(iterations: moduleList.count) { i in
+				for i in 0 ..< moduleList.count {
 					let module = moduleList[i]
 					print(module.absoluteString)
 
 					let path = module.absoluteString.replacingOccurrences(of: "file://", with: "")
 					let framework = ParseSwiftmodule(path: path).run()
 
-					DispatchQueue.main.async { architectureFrameworks.insert(framework) }
+					architectureFrameworks.insert(framework)
 				}
 
 				if !architectureFrameworks.isEmpty {
