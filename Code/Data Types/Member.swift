@@ -1,16 +1,5 @@
 import Foundation
 
-enum Decorator: Codable, Hashable, Sendable {
-	case `final`
-	case `open`
-	case `static`
-	case `throwing`
-	case `async`
-	case `weak`
-	case `unsafe`
-	case `unowned`
-}
-
 struct Member: Codable, CustomStringConvertible, Hashable, Sendable {
 	enum Kind: Codable, Hashable, Sendable {
 		case `unknown`
@@ -26,6 +15,17 @@ struct Member: Codable, CustomStringConvertible, Hashable, Sendable {
 	enum Accessor: Codable, Hashable, Sendable {
 		case `get`
 		case `set`
+	}
+
+	enum Decorator: Codable, Hashable, Sendable {
+		case `final`
+		case `open`
+		case `static`
+		case `throwing`
+		case `async`
+		case `weak`
+		case `unsafe`
+		case `unowned`
 	}
 
 	var accessors: Set<Accessor> = .init()

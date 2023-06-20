@@ -18,7 +18,7 @@ class FunctionTracker: SyntaxVisitor, AnyTypeParser {
 	}
 
 	override func visit(_ node: DeclModifierSyntax) -> SyntaxVisitorContinueKind {
-		let pairs: [Keyword: Decorator] = [
+		let pairs: [Keyword: Member.Decorator] = [
 			.async: .async,
 			.static: .static,
 			.throws: .throwing,
