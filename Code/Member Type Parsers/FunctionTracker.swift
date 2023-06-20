@@ -63,11 +63,11 @@ class FunctionTracker: SyntaxVisitor, AnyTypeParser {
 class InitializerTracker: FunctionTracker {
 	override func visit(_ node: InitializerDeclSyntax) -> SyntaxVisitorContinueKind {
 		if node.optionalMark?.tokenKind == .postfixQuestionMark {
-			member.name = "init?"
+			value.name = "init?"
 		} else if node.optionalMark?.tokenKind == .exclamationMark {
-			member.name = "init!"
+			value.name = "init!"
 		} else {
-			member.name = "init"
+			value.name = "init"
 		}
 
 		return super.visit(node)
