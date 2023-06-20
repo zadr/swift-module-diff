@@ -40,9 +40,5 @@ struct Compare: ParsableCommand {
 				}
 			}
 		}
-		print(Date())
-		let json = try JSONEncoder().encode(frameworks)
-		try json.write(to: URL(filePath: (output as NSString).expandingTildeInPath + "/blob.json"))
-		print(Date())
 	}
 }
