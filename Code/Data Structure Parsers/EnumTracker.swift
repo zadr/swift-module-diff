@@ -28,7 +28,7 @@ class EnumTracker: SyntaxVisitor, AnyTypeParser {
 	}
 
 	override func visit(_ node: InitializerDeclSyntax) -> SyntaxVisitorContinueKind {
-		var member = ParseAnyType<InitializerTracker>(node: node).run()
+		let member = ParseAnyType<InitializerTracker>(node: node).run()
 		value.members.append(member)
 		return super.visit(node)
 	}
