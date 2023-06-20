@@ -44,7 +44,15 @@ struct Compare: ParsableCommand {
 					print(module.absoluteString)
 
 					let path = module.absoluteString.replacingOccurrences(of: "file://", with: "")
-					let framework = ParseSwiftmodule(path: path).run()
+					var framework = ParseSwiftmodule(path: path).run()
+					framework.name =
+					(
+						(
+							(
+								module.absoluteString as NSString
+							).deletingLastPathComponent as NSString
+						).lastPathComponent as NSString
+					).deletingPathExtension
 
 					architectureFrameworks.insert(framework)
 				}
