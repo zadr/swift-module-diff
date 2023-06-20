@@ -19,26 +19,45 @@ struct Compare: ParsableCommand {
 
 	mutating func run() throws {
 		print(Date())
-		var frameworks = Set<Framework>()
 
-		let paths = [ old, new ]
-		for path in paths {
-			let modules = SwiftmoduleFinder(app: path).run()
-			for (platform, architectureToModules) in modules {
-				print(platform)
-		
-				for (architecture, moduleList) in architectureToModules {
-					print(architecture)
-		
-					for module in moduleList {
-						print(module.absoluteString)
-		
-						let path = module.absoluteString.replacingOccurrences(of: "file://", with: "")
-						let framework = ParseSwiftmodule(path: path).run()
-						frameworks.insert(framework)
-					}
+		let oldFrameworks = frameworks(for: old)
+		let newFrameworks = frameworks(for: new)
+
+		print(Date())
+	}
+
+	func frameworks(for path: String) -> [SwiftmoduleFinder.Platform: [SwiftmoduleFinder.Architecture: Set<Framework>]] {
+		let modules = SwiftmoduleFinder(app: path).run()
+
+		var results = [SwiftmoduleFinder.Platform: [SwiftmoduleFinder.Architecture: Set<Framework>]]()
+		for (platform, architectureToModules) in modules {
+			print(platform)
+
+			var platformSDKs = [SwiftmoduleFinder.Architecture: Set<Framework>]()
+			for (architecture, moduleList) in architectureToModules {
+				print(architecture)
+
+				var architectureFrameworks = Set<Framework>()
+				DispatchQueue.concurrentPerform(iterations: moduleList.count) { i in
+					let module = moduleList[i]
+					print(module.absoluteString)
+
+					let path = module.absoluteString.replacingOccurrences(of: "file://", with: "")
+					let framework = ParseSwiftmodule(path: path).run()
+
+					DispatchQueue.main.async { architectureFrameworks.insert(framework) }
+				}
+
+				if !architectureFrameworks.isEmpty {
+					platformSDKs[architecture] = architectureFrameworks
 				}
 			}
+
+			if !platformSDKs.isEmpty {
+				results[platform] = platformSDKs
+			}
 		}
+
+		return results
 	}
 }
