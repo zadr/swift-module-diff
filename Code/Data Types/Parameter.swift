@@ -1,6 +1,6 @@
 import Foundation
 
-struct Parameter: Codable, CustomStringConvertible, Hashable {
+struct Parameter: Codable, CustomStringConvertible, Hashable, Sendable {
 	var name: String = ""
 	var type: String = ""
 	var isInout: Bool = false

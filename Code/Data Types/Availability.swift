@@ -1,6 +1,6 @@
 import Foundation
 
-enum Availability: Codable, Equatable, Hashable {
+enum Availability: Codable, Equatable, Hashable, Sendable {
 	case platform(name: String, version: String)
 	case unavailablePlatform(name: String)
 	case any

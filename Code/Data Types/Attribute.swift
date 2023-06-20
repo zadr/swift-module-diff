@@ -1,6 +1,6 @@
 import Foundation
 
-struct Attribute: Codable, CustomStringConvertible, Equatable, Hashable {
+struct Attribute: Codable, CustomStringConvertible, Equatable, Hashable, Sendable {
 	var name: String = ""
 	var parameters: [Parameter] = []
 
