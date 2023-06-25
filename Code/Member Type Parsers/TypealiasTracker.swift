@@ -23,7 +23,7 @@ class TypealiasTracker: SyntaxVisitor, AnyTypeParser {
 	}
 
 	override func visit(_ node: TypeInitializerClauseSyntax) -> SyntaxVisitorContinueKind {
-		value.returnType = ParseAnyType<DeclTypeNameTracker>(node: node.value).run()
+		value.returnType = ParseAnyType<TypeNameTracker>(node: node.value).run()
 		return super.visit(node)
 	}
 }

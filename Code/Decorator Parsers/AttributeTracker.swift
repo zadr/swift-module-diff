@@ -9,7 +9,7 @@ class AttributeTracker: SyntaxVisitor, AnyTypeParser {
 	}
 
 	override func visit(_ node: AttributeSyntax) -> SyntaxVisitorContinueKind {
-		value.name = ParseAnyType<DeclTypeNameTracker>(node: node.attributeName).run()
+		value.name = ParseAnyType<TypeNameTracker>(node: node.attributeName).run()
 
 		if let argument = node.argument, case .token(let tokenSyntax) = argument {
 			var parameter = Parameter()

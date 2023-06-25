@@ -48,7 +48,7 @@ class FunctionTracker: SyntaxVisitor, AnyTypeParser {
 	override func visit(_ node: FunctionParameterSyntax) -> SyntaxVisitorContinueKind {
 		var parameter = Parameter()
 		parameter.name = node.firstName.text + (node.secondName != nil ? " " + node.secondName!.text : "")
-		parameter.type = ParseAnyType<DeclTypeNameTracker>(node: node.type).run()
+		parameter.type = ParseAnyType<TypeNameTracker>(node: node.type).run()
 		parameter.isInout = ParseAnyType<InoutTracker>(node: node.type).run()
 
 		if let attributes = node.type.as(AttributedTypeSyntax.self)?.attributes {
@@ -63,7 +63,7 @@ class FunctionTracker: SyntaxVisitor, AnyTypeParser {
 	}
 
 	override func visit(_ node: ReturnClauseSyntax) -> SyntaxVisitorContinueKind {
-		value.returnType = ParseAnyType<DeclTypeNameTracker>(node: node).run()
+		value.returnType = ParseAnyType<TypeNameTracker>(node: node).run()
 		return super.visit(node)
 	}
 }

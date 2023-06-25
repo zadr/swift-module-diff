@@ -23,7 +23,7 @@ class ExtensionTracker: SyntaxVisitor, AnyTypeParser {
 	}
 
 	override func visit(_ node: ExtensionDeclSyntax) -> SyntaxVisitorContinueKind {
-		value.name = ParseAnyType<DeclTypeNameTracker>(node: node.extendedType).run()
+		value.name = ParseAnyType<TypeNameTracker>(node: node.extendedType).run()
 		return super.visit(node)
 	}
 

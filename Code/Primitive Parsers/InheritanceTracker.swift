@@ -9,7 +9,7 @@ class InheritanceTracker: SyntaxVisitor, AnyTypeParser {
 	}
 
 	override func visit(_ node: InheritedTypeSyntax) -> SyntaxVisitorContinueKind {
-		let name = ParseAnyType<DeclTypeNameTracker>(node: node).run()
+		let name = ParseAnyType<TypeNameTracker>(node: node).run()
 		value.append(name)
 		return super.visit(node)
 	}

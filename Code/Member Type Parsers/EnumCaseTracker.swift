@@ -33,7 +33,7 @@ class EnumCaseTracker: SyntaxVisitor, AnyTypeCollectionParser {
 		if let firstName = node.firstName {
 			parameter.name = firstName.text + (node.secondName != nil ? " " + node.secondName!.text : "")
 		}
-		parameter.type = ParseAnyType<DeclTypeNameTracker>(node: node.type).run()
+		parameter.type = ParseAnyType<TypeNameTracker>(node: node.type).run()
 		parameter.isInout = ParseAnyType<InoutTracker>(node: node.type).run()
 		
 		value.parameters.append(parameter)

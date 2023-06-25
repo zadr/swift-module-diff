@@ -63,7 +63,7 @@ class VariableTracker: SyntaxVisitor, AnyTypeCollectionParser {
 			}
 
 			if let returnTypeAnnotation = pattern.typeAnnotation {
-				copy.returnType = ParseAnyType<DeclTypeNameTracker>(node: returnTypeAnnotation).run()
+				copy.returnType = ParseAnyType<TypeNameTracker>(node: returnTypeAnnotation).run()
 			}
 
 			if let attributes = pattern.typeAnnotation?.type.as(AttributedTypeSyntax.self)?.attributes {

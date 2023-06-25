@@ -24,7 +24,7 @@
 		19D7233D2931947700B05410 /* SwiftParser in Frameworks */ = {isa = PBXBuildFile; productRef = 19D7233C2931947700B05410 /* SwiftParser */; };
 		19D7233F2931947700B05410 /* SwiftParserDiagnostics in Frameworks */ = {isa = PBXBuildFile; productRef = 19D7233E2931947700B05410 /* SwiftParserDiagnostics */; };
 		19D723412931947700B05410 /* SwiftSyntax in Frameworks */ = {isa = PBXBuildFile; productRef = 19D723402931947700B05410 /* SwiftSyntax */; };
-		19FF60D62A3F9EE6001303FB /* DeclTypeNameTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19FF60D52A3F9EE6001303FB /* DeclTypeNameTracker.swift */; };
+		19FF60D62A3F9EE6001303FB /* TypeNameTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19FF60D52A3F9EE6001303FB /* TypeNameTracker.swift */; };
 		19FF60F02A3FA270001303FB /* ClassTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19FF60EF2A3FA270001303FB /* ClassTracker.swift */; };
 		19FF60F22A3FA277001303FB /* EnumTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19FF60F12A3FA277001303FB /* EnumTracker.swift */; };
 		19FF60F42A3FA27E001303FB /* ProtocolTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19FF60F32A3FA27E001303FB /* ProtocolTracker.swift */; };
@@ -70,7 +70,7 @@
 		19D0EBE22A40E971003C8B19 /* AnyTypeCollectionParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnyTypeCollectionParser.swift; sourceTree = "<group>"; };
 		19D7232D2931945700B05410 /* swiftmodule-diff */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "swiftmodule-diff"; sourceTree = BUILT_PRODUCTS_DIR; };
 		19D723302931945700B05410 /* Compare.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Compare.swift; sourceTree = "<group>"; };
-		19FF60D52A3F9EE6001303FB /* DeclTypeNameTracker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeclTypeNameTracker.swift; sourceTree = "<group>"; };
+		19FF60D52A3F9EE6001303FB /* TypeNameTracker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TypeNameTracker.swift; sourceTree = "<group>"; };
 		19FF60EF2A3FA270001303FB /* ClassTracker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClassTracker.swift; sourceTree = "<group>"; };
 		19FF60F12A3FA277001303FB /* EnumTracker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnumTracker.swift; sourceTree = "<group>"; };
 		19FF60F32A3FA27E001303FB /* ProtocolTracker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProtocolTracker.swift; sourceTree = "<group>"; };
@@ -210,7 +210,7 @@
 		19FF610C2A3FA956001303FB /* Primitive Parsers */ = {
 			isa = PBXGroup;
 			children = (
-				19FF60D52A3F9EE6001303FB /* DeclTypeNameTracker.swift */,
+				19FF60D52A3F9EE6001303FB /* TypeNameTracker.swift */,
 				19FF61172A3FD4F5001303FB /* InheritanceTracker.swift */,
 				19FF61192A3FD7FC001303FB /* ImportTracker.swift */,
 			);
@@ -312,7 +312,7 @@
 				19D0EBE32A40E971003C8B19 /* AnyTypeCollectionParser.swift in Sources */,
 				19FF61122A3FABC2001303FB /* AnyTypeParser.swift in Sources */,
 				192C58C92A400360001873C9 /* AvailabilityTracker.swift in Sources */,
-				19FF60D62A3F9EE6001303FB /* DeclTypeNameTracker.swift in Sources */,
+				19FF60D62A3F9EE6001303FB /* TypeNameTracker.swift in Sources */,
 				19FF60F82A3FA2AC001303FB /* ExtensionTracker.swift in Sources */,
 				19FF610E2A3FAAF1001303FB /* EnumCaseTracker.swift in Sources */,
 				19D0EBD92A403C0B003C8B19 /* Attribute.swift in Sources */,
