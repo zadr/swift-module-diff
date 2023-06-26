@@ -44,5 +44,6 @@ class EnumCaseTracker: SyntaxVisitor, AnyTypeCollectionParser {
 
 	override func visitPost(_ node: EnumCaseElementSyntax) {
 		collection.append(value)
+		value.parameters.removeAll()
 	}
 }
