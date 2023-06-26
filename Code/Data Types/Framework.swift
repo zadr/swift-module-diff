@@ -4,7 +4,7 @@ struct Framework: Codable, CustomStringConvertible, Hashable, Sendable {
 	var attributes: Set<Attribute> = .init()
 	var availabilities = [Availability]()
 	var dependencies = [Import]()
-	var dataTypes = [DataType]()
+	var dataTypes = [NamedType]()
 	var members = [Member]()
 	var name = ""
 

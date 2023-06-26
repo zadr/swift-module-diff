@@ -2,7 +2,7 @@ import Foundation
 import SwiftSyntax
 
 class ClassTracker: SyntaxVisitor, AnyTypeParser {
-	var value = DataType()
+	var value = NamedType()
 
 	required init() {
 		self.value.kind = .class

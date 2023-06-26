@@ -1,6 +1,6 @@
 import Foundation
 
-struct DataType: Codable, CustomStringConvertible, Hashable, Sendable {
+struct NamedType: Codable, CustomStringConvertible, Hashable, Sendable {
 	enum Kind: String, Codable, Hashable {
 		case unknown
 		case `class`
@@ -24,7 +24,7 @@ struct DataType: Codable, CustomStringConvertible, Hashable, Sendable {
 	var members = [Member]()
 
 	// includes `enum`, `struct`, `class`, extension`, and `associatedtype`
-	var nestedTypes = [DataType]()
+	var nestedTypes = [NamedType]()
 
 	var description: String {
 		let attributes = self.attributes.map { attribute in
