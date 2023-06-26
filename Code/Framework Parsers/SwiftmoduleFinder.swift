@@ -1,30 +1,8 @@
 import Foundation
 
 struct SwiftmoduleFinder {
-	enum Architecture:  Equatable, Hashable {
-		case arm64
-		case arm64e
-		case arm64_32
-		case armv7k
-		case other(String)
+	typealias Architecture = String
 
-		init(string: String) {
-			if string == "arm64" { self = .arm64 }
-			else if string == "arm64e" { self = .arm64e }
-			else if string == "arm64_32" { self = .arm64_32 }
-			else if string == "armv7k" { self = .armv7k }
-			else { self = .other(string) }
-		}
-
-		var name: String {
-			switch self {
-			case .arm64: "arm64"
-			case .arm64e: "arm64e"
-			case .arm64_32: "arm64_32"
-			case .armv7k: "armv7k"
-			case .other(let string): string
-			}
-		}
 	}
 
 	enum Platform: CaseIterable, Equatable, Hashable {
@@ -75,7 +53,7 @@ struct SwiftmoduleFinder {
 					while let fileName = enumerator?.nextObject() as? String {
 						if fileName.hasSuffix("swiftinterface") {
 							let completePath = "\(app)/\(path)/\(fileName)"
-							let architecture = Architecture(string: completePath.components(separatedBy: "/").last!.components(separatedBy: "-").first!)
+							let architecture = Architecture(completePath.components(separatedBy: "/").last!.components(separatedBy: "-").first!)
 							var outer = result[platform] ?? [Architecture: [URL]]()
 							var inner = outer[architecture] ?? [URL]()
 							inner += [URL(filePath: completePath)]
