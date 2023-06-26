@@ -3,13 +3,13 @@ import Foundation
 struct SwiftmoduleFinder {
 	typealias Architecture = String
 
-	}
-
-	enum Platform: CaseIterable, Equatable, Hashable {
+	enum Platform: String, CaseIterable, Equatable, Hashable {
 		case iOS
+		case driverKit
 		case macOS
 		case tvOS
 		case watchOS
+		case xrOS
 
 		var paths: [String] {
 			switch self {
@@ -17,6 +17,9 @@ struct SwiftmoduleFinder {
 				"Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks",
 				"Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/usr/lib/swift",
 				"Contents/Developer/Platforms/iPhoneOS.platform/Developer/usr/lib" // find XCTest changes
+			]
+			case .driverKit: [
+				"Contents/Developer/Platforms/DriverKit.platform/Developer/SDKs/DriverKit.sdk/System/DriverKit/System/Library/Frameworks",
 			]
 			case .macOS: [
 				"Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks",
@@ -32,6 +35,11 @@ struct SwiftmoduleFinder {
 				"Contents/Developer/Platforms/WatchOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks",
 				"Contents/Developer/Platforms/WatchOS.platform/Developer/SDKs/WatchOS.sdk/usr/lib/swift",
 				"Contents/Developer/Platforms/WatchOS.platform/Developer/usr/lib" // find XCTest changes
+			]
+			case .xrOS: [
+				"Contents/Developer/Platforms/XROS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks",
+				"Contents/Developer/Platforms/XROS.platform/Developer/SDKs/WatchOS.sdk/usr/lib/swift",
+				"Contents/Developer/Platforms/XROS.platform/Developer/usr/lib" // find XCTest changes
 			]
 			}
 		}
