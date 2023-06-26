@@ -2,7 +2,6 @@ import Foundation
 
 struct Framework: Codable, CustomStringConvertible, Hashable, Sendable {
 	var attributes: Set<Attribute> = .init()
-	var availabilities = [Availability]()
 	var dependencies = [Import]()
 	var dataTypes = [NamedType]()
 	var members = [Member]()
@@ -13,7 +12,6 @@ struct Framework: Codable, CustomStringConvertible, Hashable, Sendable {
 ------
     | -- name: \(name) |
     | attributes: \(attributes)
-    | availability: \(availabilities) |
     | dependencies: \(dependencies.count): \(dependencies) |
     | types: \(dataTypes.count):
 \(dataTypes) |

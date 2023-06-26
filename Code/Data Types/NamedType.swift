@@ -12,7 +12,6 @@ struct NamedType: Codable, CustomStringConvertible, Hashable, Sendable {
 	}
 
 	var attributes: Set<Attribute> = .init()
-	var availabilities: [Availability] = []
 	var kind: Kind = .unknown
 	var isFinal: Bool = false
 	var isOpen: Bool = false
@@ -31,9 +30,11 @@ struct NamedType: Codable, CustomStringConvertible, Hashable, Sendable {
 			var baseName = "@" + attribute.name
 			if !attribute.parameters.isEmpty {
 				baseName += "("
-				baseName += attribute.parameters.reduce("") {
-					return $0 + $1.name + $1.type
+				baseName += attribute.parameters.map {
+					return $0.name + " " + $0.type
 				}
+				.map { $0.trimmingCharacters(in: .whitespaces) }
+				.joined(separator: ", ")
 				baseName += ")"
 			}
 			return baseName

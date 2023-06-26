@@ -20,6 +20,30 @@ class AttributeTracker: SyntaxVisitor, AnyTypeParser {
 		return super.visit(node)
 	}
 
+	override func visit(_ node: AvailabilityArgumentSyntax) -> SyntaxVisitorContinueKind {
+		if let entry = node.entry.as(AvailabilityVersionRestrictionSyntax.self) {
+			if let major = entry.version?.major, let remainder = entry.version?.components, !remainder.isEmpty {
+				var parameter = Parameter()
+				parameter.name = entry.platform.text
+				parameter.type = "\(major)." + remainder.map { $0.number.text }.joined(separator: ".")
+				value.parameters.append(parameter)
+			} else if let major = entry.version?.major {
+				var parameter = Parameter()
+				parameter.name = entry.platform.text
+				parameter.type = "\(major)"
+				value.parameters.append(parameter)
+			}
+		} else {
+			if case .token(let tokenSyntax) = node.entry {
+				var parameter = Parameter()
+				parameter.name = tokenSyntax.text
+				value.parameters.append(parameter)
+			}
+		}
+
+		return super.visit(node)
+	}
+
 	override func visit(_ node: TupleExprElementSyntax) -> SyntaxVisitorContinueKind {
 		if let name = node.expression.as(IdentifierExprSyntax.self)?.identifier.text {
 			var parameter = Parameter()
