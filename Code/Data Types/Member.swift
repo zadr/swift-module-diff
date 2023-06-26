@@ -12,12 +12,12 @@ struct Member: Codable, CustomStringConvertible, Hashable, Sendable {
 		case `operator`
 	}
 
-	enum Accessor: Codable, Hashable, Sendable {
+	enum Accessor: String, Codable, Hashable, Sendable {
 		case `get`
 		case `set`
 	}
 
-	enum Decorator: Codable, Hashable, Sendable {
+	enum Decorator: String, Codable, Hashable, Sendable {
 		case `final`
 		case `open`
 		case `static`
@@ -37,16 +37,69 @@ struct Member: Codable, CustomStringConvertible, Hashable, Sendable {
 	var parameters: [Parameter] = []
 
 	var description: String {
+		let attributes = self.attributes.map {
+			var baseName = "@" + $0.name + "("
+			if !$0.parameters.isEmpty {
+				_ = $0.parameters.reduce(baseName) {
+					return $0 + $1.name + ", "
+				}
+			}
+			baseName += ")"
+			return baseName
+		}.joined(separator: "\n")
+
+		var decorators = self.decorators.map { $0.rawValue }.joined(separator: " ")
+		if !decorators.isEmpty { decorators += " " }
+		switch kind {
+		case .unknown:
+			return "<<UNKNOWN>>"
+
+		case .let:
+			return """
+\(attributes)
+\(decorators)let \(name): \(returnType)
 """
-------
-    accessors: \(accessors)
-    attributes: \(attributes)
-    decorators: \(decorators)
-    kind: \(kind)
-    name: \(name)
-    returnType: \(returnType)
-    parameters: \(parameters)
-------
+
+		case .var:
+			var accessors = self.accessors.map { $0.rawValue }.joined(separator: " ")
+			if !accessors.isEmpty {
+				accessors = " { \(accessors) }"
+			}
+			return """
+\(attributes)
+\(decorators)var \(name): \(returnType)\(accessors)
 """
+
+		case .func:
+			let parameters = self.parameters.map {
+				"\($0.name): \($0.type)"
+			}.joined(separator: ", ")
+			let returnType = self.returnType.isEmpty ? "" : " -> \(returnType)"
+			return """
+\(attributes)
+\(decorators)func \(name)(\(parameters))\(returnType)
+"""
+
+		case .case:
+			var p = self.parameters.map {
+				"\($0.type)"
+			}.joined(separator: ", ")
+			if !p.isEmpty {
+				p = "(\(p))"
+			}
+			return """
+\(attributes)
+\(decorators)case \(name)\(p)
+"""
+
+		case .associatedtype:
+			return ""
+
+		case .typealias:
+			return "typealias \(name) = \(returnType)"
+
+		case .operator:
+			return "operator \(name)"
+		}
 	}
 }
