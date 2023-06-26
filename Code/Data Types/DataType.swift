@@ -1,7 +1,7 @@
 import Foundation
 
 struct DataType: Codable, CustomStringConvertible, Hashable, Sendable {
-	enum Kind: Codable, Hashable {
+	enum Kind: String, Codable, Hashable {
 		case unknown
 		case `class`
 		case `enum`
@@ -27,15 +27,41 @@ struct DataType: Codable, CustomStringConvertible, Hashable, Sendable {
 	var nestedTypes = [DataType]()
 
 	var description: String {
-"""
-------
-    attributes: \(attributes)
-    availability: \(availabilities)
-    final > '\(isFinal)' || open > '\(isOpen)' for kind > '\(kind)' named > '\(name)'
-    conformances: \(conformances.joined(separator: ", "))
-    has:
+		let attributes = self.attributes.map { attribute in
+			var baseName = "@" + attribute.name
+			if !attribute.parameters.isEmpty {
+				baseName += "("
+				baseName += attribute.parameters.reduce("") {
+					return $0 + $1.name + $1.type
+				}
+				baseName += ")"
+			}
+			return baseName
+		}.joined(separator: " ")
+
+		var conformances = self.conformances.joined(separator: ", ")
+		if !conformances.isEmpty {
+			conformances = ": \(conformances)"
+		}
+
+		let openString = isOpen ? "open " : ""
+		let finalString = isFinal ? "final " : ""
+
+		return """
+\(attributes)
+\(openString)\(finalString)\(kind.rawValue) \(name)\(conformances) {
 \(members)
-------
+}
 """
+//
+//------
+//    attributes: \(attributes)
+//    availability: \(availabilities)
+//    final > '\(isFinal)' || open > '\(isOpen)' for kind > '\(kind)' named > '\(name)'
+//    conformances: \(conformances.joined(separator: ", "))
+//    has:
+//\(members)
+//------
+//"""
 	}
 }

@@ -37,22 +37,24 @@ struct Member: Codable, CustomStringConvertible, Hashable, Sendable {
 	var parameters: [Parameter] = []
 
 	var description: String {
-		let attributes = self.attributes.map {
-			var baseName = "@" + $0.name + "("
-			if !$0.parameters.isEmpty {
-				_ = $0.parameters.reduce(baseName) {
-					return $0 + $1.name + ", "
+		let attributes = self.attributes.map { attribute in
+			print(attribute)
+			var baseName = "@" + attribute.name
+			if !attribute.parameters.isEmpty {
+				baseName += "("
+				baseName += attribute.parameters.reduce("") {
+					return $0 + $1.name + $1.type
 				}
+				baseName += ")"
 			}
-			baseName += ")"
 			return baseName
-		}.joined(separator: "\n")
+		}.joined(separator: " ")
 
 		var decorators = self.decorators.map { $0.rawValue }.joined(separator: " ")
 		if !decorators.isEmpty { decorators += " " }
 		switch kind {
 		case .unknown:
-			return "<<UNKNOWN>>"
+			return "<<MEMBER UNKNOWN>>"
 
 		case .let:
 			return """
@@ -93,7 +95,7 @@ struct Member: Codable, CustomStringConvertible, Hashable, Sendable {
 """
 
 		case .associatedtype:
-			return ""
+			return "associatedtype \(name)"
 
 		case .typealias:
 			return "typealias \(name) = \(returnType)"
