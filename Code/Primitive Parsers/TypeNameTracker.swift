@@ -12,7 +12,7 @@ class TypeNameTracker: SyntaxVisitor, AnyTypeParser {
 	}
 
 	override func visit(_ node: TupleTypeSyntax) -> SyntaxVisitorContinueKind {
-		value += "("
+		value += " ("
 		return super.visit(node)
 	}
 
@@ -46,6 +46,11 @@ class TypeNameTracker: SyntaxVisitor, AnyTypeParser {
 		return super.visitPost(node)
 	}
 
+	override func visit(_ node: AttributeSyntax) -> SyntaxVisitorContinueKind {
+		value += " " + node.atSignToken.text
+		return super.visit(node)
+	}
+
 	override func visit(_ node: MemberTypeIdentifierSyntax) -> SyntaxVisitorContinueKind {
 		if value.isEmpty || value.hasSuffix(" -> ") || value.hasSuffix("(") {
 			value += node.name.text
@@ -75,6 +80,7 @@ class TypeNameTracker: SyntaxVisitor, AnyTypeParser {
 
 extension TypeNameTracker {
 	var joiner: String {
-		isInTuple ? ", " : "."
+		if value.last == "@" { return "" }
+		return isInTuple ? ", " : "."
 	}
 }
