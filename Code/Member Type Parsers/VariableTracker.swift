@@ -44,7 +44,11 @@ class VariableTracker: SyntaxVisitor, AnyTypeCollectionParser {
 
 		for (keyword, decorator) in pairs {
 			if ParseDecl<DeclTracker>(node: node).run(keyword: keyword) {
-				value.decorators.insert(decorator)
+				collection = collection.map {
+					var copy = $0
+					copy.decorators.insert(decorator)
+					return copy
+				}
 			}
 		}
 
