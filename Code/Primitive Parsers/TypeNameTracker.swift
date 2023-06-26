@@ -5,6 +5,7 @@ class TypeNameTracker: SyntaxVisitor, AnyTypeParser {
 	var value = ""
 	var isInTuple = false
 	var isInFunction = false
+	var isInReturnType = false
 	var indexBeforeReturnStatementBegan: String.Index? = nil
 
 	required init() {
@@ -55,7 +56,11 @@ class TypeNameTracker: SyntaxVisitor, AnyTypeParser {
 		if value.isEmpty || value.hasSuffix(" -> ") || value.hasSuffix("(") {
 			value += node.name.text
 		} else {
-			value += (joiner + node.name.text)
+			if !isInTuple {
+				value = (node.name.text + joiner + value)
+			} else {
+				value += (joiner + node.name.text)
+			}
 		}
 		return super.visit(node)
 	}
@@ -64,7 +69,11 @@ class TypeNameTracker: SyntaxVisitor, AnyTypeParser {
 		if value.isEmpty || value.hasSuffix(" -> ") || value.hasSuffix("(") {
 			value += node.name.text
 		} else {
-			value += (joiner + node.name.text)
+			if !isInTuple {
+				value = (node.name.text + joiner + value)
+			} else {
+				value += (joiner + node.name.text)
+			}
 		}
 		return super.visit(node)
 	}
@@ -74,6 +83,7 @@ class TypeNameTracker: SyntaxVisitor, AnyTypeParser {
 			indexBeforeReturnStatementBegan = value.endIndex
 			value = value + " -> "
 		}
+		isInReturnType = true
 		return super.visit(node)
 	}
 }
