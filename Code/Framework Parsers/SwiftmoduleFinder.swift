@@ -54,11 +54,12 @@ struct SwiftmoduleFinder {
 	func run() -> [Platform: [Architecture: [URL]]] {
 		autoreleasepool {
 			var result = [Platform: [Architecture: [URL]]]()
+			let fileManager = FileManager()
+
 			for platform in Platform.allCases {
-				let fileManager = FileManager()
 				for path in platform.paths {
-					let enumerator = fileManager.enumerator(atPath: app + "/" + path)
-					while let fileName = enumerator?.nextObject() as? String {
+					let swiftinterfaceEnumerator = fileManager.enumerator(atPath: app + "/" + path)
+					while let fileName = swiftinterfaceEnumerator?.nextObject() as? String {
 						if fileName.hasSuffix("swiftinterface") {
 							let completePath = "\(app)/\(path)/\(fileName)"
 							let architecture = Architecture(completePath.components(separatedBy: "/").last!.components(separatedBy: "-").first!)
