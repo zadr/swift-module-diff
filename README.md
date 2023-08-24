@@ -24,7 +24,9 @@ Swift is a big language, and there is still more to track. Things missing includ
 - [ ] Track generic constraints in extension declarations (e.g. `extension Array where Element == Int {}` or `extension Collection where Iterator.Element: Equatable {}`)
 - [ ] Track nested type names (e.g. for `enum X { enum Y {} }`, consider the inner enum name to be X.Y)
 
-Beyond parsing of `swiftinterface` files: diffing needs to be implemented, along with saving the output in a readable format
+Beyond parsing of `swiftinterface` files: diffing to show Framework changes, Data Type / Member changes, and Import changes hasn't been completed yet
+
+And the output isn't written to disk in a readable format yet.
 
 #### But Why?
 Having everything that changed one one page can be nice
