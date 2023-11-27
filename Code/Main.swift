@@ -22,23 +22,15 @@ struct Main: ParsableCommand {
 	@Option(name: .long, help: "Path to output results. Default: ~/Desktop/swiftmodule-diff/")
 	var output: String = "~/Desktop/swiftmodule-diff/"
 
-	@Option(name: .shortAndLong, help: "Print verbose output to console. Default: true")
-	var verbose: Bool = true
+	@Option(name: .shortAndLong, help: "Print diff to console. May be combined with --html or --json. Default: true")
+	var console: Bool = true
 
-	@Option(
-		name: .shortAndLong,
-		help: "Output format. `--format html` for a readable HTML page, or `--format json` for per-module JSON files. Default: html",
-		transform: { Format(rawValue: $0) ?? .html }
-	)
-	var format: Format = .html
-
-	mutating func run() throws {
-		if verbose { print(Date()) }
+	@Option(name: .shortAndLong, help: "Write html to output directory. May be combined with --json or --console. Default: false.")
+	var html: Bool = false
 
 		let oldFrameworks = frameworks(for: old)
 		let newFrameworks = frameworks(for: new)
 
-		if verbose { print(Date()) }
 		let platformChanges = Change.platformChanges(from: oldFrameworks, to: newFrameworks)
 		for platformChange in platformChanges where platformChange.0 == .added {
 			if verbose { print("New: \(platformChange.1)") }
@@ -71,11 +63,14 @@ struct Main: ParsableCommand {
 			) }
 			if verbose { print("-----") }
 		}
-		if verbose { print(Date()) }
 	}
+	@Option(name: .shortAndLong, help: "Write json to output directory. May be combined with --html or --console. Default: false")
+	var json: Bool = false
 
 	func frameworks(for path: String) -> [SwiftmoduleFinder.Platform: [SwiftmoduleFinder.Architecture: Set<Framework>]] {
 		let modules = SwiftmoduleFinder(app: path).run()
+	@Option(name: .shortAndLong, help: "Print trace output to console. Default: false")
+	var trace: Bool = false
 
 		var results = [SwiftmoduleFinder.Platform: [SwiftmoduleFinder.Architecture: Set<Framework>]]()
 		for (platform, architectureToModules) in modules {
@@ -102,6 +97,8 @@ struct Main: ParsableCommand {
 
 					architectureFrameworks.insert(framework)
 				}
+	mutating func run() throws {
+		if trace { print("Start: \(Date())") }
 
 				if !architectureFrameworks.isEmpty {
 					platformSDKs[architecture] = architectureFrameworks
@@ -114,5 +111,6 @@ struct Main: ParsableCommand {
 		}
 
 		return results
+		if trace { print("End: \(Date())") }
 	}
 }
