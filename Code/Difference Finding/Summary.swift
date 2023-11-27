@@ -200,7 +200,7 @@ extension Summarizer {
 			guard visitor.shouldVisitDependency(dependencyChange) else { continue }
 
 			visitor.willVisitImport?(dependencyChange)
-			// ..anything to do?
+			// nothing to do; imports are leaf nodes
 			visitor.didVisitImport?(dependencyChange)
 		}
 	}
@@ -248,7 +248,7 @@ extension Summarizer {
 			guard visitor.shouldVisitMember(memberChange) else { continue }
 
 			visitor.willVisitMember?(memberChange)
-			// ..anything to do?
+			// nothing to do; members are leaf nodes
 			visitor.didVisitMember?(memberChange)
 		}
 
