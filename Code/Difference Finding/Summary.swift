@@ -56,6 +56,8 @@ struct Summarizer {
 	}
 
 	func summarize(consoleVisitor: ChangeVisitor? = nil, htmlVisitor: ChangeVisitor? = nil, jsonVisitor: ChangeVisitor? = nil, trace: Bool) {
+		precondition(consoleVisitor != nil || htmlVisitor != nil || jsonVisitor != nil)
+
 		enumeratePlatformDifferences(visitor: ChangeVisitor {
 			consoleVisitor?.willVisitPlatform?($0)
 			htmlVisitor?.willVisitPlatform?($0)
