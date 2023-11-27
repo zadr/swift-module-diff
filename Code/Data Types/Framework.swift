@@ -2,7 +2,7 @@ import Foundation
 
 struct Framework {
 	var attributes: Set<Attribute> = .init()
-	var dependencies = [Import]()
+	var dependencies = [Dependency]()
 	var dataTypes = [NamedType]()
 	var members = [Member]()
 	var name = ""

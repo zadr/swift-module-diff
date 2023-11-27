@@ -30,7 +30,7 @@ private class SwiftmoduleTracker: SyntaxVisitor {
 	}
 
 	override func visit(_ node: ImportDeclSyntax) -> SyntaxVisitorContinueKind {
-		let name = ParseAnyType<ImportTracker>(node: node).run()
+		let name = ParseAnyType<DependencyTracker>(node: node).run()
 		framework.dependencies.append(name)
 		return super.visit(node)
 	}

@@ -59,32 +59,35 @@ struct Summarizer {
 		precondition(consoleVisitor != nil || htmlVisitor != nil || jsonVisitor != nil)
 
 		let visitors = [consoleVisitor, htmlVisitor, jsonVisitor].compactMap { $0 }
+		let aggregateVisitor = ChangeVisitor(
+			willVisitPlatform: { platform in
+				visitors.forEach { v in v.willVisitPlatform?(platform) }
+			}, didVisitPlatform: { platform in
+				visitors.forEach { v in v.didVisitPlatform?(platform) }
+			}, willVisitArchitecture: { architecture in
+				visitors.forEach { v in v.willVisitArchitecture?(architecture) }
+			}, didVisitArchitecture: { architecture in
+				visitors.forEach { v in v.didVisitArchitecture?(architecture) }
+			}, willVisitFramework: { framework in
+				visitors.forEach { v in v.willVisitFramework?(framework) }
+			}, didVisitFramework: { framework in
+				visitors.forEach { v in v.didVisitFramework?(framework) }
+			}, willVisitDependency: { dependency in
+				visitors.forEach { v in v.willVisitDependency?(dependency) }
+			}, didVisitDependency: { dependency in
+				visitors.forEach { v in v.didVisitDependency?(dependency) }
+			}, willVisitDataType: { namedType in
+				visitors.forEach { v in v.willVisitDataType?(namedType) }
+			}, didVisitDataType: { namedType in
+				visitors.forEach { v in v.didVisitDataType?(namedType) }
+			}, willVisitMember: { member in
+				visitors.forEach { v in v.willVisitMember?(member) }
+			}, didVisitMember: { member in
+				visitors.forEach { v in v.didVisitMember?(member) }
+			}
+		)
 
-		enumeratePlatformDifferences(visitor: ChangeVisitor { platform in
-			visitors.forEach { v in v.willVisitPlatform?(platform) }
-		} didVisitPlatform: { platform in
-			visitors.forEach { v in v.didVisitPlatform?(platform) }
-		} willVisitArchitecture: { architecture in
-			visitors.forEach { v in v.willVisitArchitecture?(architecture) }
-		} didVisitArchitecture: { architecture in
-			visitors.forEach { v in v.didVisitArchitecture?(architecture) }
-		} willVisitFramework: { framework in
-			visitors.forEach { v in v.willVisitFramework?(framework) }
-		} didVisitFramework: { framework in
-			visitors.forEach { v in v.didVisitFramework?(framework) }
-		} willVisitImport: { dependency in
-			visitors.forEach { v in v.willVisitImport?(dependency) }
-		} didVisitImport: { dependency in
-			visitors.forEach { v in v.didVisitImport?(dependency) }
-		} willVisitDataType: { namedType in
-			visitors.forEach { v in v.willVisitDataType?(namedType) }
-		} didVisitDataType: { namedType in
-			visitors.forEach { v in v.didVisitDataType?(namedType) }
-		} willVisitMember: { member in
-			visitors.forEach { v in v.willVisitMember?(member) }
-		} didVisitMember: { member in
-			visitors.forEach { v in v.didVisitMember?(member) }
-		})
+		enumeratePlatformDifferences(visitor: aggregateVisitor)
 	}
 }
 
@@ -102,9 +105,9 @@ extension Summarizer {
 		var willVisitFramework: ((Change<Framework>) -> Void)? = nil
 		var didVisitFramework: ((Change<Framework>) -> Void)? = nil
 
-		var shouldVisitImport: ((Change<Import>) -> Bool) = { _ in true }
-		var willVisitImport: ((Change<Import>) -> Void)? = nil
-		var didVisitImport: ((Change<Import>) -> Void)? = nil
+		var shouldVisitDependency: ((Change<Dependency>) -> Bool) = { _ in true }
+		var willVisitDependency: ((Change<Dependency>) -> Void)? = nil
+		var didVisitDependency: ((Change<Dependency>) -> Void)? = nil
 
 		var shouldVisitDataType: ((Change<NamedType>) -> Bool) = { _ in true }
 		var willVisitDataType: ((Change<NamedType>) -> Void)? = nil
@@ -199,9 +202,9 @@ extension Summarizer {
 		for dependencyChange in Change<Framework>.differences(from: oldDependencies, to: newDependencies) {
 			guard visitor.shouldVisitDependency(dependencyChange) else { continue }
 
-			visitor.willVisitImport?(dependencyChange)
+			visitor.willVisitDependency?(dependencyChange)
 			// nothing to do; imports are leaf nodes
-			visitor.didVisitImport?(dependencyChange)
+			visitor.didVisitDependency?(dependencyChange)
 		}
 	}
 

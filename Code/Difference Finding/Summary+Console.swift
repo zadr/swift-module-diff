@@ -20,7 +20,7 @@ extension Summarizer {
 			} else: {
 				print("\t\tFramework: \(change.any.name)")
 			}
-		}, willVisitImport: { change in
+		}, willVisitDependency: { change in
 			ifNotUnchanged(change: change) {
 				print("\t\t\t\(change.kind) > \(change.any.developerFacingName)")
 			}

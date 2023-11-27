@@ -1,8 +1,8 @@
 import Foundation
 import SwiftSyntax
 
-class ImportTracker: SyntaxVisitor, AnyTypeParser {
-	var value = Import()
+class DependencyTracker: SyntaxVisitor, AnyTypeParser {
+	var value = Dependency()
 
 	required init() {
 		super.init(viewMode: .sourceAccurate)

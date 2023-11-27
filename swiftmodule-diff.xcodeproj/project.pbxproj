@@ -17,7 +17,7 @@
 		19D0EBD92A403C0B003C8B19 /* Attribute.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19D0EBD82A403C0B003C8B19 /* Attribute.swift */; };
 		19D0EBDB2A40505F003C8B19 /* BaseDeclParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19D0EBDA2A40505F003C8B19 /* BaseDeclParser.swift */; };
 		19D0EBDE2A4057C8003C8B19 /* ArgumentParser in Frameworks */ = {isa = PBXBuildFile; productRef = 19D0EBDD2A4057C8003C8B19 /* ArgumentParser */; };
-		19D0EBE02A40E043003C8B19 /* Import.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19D0EBDF2A40E043003C8B19 /* Import.swift */; };
+		19D0EBE02A40E043003C8B19 /* Dependency.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19D0EBDF2A40E043003C8B19 /* Dependency.swift */; };
 		19D0EBE32A40E971003C8B19 /* AnyTypeCollectionParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19D0EBE22A40E971003C8B19 /* AnyTypeCollectionParser.swift */; };
 		19D723312931945700B05410 /* Main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19D723302931945700B05410 /* Main.swift */; };
 		19D723392931947700B05410 /* SwiftDiagnostics in Frameworks */ = {isa = PBXBuildFile; productRef = 19D723382931947700B05410 /* SwiftDiagnostics */; };
@@ -44,7 +44,7 @@
 		19FF61102A3FAB71001303FB /* AssociatedTypeTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19FF610F2A3FAB71001303FB /* AssociatedTypeTracker.swift */; };
 		19FF61122A3FABC2001303FB /* AnyTypeParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19FF61112A3FABC2001303FB /* AnyTypeParser.swift */; };
 		19FF61182A3FD4F5001303FB /* InheritanceTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19FF61172A3FD4F5001303FB /* InheritanceTracker.swift */; };
-		19FF611A2A3FD7FC001303FB /* ImportTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19FF61192A3FD7FC001303FB /* ImportTracker.swift */; };
+		19FF611A2A3FD7FC001303FB /* DependencyTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19FF61192A3FD7FC001303FB /* DependencyTracker.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -69,7 +69,7 @@
 		19D0EBD62A402CB4003C8B19 /* AttributeTracker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttributeTracker.swift; sourceTree = "<group>"; };
 		19D0EBD82A403C0B003C8B19 /* Attribute.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Attribute.swift; sourceTree = "<group>"; };
 		19D0EBDA2A40505F003C8B19 /* BaseDeclParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseDeclParser.swift; sourceTree = "<group>"; };
-		19D0EBDF2A40E043003C8B19 /* Import.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Import.swift; sourceTree = "<group>"; };
+		19D0EBDF2A40E043003C8B19 /* Dependency.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Dependency.swift; sourceTree = "<group>"; };
 		19D0EBE22A40E971003C8B19 /* AnyTypeCollectionParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnyTypeCollectionParser.swift; sourceTree = "<group>"; };
 		19D7232D2931945700B05410 /* swiftmodule-diff */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "swiftmodule-diff"; sourceTree = BUILT_PRODUCTS_DIR; };
 		19D723302931945700B05410 /* Main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Main.swift; sourceTree = "<group>"; };
@@ -92,7 +92,7 @@
 		19FF610F2A3FAB71001303FB /* AssociatedTypeTracker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssociatedTypeTracker.swift; sourceTree = "<group>"; };
 		19FF61112A3FABC2001303FB /* AnyTypeParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnyTypeParser.swift; sourceTree = "<group>"; };
 		19FF61172A3FD4F5001303FB /* InheritanceTracker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InheritanceTracker.swift; sourceTree = "<group>"; };
-		19FF61192A3FD7FC001303FB /* ImportTracker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImportTracker.swift; sourceTree = "<group>"; };
+		19FF61192A3FD7FC001303FB /* DependencyTracker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DependencyTracker.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -213,7 +213,7 @@
 				19D0EBD82A403C0B003C8B19 /* Attribute.swift */,
 				19D7CDAF2B13FC340030DA4A /* Descriptors.swift */,
 				19FF61082A3FA6A0001303FB /* Framework.swift */,
-				19D0EBDF2A40E043003C8B19 /* Import.swift */,
+				19D0EBDF2A40E043003C8B19 /* Dependency.swift */,
 				19FF61042A3FA679001303FB /* Member.swift */,
 				19FF61062A3FA68B001303FB /* NamedType.swift */,
 				192C58C42A3FF864001873C9 /* Parameter.swift */,
@@ -226,7 +226,7 @@
 			children = (
 				19FF60D52A3F9EE6001303FB /* TypeNameTracker.swift */,
 				19FF61172A3FD4F5001303FB /* InheritanceTracker.swift */,
-				19FF61192A3FD7FC001303FB /* ImportTracker.swift */,
+				19FF61192A3FD7FC001303FB /* DependencyTracker.swift */,
 			);
 			path = "Primitive Parsers";
 			sourceTree = "<group>";
@@ -309,7 +309,7 @@
 				196081992A2EC8BF006A6286 /* ParseSwiftmodule.swift in Sources */,
 				19FF61092A3FA6A0001303FB /* Framework.swift in Sources */,
 				190E3DFF2A41671400749773 /* Change.swift in Sources */,
-				19D0EBE02A40E043003C8B19 /* Import.swift in Sources */,
+				19D0EBE02A40E043003C8B19 /* Dependency.swift in Sources */,
 				19FF60F02A3FA270001303FB /* ClassTracker.swift in Sources */,
 				19FF61182A3FD4F5001303FB /* InheritanceTracker.swift in Sources */,
 				19FF60FE2A3FA538001303FB /* OperatorTracker.swift in Sources */,
@@ -321,7 +321,7 @@
 				19D7CDAE2B13D9740030DA4A /* Summary.swift in Sources */,
 				19FF61102A3FAB71001303FB /* AssociatedTypeTracker.swift in Sources */,
 				19FF60F22A3FA277001303FB /* EnumTracker.swift in Sources */,
-				19FF611A2A3FD7FC001303FB /* ImportTracker.swift in Sources */,
+				19FF611A2A3FD7FC001303FB /* DependencyTracker.swift in Sources */,
 				192C58C52A3FF864001873C9 /* Parameter.swift in Sources */,
 				19FF60F62A3FA286001303FB /* StructTracker.swift in Sources */,
 				192C58C72A3FFAA7001873C9 /* InoutTracker.swift in Sources */,
