@@ -37,6 +37,34 @@ struct Member {
 	var parameters: [Parameter] = []
 
 	var description: String {
+"""
+  accessors: \(accessors)
+ attributes: \(attributes)
+	   kind: \(kind)
+ decorators: \(decorators)
+       name: \(name)
+ returnType: \(returnType)
+ parameters: \(parameters)
+"""
+	}
+}
+
+// MARK: - Swift Protocol Conformances
+
+extension Member: Codable, CustomStringConvertible, Hashable, Sendable {
+	func hash(into hasher: inout Hasher) {
+		hasher.combine(name)
+	}
+
+	static func ==(lhs: Member, rhs: Member) -> Bool {
+		lhs.name == rhs.name
+	}
+}
+
+// MARK: - Custom Protocol Conformances
+
+extension Member: Attributed, Decorated, Named, Displayable {
+	var developerFacingName: String {
 		let attributes = attributes.map { $0.developerFacingName }.joined(separator: " ")
 
 		var decorators = decorators.map { $0.rawValue }.joined(separator: " ")
@@ -76,25 +104,5 @@ struct Member {
 		case .operator:
 			return "operator \(name)"
 		}
-	}
-}
-
-// MARK: - Swift Protocol Conformances
-
-extension Member: Codable, CustomStringConvertible, Hashable, Sendable {
-	func hash(into hasher: inout Hasher) {
-		hasher.combine(name)
-	}
-
-	static func ==(lhs: Member, rhs: Member) -> Bool {
-		lhs.name == rhs.name
-	}
-}
-
-// MARK: - Custom Protocol Conformances
-
-extension Member: Attributed, Decorated, Named, Displayable {
-	var developerFacingName: String {
-		description
 	}
 }
