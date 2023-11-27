@@ -216,9 +216,7 @@ extension Summarizer {
 		let oldNamedTypes = (old[platform]![architecture] ?? .init()).first { $0.name == framework.name }?.dataTypes ?? []
 		let newNamedTypes = (new[platform]![architecture] ?? .init()).first { $0.name == framework.name }?.dataTypes ?? []
 
-		for namedTypeChange in Change<NamedType>.differences(from: oldNamedTypes, to: newNamedTypes) {
-			_enumerateNamedTypeDifferences(oldNamedTypes: oldNamedTypes, newNamedTypes: newNamedTypes, visitor: visitor)
-		}
+		_enumerateNamedTypeDifferences(oldNamedTypes: oldNamedTypes, newNamedTypes: newNamedTypes, visitor: visitor)
 	}
 
 	fileprivate func _enumerateNamedTypeDifferences(oldNamedTypes: [NamedType], newNamedTypes: [NamedType], visitor: ChangeVisitor) {
