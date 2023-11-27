@@ -3,12 +3,22 @@ import Foundation
 extension Summarizer {
 	static func consoleVisitor() -> ChangeVisitor {
 		ChangeVisitor(willVisitPlatform: { change in
-			print("Platform: \(change.kind) > \(change.any.name)")
+			ifNotUnchanged(change: change) {
+				print("\t\tPlatform: \(change.kind) > \(change.any.name)")
+			} else: {
+				print("\t\tPlatform: \(change.any.name)")
+			}
 		}, willVisitArchitecture: { change in
-			print("\tArchitecture: \(change.kind) > \(change.any.name)")
+			ifNotUnchanged(change: change) {
+				print("\t\tArchitecture: \(change.kind) > \(change.any.name)")
+			} else: {
+				print("\t\tArchitecture: \(change.any.name)")
+			}
 		}, willVisitFramework: { change in
 			ifNotUnchanged(change: change) {
 				print("\t\tFramework: \(change.kind) > \(change.any.name)")
+			} else: {
+				print("\t\tFramework: \(change.any.name)")
 			}
 		}, willVisitImport: { change in
 			ifNotUnchanged(change: change) {

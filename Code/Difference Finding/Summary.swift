@@ -109,8 +109,9 @@ extension Summarizer {
 		var didVisitMember: ((Change<Member>) -> Void)? = nil
 	}
 
-	internal static func ifNotUnchanged<T>(change: Change<T>, perform: () -> Void) {
+	internal static func ifNotUnchanged<T>(change: Change<T>, perform: () -> Void, else elseBlock: () -> Void = {}) {
 		if case .unchanged(_, _) = change {
+			elseBlock()
 			return
 		}
 		perform()
