@@ -53,8 +53,8 @@ extension NamedType: Codable, CustomStringConvertible, Hashable, Sendable {
 // MARK: - Custom Protocol Conformances
 
 extension NamedType: Attributed, Named, Displayable {
-	var developerFacingName: String {
-		let attributes = self.attributes.sorted { $0.name > $1.name }.map { $0.developerFacingName }.joined(separator: " ")
+	var developerFacingValue: String {
+		let attributes = self.attributes.sorted { $0.name > $1.name }.map { $0.developerFacingValue }.joined(separator: " ")
 
 		var conformances = self.conformances.sorted().joined(separator: ", ")
 		if !conformances.isEmpty {

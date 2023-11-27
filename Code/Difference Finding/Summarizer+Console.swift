@@ -22,15 +22,15 @@ extension Summarizer {
 			}
 		}, willVisitDependency: { change in
 			ifNotUnchanged(change: change) {
-				print("\t\t\t\(change.kind) > \(change.any.developerFacingName)")
+				print("\t\t\t\(change.kind) > \(change.any.developerFacingValue)")
 			}
 		}, willVisitNamedType: { change in
 			ifNotUnchanged(change: change) {
-				print("\t\t\t\(change.kind) > \(change.any.developerFacingName)")
+				print("\t\t\t\(change.kind) > \(change.any.developerFacingValue)")
 			}
 		}, willVisitMember: { change in
 			ifNotUnchanged(change: change) {
-				print("\t\t\t\(change.kind) > \(change.any.developerFacingName)")
+				print("\t\t\t\(change.kind) > \(change.any.developerFacingValue)")
 			}
 		})
 	}

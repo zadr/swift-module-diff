@@ -64,8 +64,8 @@ extension Member: Codable, CustomStringConvertible, Hashable, Sendable {
 // MARK: - Custom Protocol Conformances
 
 extension Member: Attributed, Decorated, Named, Displayable {
-	var developerFacingName: String {
-		let attributes = attributes.map { $0.developerFacingName }.joined(separator: " ")
+	var developerFacingValue: String {
+		let attributes = attributes.map { $0.developerFacingValue }.joined(separator: " ")
 
 		var decorators = decorators.map { $0.rawValue }.joined(separator: " ")
 		if !decorators.isEmpty { decorators += " " }
@@ -84,12 +84,12 @@ extension Member: Attributed, Decorated, Named, Displayable {
 			return "\(attributes) \(decorators)var \(name): \(returnType)\(accessors)".trimmingCharacters(in: .whitespaces)
 
 		case .func:
-			let parameters = parameters.map { $0.developerFacingName }.joined(separator: ", ")
+			let parameters = parameters.map { $0.developerFacingValue }.joined(separator: ", ")
 			let returnType = returnType.isEmpty ? "" : " -> \(returnType)"
 			return "\(attributes) \(decorators)func \(name)(\(parameters))\(returnType)".trimmingCharacters(in: .whitespaces)
 
 		case .case:
-			var parameters = parameters.map { $0.developerFacingName }.joined(separator: ", ")
+			var parameters = parameters.map { $0.developerFacingValue }.joined(separator: ", ")
 			if !parameters.isEmpty {
 				parameters = "(\(parameters))"
 			}

@@ -13,5 +13,5 @@ protocol Named {
 }
 
 protocol Displayable {
-	var developerFacingName: String { get }
+	var developerFacingValue: String { get }
 }

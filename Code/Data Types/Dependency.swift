@@ -29,7 +29,7 @@ extension Dependency: Codable, CustomStringConvertible, Hashable, Sendable {
 // MARK: - Custom Protocol Conformances
 
 extension Dependency: Attributed, Named, Displayable {
-	var developerFacingName: String {
-		attributes.map { $0.developerFacingName }.joined(separator: " ") + "import \(name)"
+	var developerFacingValue: String {
+		attributes.map { $0.developerFacingValue }.joined(separator: " ") + "import \(name)"
 	}
 }
