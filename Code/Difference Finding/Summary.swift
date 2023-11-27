@@ -4,10 +4,8 @@ typealias Summary = [SwiftmoduleFinder.Platform: [SwiftmoduleFinder.Architecture
 
 extension Summary {
 	static func createSummary(for path: String, trace: Bool) -> Summary {
-		let modules = SwiftmoduleFinder(app: path).run()
-
 		var results = Summary()
-		for (platform, architectureToModules) in modules {
+		for (platform, architectureToModules) in SwiftmoduleFinder(app: path).run() {
 			if trace { print(platform) }
 
 			var platformSDKs = [SwiftmoduleFinder.Architecture: Set<Framework>]()

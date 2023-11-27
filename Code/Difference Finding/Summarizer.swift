@@ -1,6 +1,32 @@
 import Foundation
 
 struct Summarizer {
+	struct ChangeVisitor {
+		var shouldVisitPlatform: ((Change<SwiftmoduleFinder.Platform>) -> Bool) = { _ in true }
+		var willVisitPlatform: ((Change<SwiftmoduleFinder.Platform>) -> Void)? = nil
+		var didVisitPlatform: ((Change<SwiftmoduleFinder.Platform>) -> Void)? = nil
+
+		var shouldVisitArchitecture: ((Change<SwiftmoduleFinder.Architecture>) -> Bool) = { _ in true }
+		var willVisitArchitecture: ((Change<SwiftmoduleFinder.Architecture>) -> Void)? = nil
+		var didVisitArchitecture: ((Change<SwiftmoduleFinder.Architecture>) -> Void)? = nil
+
+		var shouldVisitFramework: ((Change<Framework>) -> Bool) = { _ in true }
+		var willVisitFramework: ((Change<Framework>) -> Void)? = nil
+		var didVisitFramework: ((Change<Framework>) -> Void)? = nil
+
+		var shouldVisitDependency: ((Change<Dependency>) -> Bool) = { _ in true }
+		var willVisitDependency: ((Change<Dependency>) -> Void)? = nil
+		var didVisitDependency: ((Change<Dependency>) -> Void)? = nil
+
+		var shouldVisitNamedType: ((Change<NamedType>) -> Bool) = { _ in true }
+		var willVisitNamedType: ((Change<NamedType>) -> Void)? = nil
+		var didVisitNamedType: ((Change<NamedType>) -> Void)? = nil
+
+		var shouldVisitMember: ((Change<Member>) -> Bool) = { _ in true }
+		var willVisitMember: ((Change<Member>) -> Void)? = nil
+		var didVisitMember: ((Change<Member>) -> Void)? = nil
+	}
+
 	let old: Summary
 	let new: Summary
 
@@ -46,32 +72,6 @@ struct Summarizer {
 }
 
 extension Summarizer {
-	internal struct ChangeVisitor {
-		var shouldVisitPlatform: ((Change<SwiftmoduleFinder.Platform>) -> Bool) = { _ in true }
-		var willVisitPlatform: ((Change<SwiftmoduleFinder.Platform>) -> Void)? = nil
-		var didVisitPlatform: ((Change<SwiftmoduleFinder.Platform>) -> Void)? = nil
-
-		var shouldVisitArchitecture: ((Change<SwiftmoduleFinder.Architecture>) -> Bool) = { _ in true }
-		var willVisitArchitecture: ((Change<SwiftmoduleFinder.Architecture>) -> Void)? = nil
-		var didVisitArchitecture: ((Change<SwiftmoduleFinder.Architecture>) -> Void)? = nil
-
-		var shouldVisitFramework: ((Change<Framework>) -> Bool) = { _ in true }
-		var willVisitFramework: ((Change<Framework>) -> Void)? = nil
-		var didVisitFramework: ((Change<Framework>) -> Void)? = nil
-
-		var shouldVisitDependency: ((Change<Dependency>) -> Bool) = { _ in true }
-		var willVisitDependency: ((Change<Dependency>) -> Void)? = nil
-		var didVisitDependency: ((Change<Dependency>) -> Void)? = nil
-
-		var shouldVisitNamedType: ((Change<NamedType>) -> Bool) = { _ in true }
-		var willVisitNamedType: ((Change<NamedType>) -> Void)? = nil
-		var didVisitNamedType: ((Change<NamedType>) -> Void)? = nil
-
-		var shouldVisitMember: ((Change<Member>) -> Bool) = { _ in true }
-		var willVisitMember: ((Change<Member>) -> Void)? = nil
-		var didVisitMember: ((Change<Member>) -> Void)? = nil
-	}
-
 	internal static func ifNotUnchanged<T>(change: Change<T>, perform: () -> Void, else elseBlock: () -> Void = {}) {
 		if case .unchanged(_, _) = change {
 			elseBlock()
