@@ -7,13 +7,21 @@ extension Summarizer {
 		}, willVisitArchitecture: { change in
 			print("\tArchitecture: \(change.kind) > \(change.any.name)")
 		}, willVisitFramework: { change in
-			print("\t\tFramework: \(change.kind) > \(change.any.name)")
+			ifNotUnchanged(change: change) {
+				print("\t\tFramework: \(change.kind) > \(change.any.name)")
+			}
 		}, willVisitImport: { change in
-			print("\t\t\tImport: \(change.kind) > \(change.any.name)")
+			ifNotUnchanged(change: change) {
+				print("\t\t\tImport: \(change.kind) > \(change.any.name)")
+			}
 		}, willVisitDataType: { change in
-			print("\t\t\t\(change.any.kind.rawValue): \(change.kind) > \(change.any.name)")
+			ifNotUnchanged(change: change) {
+				print("\t\t\t\(change.kind) > \(change.any.kind.rawValue): \(change.any.name)")
+			}
 		}, willVisitMember: { change in
-			print("\t\t\t\(change.any.kind.rawValue): \(change.kind) > \(change.any.name)")
+			ifNotUnchanged(change: change) {
+				print("\t\t\t\(change.kind) > \(change.any.kind.rawValue): \(change.any.name)")
+			}
 		})
 	}
 }

@@ -131,6 +131,13 @@ extension Summarizer {
 		var didVisitMember: ((Change<Member>) -> Void)? = nil
 	}
 
+	internal static func ifNotUnchanged<T>(change: Change<T>, perform: () -> Void) {
+		if case .unchanged(_, _) = change {
+			return
+		}
+		perform()
+	}
+
 	fileprivate func enumeratePlatformDifferences(visitor: ChangeVisitor) {
 		for platformChange in Change<SwiftmoduleFinder.Platform>.differences(from: old.keys, to: new.keys) {
 			visitor.willVisitPlatform?(platformChange)
