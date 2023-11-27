@@ -217,9 +217,7 @@ extension Summarizer {
 		let newNamedTypes = (new[platform]![architecture] ?? .init()).first { $0.name == framework.name }?.dataTypes ?? []
 
 		for namedTypeChange in Change<NamedType>.differences(from: oldNamedTypes, to: newNamedTypes) {
-			visitor.willVisitDataType?(namedTypeChange)
 			_enumerateNamedTypeDifferences(oldNamedTypes: oldNamedTypes, newNamedTypes: newNamedTypes, visitor: visitor)
-			visitor.didVisitDataType?(namedTypeChange)
 		}
 	}
 
