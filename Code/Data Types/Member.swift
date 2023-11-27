@@ -107,7 +107,15 @@ struct Member {
 
 // MARK: - Swift Protocol Conformances
 
-extension Member: Codable, CustomStringConvertible, Hashable, Sendable {}
+extension Member: Codable, CustomStringConvertible, Hashable, Sendable {
+	func hash(into hasher: inout Hasher) {
+		hasher.combine(name)
+	}
+
+	static func ==(lhs: Member, rhs: Member) -> Bool {
+		lhs.name == rhs.name
+	}
+}
 
 // MARK: - Custom Protocol Conformances
 

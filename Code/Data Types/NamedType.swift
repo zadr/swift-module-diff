@@ -69,7 +69,15 @@ struct NamedType {
 
 // MARK: - Swift Protocol Conformances
 
-extension NamedType: Codable, CustomStringConvertible, Hashable, Sendable {}
+extension NamedType: Codable, CustomStringConvertible, Hashable, Sendable {
+	func hash(into hasher: inout Hasher) {
+		hasher.combine(name)
+	}
+
+	static func ==(lhs: NamedType, rhs: NamedType) -> Bool {
+		lhs.name == rhs.name
+	}
+}
 
 // MARK: - Custom Protocol Conformances
 

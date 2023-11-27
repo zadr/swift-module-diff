@@ -20,7 +20,15 @@ struct Parameter {
 
 // MARK: - Swift Protocol Conformances
 
-extension Parameter: Codable, CustomStringConvertible, Hashable, Sendable {}
+extension Parameter: Codable, CustomStringConvertible, Hashable, Sendable {
+	func hash(into hasher: inout Hasher) {
+		hasher.combine(name)
+	}
+
+	static func ==(lhs: Parameter, rhs: Parameter) -> Bool {
+		lhs.name == rhs.name
+	}
+}
 
 // MARK: - Custom Protocol Conformances
 

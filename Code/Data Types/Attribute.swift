@@ -16,7 +16,15 @@ struct Attribute {
 
 // MARK: - Swift Protocol Conformances
 
-extension Attribute: Codable, CustomStringConvertible, Equatable, Hashable, Sendable {}
+extension Attribute: Codable, CustomStringConvertible, Equatable, Hashable, Sendable {
+	func hash(into hasher: inout Hasher) {
+		hasher.combine(name)
+	}
+
+	static func ==(lhs: Attribute, rhs: Attribute) -> Bool {
+		lhs.name == rhs.name
+	}
+}
 
 // MARK: - Custom Protocol Conformances
 
