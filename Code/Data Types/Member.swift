@@ -38,7 +38,6 @@ struct Member {
 
 	var description: String {
 		let attributes = self.attributes.map { attribute in
-			print(attribute)
 			var baseName = "@" + attribute.name
 			if !attribute.parameters.isEmpty {
 				baseName += "("
