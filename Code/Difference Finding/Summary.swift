@@ -76,10 +76,10 @@ struct Summarizer {
 				visitors.forEach { v in v.willVisitDependency?(dependency) }
 			}, didVisitDependency: { dependency in
 				visitors.forEach { v in v.didVisitDependency?(dependency) }
-			}, willVisitDataType: { namedType in
-				visitors.forEach { v in v.willVisitDataType?(namedType) }
-			}, didVisitDataType: { namedType in
-				visitors.forEach { v in v.didVisitDataType?(namedType) }
+			}, willVisitNamedType: { namedType in
+				visitors.forEach { v in v.willVisitNamedType?(namedType) }
+			}, didVisitNamedType: { namedType in
+				visitors.forEach { v in v.didVisitNamedType?(namedType) }
 			}, willVisitMember: { member in
 				visitors.forEach { v in v.willVisitMember?(member) }
 			}, didVisitMember: { member in
@@ -109,9 +109,9 @@ extension Summarizer {
 		var willVisitDependency: ((Change<Dependency>) -> Void)? = nil
 		var didVisitDependency: ((Change<Dependency>) -> Void)? = nil
 
-		var shouldVisitDataType: ((Change<NamedType>) -> Bool) = { _ in true }
-		var willVisitDataType: ((Change<NamedType>) -> Void)? = nil
-		var didVisitDataType: ((Change<NamedType>) -> Void)? = nil
+		var shouldVisitNamedType: ((Change<NamedType>) -> Bool) = { _ in true }
+		var willVisitNamedType: ((Change<NamedType>) -> Void)? = nil
+		var didVisitNamedType: ((Change<NamedType>) -> Void)? = nil
 
 		var shouldVisitMember: ((Change<Member>) -> Bool) = { _ in true }
 		var willVisitMember: ((Change<Member>) -> Void)? = nil
@@ -216,17 +216,17 @@ extension Summarizer {
 	}
 
 	fileprivate func enumerateNamedTypeDifferences(for platform: SwiftmoduleFinder.Platform, architecture: SwiftmoduleFinder.Architecture, framework: Framework, visitor: ChangeVisitor) {
-		let oldNamedTypes = (old[platform]![architecture] ?? .init()).first { $0.name == framework.name }?.dataTypes ?? []
-		let newNamedTypes = (new[platform]![architecture] ?? .init()).first { $0.name == framework.name }?.dataTypes ?? []
+		let oldNamedTypes = (old[platform]![architecture] ?? .init()).first { $0.name == framework.name }?.namedTypes ?? []
+		let newNamedTypes = (new[platform]![architecture] ?? .init()).first { $0.name == framework.name }?.namedTypes ?? []
 
 		_enumerateNamedTypeDifferences(oldNamedTypes: oldNamedTypes, newNamedTypes: newNamedTypes, visitor: visitor)
 	}
 
 	fileprivate func _enumerateNamedTypeDifferences(oldNamedTypes: [NamedType], newNamedTypes: [NamedType], visitor: ChangeVisitor) {
 		for namedTypeChange in Change<NamedType>.differences(from: oldNamedTypes, to: newNamedTypes) {
-			guard visitor.shouldVisitDataType(namedTypeChange) else { continue }
+			guard visitor.shouldVisitNamedType(namedTypeChange) else { continue }
 
-			visitor.willVisitDataType?(namedTypeChange)
+			visitor.willVisitNamedType?(namedTypeChange)
 			switch namedTypeChange {
 			case .added(_, let new):
 				_enumerateNamedTypeDifferences(oldNamedTypes: [], newNamedTypes: new.nestedTypes, visitor: visitor)
@@ -238,7 +238,7 @@ extension Summarizer {
 				_enumerateNamedTypeDifferences(oldNamedTypes: old.nestedTypes, newNamedTypes: new.nestedTypes, visitor: visitor)
 				_enumerateMemberDifferences(oldMembers: old.members, newMembers: new.members, visitor: visitor)
 			}
-			visitor.didVisitDataType?(namedTypeChange)
+			visitor.didVisitNamedType?(namedTypeChange)
 		}
 	}
 
@@ -250,6 +250,5 @@ extension Summarizer {
 			// nothing to do; members are leaf nodes
 			visitor.didVisitMember?(memberChange)
 		}
-
 	}
 }

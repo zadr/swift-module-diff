@@ -24,7 +24,7 @@ extension Summarizer {
 			ifNotUnchanged(change: change) {
 				print("\t\t\t\(change.kind) > \(change.any.developerFacingName)")
 			}
-		}, willVisitDataType: { change in
+		}, willVisitNamedType: { change in
 			ifNotUnchanged(change: change) {
 				print("\t\t\t\(change.kind) > \(change.any.developerFacingName)")
 			}

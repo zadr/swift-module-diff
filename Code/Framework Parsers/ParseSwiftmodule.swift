@@ -39,31 +39,31 @@ private class SwiftmoduleTracker: SyntaxVisitor {
 
 	override func visit(_ node: ProtocolDeclSyntax) -> SyntaxVisitorContinueKind {
 		let p = ParseAnyType<ProtocolTracker>(node: node).run()
-		framework.dataTypes.append(p)
+		framework.namedTypes.append(p)
 		return super.visit(node)
 	}
 
 	override func visit(_ node: EnumDeclSyntax) -> SyntaxVisitorContinueKind {
 		let e = ParseAnyType<EnumTracker>(node: node).run()
-		framework.dataTypes.append(e)
+		framework.namedTypes.append(e)
 		return super.visit(node)
 	}
 
 	override func visit(_ node: StructDeclSyntax) -> SyntaxVisitorContinueKind {
 		let s = ParseAnyType<StructTracker>(node: node).run()
-		framework.dataTypes.append(s)
+		framework.namedTypes.append(s)
 		return super.visit(node)
 	}
 
 	override func visit(_ node: ClassDeclSyntax) -> SyntaxVisitorContinueKind {
 		let c = ParseAnyType<ClassTracker>(node: node).run()
-		framework.dataTypes.append(c)
+		framework.namedTypes.append(c)
 		return super.visit(node)
 	}
 
 	override func visit(_ node: ExtensionDeclSyntax) -> SyntaxVisitorContinueKind {
 		let e = ParseAnyType<ExtensionTracker>(node: node).run()
-		framework.dataTypes.append(e)
+		framework.namedTypes.append(e)
 		return super.visit(node)
 	}
 

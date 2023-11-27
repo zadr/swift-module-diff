@@ -3,7 +3,7 @@ import Foundation
 struct Framework {
 	var attributes: Set<Attribute> = .init()
 	var dependencies = [Dependency]()
-	var dataTypes = [NamedType]()
+	var namedTypes = [NamedType]()
 	var members = [Member]()
 	var name = ""
 
@@ -13,8 +13,8 @@ struct Framework {
     | -- name: \(name) |
     | attributes: \(attributes)
     | dependencies: \(dependencies.count): \(dependencies) |
-    | types: \(dataTypes.count):
-\(dataTypes) |
+    | types: \(namedTypes.count):
+\(namedTypes) |
 	| members: \(members.count):
 \(members) |
 ------
