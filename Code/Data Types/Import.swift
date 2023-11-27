@@ -1,6 +1,6 @@
 import Foundation
 
-struct Import: Codable, CustomStringConvertible, Hashable, Sendable {
+struct Import {
 	var name: String = ""
 	var attributes: Set<Attribute> = .init()
 
@@ -13,3 +13,11 @@ struct Import: Codable, CustomStringConvertible, Hashable, Sendable {
 """
 	}
 }
+
+// MARK: - Swift Protocol Conformances
+
+extension Import: Codable, CustomStringConvertible, Hashable, Sendable {}
+
+// MARK: - Custom Protocol Conformances
+
+extension Import: Attributed, Named {}

@@ -1,6 +1,6 @@
 import Foundation
 
-struct Parameter: Codable, CustomStringConvertible, Hashable, Sendable {
+struct Parameter {
 	var name: String = ""
 	var type: String = ""
 	var isInout: Bool = false
@@ -17,3 +17,11 @@ struct Parameter: Codable, CustomStringConvertible, Hashable, Sendable {
 """
 	}
 }
+
+// MARK: - Swift Protocol Conformances
+
+extension Parameter: Codable, CustomStringConvertible, Hashable, Sendable {}
+
+// MARK: - Custom Protocol Conformances
+
+extension Parameter: Attributed, Named {}

@@ -24,6 +24,7 @@
 		19D7233D2931947700B05410 /* SwiftParser in Frameworks */ = {isa = PBXBuildFile; productRef = 19D7233C2931947700B05410 /* SwiftParser */; };
 		19D7233F2931947700B05410 /* SwiftParserDiagnostics in Frameworks */ = {isa = PBXBuildFile; productRef = 19D7233E2931947700B05410 /* SwiftParserDiagnostics */; };
 		19D723412931947700B05410 /* SwiftSyntax in Frameworks */ = {isa = PBXBuildFile; productRef = 19D723402931947700B05410 /* SwiftSyntax */; };
+		19D7CDB02B13FC340030DA4A /* Descriptors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19D7CDAF2B13FC340030DA4A /* Descriptors.swift */; };
 		19FF60D62A3F9EE6001303FB /* TypeNameTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19FF60D52A3F9EE6001303FB /* TypeNameTracker.swift */; };
 		19FF60F02A3FA270001303FB /* ClassTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19FF60EF2A3FA270001303FB /* ClassTracker.swift */; };
 		19FF60F22A3FA277001303FB /* EnumTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19FF60F12A3FA277001303FB /* EnumTracker.swift */; };
@@ -69,6 +70,7 @@
 		19D0EBE22A40E971003C8B19 /* AnyTypeCollectionParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnyTypeCollectionParser.swift; sourceTree = "<group>"; };
 		19D7232D2931945700B05410 /* swiftmodule-diff */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "swiftmodule-diff"; sourceTree = BUILT_PRODUCTS_DIR; };
 		19D723302931945700B05410 /* Main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Main.swift; sourceTree = "<group>"; };
+		19D7CDAF2B13FC340030DA4A /* Descriptors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Descriptors.swift; sourceTree = "<group>"; };
 		19FF60D52A3F9EE6001303FB /* TypeNameTracker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TypeNameTracker.swift; sourceTree = "<group>"; };
 		19FF60EF2A3FA270001303FB /* ClassTracker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClassTracker.swift; sourceTree = "<group>"; };
 		19FF60F12A3FA277001303FB /* EnumTracker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnumTracker.swift; sourceTree = "<group>"; };
@@ -203,6 +205,7 @@
 			isa = PBXGroup;
 			children = (
 				19D0EBD82A403C0B003C8B19 /* Attribute.swift */,
+				19D7CDAF2B13FC340030DA4A /* Descriptors.swift */,
 				19FF61082A3FA6A0001303FB /* Framework.swift */,
 				19D0EBDF2A40E043003C8B19 /* Import.swift */,
 				19FF61042A3FA679001303FB /* Member.swift */,
@@ -305,6 +308,7 @@
 				19FF61182A3FD4F5001303FB /* InheritanceTracker.swift in Sources */,
 				19FF60FE2A3FA538001303FB /* OperatorTracker.swift in Sources */,
 				19FF60F42A3FA27E001303FB /* ProtocolTracker.swift in Sources */,
+				19D7CDB02B13FC340030DA4A /* Descriptors.swift in Sources */,
 				1960819B2A2EE446006A6286 /* SwiftmoduleFinder.swift in Sources */,
 				19FF61072A3FA68B001303FB /* NamedType.swift in Sources */,
 				19FF60FC2A3FA530001303FB /* TypealiasTracker.swift in Sources */,

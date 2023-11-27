@@ -1,6 +1,6 @@
 import Foundation
 
-struct Attribute: Codable, CustomStringConvertible, Equatable, Hashable, Sendable {
+struct Attribute {
 	var name: String = ""
 	var parameters: [Parameter] = []
 
@@ -13,3 +13,11 @@ struct Attribute: Codable, CustomStringConvertible, Equatable, Hashable, Sendabl
 """
 	}
 }
+
+// MARK: - Swift Protocol Conformances
+
+extension Attribute: Codable, CustomStringConvertible, Equatable, Hashable, Sendable {}
+
+// MARK: - Custom Protocol Conformances
+
+extension Attribute: Named {}

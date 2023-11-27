@@ -1,6 +1,6 @@
 import Foundation
 
-struct Framework: Codable, CustomStringConvertible, Hashable, Sendable {
+struct Framework {
 	var attributes: Set<Attribute> = .init()
 	var dependencies = [Import]()
 	var dataTypes = [NamedType]()
@@ -21,3 +21,11 @@ struct Framework: Codable, CustomStringConvertible, Hashable, Sendable {
 """
 	}
 }
+
+// MARK: - Swift Protocol Conformances
+
+extension Framework: Codable, CustomStringConvertible, Hashable, Sendable {}
+
+// MARK: - Custom Protocol Conformances
+
+extension Framework: Attributed, Named {}

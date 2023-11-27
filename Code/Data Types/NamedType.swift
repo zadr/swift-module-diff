@@ -1,6 +1,6 @@
 import Foundation
 
-struct NamedType: Codable, CustomStringConvertible, Hashable, Sendable {
+struct NamedType {
 	enum Kind: String, Codable, Hashable {
 		case unknown
 		case `class`
@@ -66,3 +66,11 @@ struct NamedType: Codable, CustomStringConvertible, Hashable, Sendable {
 //"""
 	}
 }
+
+// MARK: - Swift Protocol Conformances
+
+extension NamedType: Codable, CustomStringConvertible, Hashable, Sendable {}
+
+// MARK: - Custom Protocol Conformances
+
+extension NamedType: Attributed, Named {}

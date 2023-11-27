@@ -1,6 +1,6 @@
 import Foundation
 
-struct Member: Codable, CustomStringConvertible, Hashable, Sendable {
+struct Member {
 	enum Kind: Codable, Hashable, Sendable {
 		case `unknown`
 		case `let`
@@ -105,3 +105,11 @@ struct Member: Codable, CustomStringConvertible, Hashable, Sendable {
 		}
 	}
 }
+
+// MARK: - Swift Protocol Conformances
+
+extension Member: Codable, CustomStringConvertible, Hashable, Sendable {}
+
+// MARK: - Custom Protocol Conformances
+
+extension Member: Attributed, Decorated, Named {}
