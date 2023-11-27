@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		190E3DFF2A41671400749773 /* Changes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 190E3DFE2A41671400749773 /* Changes.swift */; };
+		190E3DFF2A41671400749773 /* Change.swift in Sources */ = {isa = PBXBuildFile; fileRef = 190E3DFE2A41671400749773 /* Change.swift */; };
 		192C58C52A3FF864001873C9 /* Parameter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 192C58C42A3FF864001873C9 /* Parameter.swift */; };
 		192C58C72A3FFAA7001873C9 /* InoutTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 192C58C62A3FFAA7001873C9 /* InoutTracker.swift */; };
 		196081992A2EC8BF006A6286 /* ParseSwiftmodule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 196081982A2EC8BF006A6286 /* ParseSwiftmodule.swift */; };
@@ -58,7 +58,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		190E3DFE2A41671400749773 /* Changes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Changes.swift; sourceTree = "<group>"; };
+		190E3DFE2A41671400749773 /* Change.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Change.swift; sourceTree = "<group>"; };
 		192C58C42A3FF864001873C9 /* Parameter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Parameter.swift; sourceTree = "<group>"; };
 		192C58C62A3FFAA7001873C9 /* InoutTracker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InoutTracker.swift; sourceTree = "<group>"; };
 		196081982A2EC8BF006A6286 /* ParseSwiftmodule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParseSwiftmodule.swift; sourceTree = "<group>"; };
@@ -111,7 +111,7 @@
 		190E3DFD2A4139E600749773 /* Difference Finding */ = {
 			isa = PBXGroup;
 			children = (
-				190E3DFE2A41671400749773 /* Changes.swift */,
+				190E3DFE2A41671400749773 /* Change.swift */,
 			);
 			path = "Difference Finding";
 			sourceTree = "<group>";
@@ -302,7 +302,7 @@
 				19FF610B2A3FA74D001303FB /* FunctionTracker.swift in Sources */,
 				196081992A2EC8BF006A6286 /* ParseSwiftmodule.swift in Sources */,
 				19FF61092A3FA6A0001303FB /* Framework.swift in Sources */,
-				190E3DFF2A41671400749773 /* Changes.swift in Sources */,
+				190E3DFF2A41671400749773 /* Change.swift in Sources */,
 				19D0EBE02A40E043003C8B19 /* Import.swift in Sources */,
 				19FF60F02A3FA270001303FB /* ClassTracker.swift in Sources */,
 				19FF61182A3FD4F5001303FB /* InheritanceTracker.swift in Sources */,
