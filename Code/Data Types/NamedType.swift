@@ -73,4 +73,18 @@ extension NamedType: Codable, CustomStringConvertible, Hashable, Sendable {}
 
 // MARK: - Custom Protocol Conformances
 
-extension NamedType: Attributed, Named {}
+extension NamedType: Attributed, Named, Displayable {
+	var developerFacingName: String {
+		let attributes = self.attributes.sorted { $0.name > $1.name }.map { $0.developerFacingName }.joined(separator: " ")
+
+		var conformances = self.conformances.sorted().joined(separator: ", ")
+		if !conformances.isEmpty {
+			conformances = ": \(conformances)"
+		}
+
+		let openString = isOpen ? "open " : ""
+		let finalString = isFinal ? "final " : ""
+
+		return "\(attributes) \(openString)\(finalString)\(kind.rawValue) \(name)\(conformances)".trimmingCharacters(in: .whitespaces)
+	}
+}

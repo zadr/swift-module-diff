@@ -24,4 +24,14 @@ extension Parameter: Codable, CustomStringConvertible, Hashable, Sendable {}
 
 // MARK: - Custom Protocol Conformances
 
-extension Parameter: Attributed, Named {}
+extension Parameter: Attributed, Named, Displayable {
+	var developerFacingName: String {
+		if type.isEmpty {
+			return name
+		}
+		if isInout {
+			return "inout \(name): \(type)"
+		}
+		return "\(name): \(type)"
+	}
+}

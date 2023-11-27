@@ -11,3 +11,7 @@ protocol Decorated {
 protocol Named {
 	var name: String { get }
 }
+
+protocol Displayable {
+	var developerFacingName: String { get }
+}

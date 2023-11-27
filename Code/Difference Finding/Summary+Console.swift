@@ -12,15 +12,15 @@ extension Summarizer {
 			}
 		}, willVisitImport: { change in
 			ifNotUnchanged(change: change) {
-				print("\t\t\tImport: \(change.kind) > \(change.any.name)")
+				print("\t\t\t\(change.kind) > \(change.any.developerFacingName)")
 			}
 		}, willVisitDataType: { change in
 			ifNotUnchanged(change: change) {
-				print("\t\t\t\(change.kind) > \(change.any.kind.rawValue): \(change.any.name)")
+				print("\t\t\t\(change.kind) > \(change.any.developerFacingName)")
 			}
 		}, willVisitMember: { change in
 			ifNotUnchanged(change: change) {
-				print("\t\t\t\(change.kind) > \(change.any.kind.rawValue): \(change.any.name)")
+				print("\t\t\t\(change.kind) > \(change.any.developerFacingName)")
 			}
 		})
 	}

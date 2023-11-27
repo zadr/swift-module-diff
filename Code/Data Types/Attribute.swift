@@ -20,4 +20,10 @@ extension Attribute: Codable, CustomStringConvertible, Equatable, Hashable, Send
 
 // MARK: - Custom Protocol Conformances
 
-extension Attribute: Named {}
+extension Attribute: Named, Displayable {
+	var developerFacingName: String {
+		let start = "@\(name)"
+		let end = parameters.map { $0.developerFacingName }.joined(separator: ", ")
+		return end.isEmpty ? start : start + "(\(end))"
+	}
+}

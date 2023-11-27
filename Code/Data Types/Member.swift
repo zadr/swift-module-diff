@@ -111,4 +111,8 @@ extension Member: Codable, CustomStringConvertible, Hashable, Sendable {}
 
 // MARK: - Custom Protocol Conformances
 
-extension Member: Attributed, Decorated, Named {}
+extension Member: Attributed, Decorated, Named, Displayable {
+	var developerFacingName: String {
+		description
+	}
+}
