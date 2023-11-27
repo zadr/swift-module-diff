@@ -209,11 +209,7 @@ extension Summarizer {
 		let oldMembers = (old[platform]![architecture] ?? .init()).first { $0.name == framework.name }?.members ?? []
 		let newMembers = (new[platform]![architecture] ?? .init()).first { $0.name == framework.name }?.members ?? []
 
-		for memberChange in Change<Member>.differences(from: oldMembers, to: newMembers) {
-			visitor.willVisitMember?(memberChange)
-			// ..anything to do?
-			visitor.didVisitMember?(memberChange)
-		}
+		_enumerateMemberDifferences(oldMembers: oldMembers, newMembers: newMembers, visitor: visitor)
 	}
 
 	fileprivate func enumerateNamedTypeDifferences(for platform: SwiftmoduleFinder.Platform, architecture: SwiftmoduleFinder.Architecture, framework: Framework, visitor: ChangeVisitor) {
@@ -232,8 +228,29 @@ extension Summarizer {
 			guard visitor.shouldVisitDataType(namedTypeChange) else { continue }
 
 			visitor.willVisitDataType?(namedTypeChange)
-			// recurse named types
+			switch namedTypeChange {
+			case .added(_, let new):
+				_enumerateNamedTypeDifferences(oldNamedTypes: [], newNamedTypes: new.nestedTypes, visitor: visitor)
+				_enumerateMemberDifferences(oldMembers: [], newMembers: new.members, visitor: visitor)
+			case .removed(let old, _):
+				_enumerateNamedTypeDifferences(oldNamedTypes: old.nestedTypes, newNamedTypes: [], visitor: visitor)
+				_enumerateMemberDifferences(oldMembers: old.members, newMembers: [], visitor: visitor)
+			case .modified(let old, let new), .unchanged(let old, let new):
+				_enumerateNamedTypeDifferences(oldNamedTypes: old.nestedTypes, newNamedTypes: new.nestedTypes, visitor: visitor)
+				_enumerateMemberDifferences(oldMembers: old.members, newMembers: new.members, visitor: visitor)
+			}
 			visitor.didVisitDataType?(namedTypeChange)
 		}
+	}
+
+	fileprivate func _enumerateMemberDifferences(oldMembers: [Member], newMembers: [Member], visitor: ChangeVisitor) {
+		for memberChange in Change<Member>.differences(from: oldMembers, to: newMembers) {
+			guard visitor.shouldVisitMember(memberChange) else { continue }
+
+			visitor.willVisitMember?(memberChange)
+			// ..anything to do?
+			visitor.didVisitMember?(memberChange)
+		}
+
 	}
 }
