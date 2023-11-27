@@ -66,7 +66,7 @@ enum Change<T: Named> {
 			if !oldSet.contains(value) {
 				results.append(.added(value, value))
 			}
-			// else { already diff already calculated from old iteration }
+			// else { diff already calculated from old iteration }
 		}
 
 		return results
