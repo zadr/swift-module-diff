@@ -90,21 +90,27 @@ struct Summarizer {
 
 extension Summarizer {
 	internal struct ChangeVisitor {
+		var shouldVisitPlatform: ((Change<SwiftmoduleFinder.Platform>) -> Bool) = { _ in true }
 		var willVisitPlatform: ((Change<SwiftmoduleFinder.Platform>) -> Void)? = nil
 		var didVisitPlatform: ((Change<SwiftmoduleFinder.Platform>) -> Void)? = nil
 
+		var shouldVisitArchitecture: ((Change<SwiftmoduleFinder.Architecture>) -> Bool) = { _ in true }
 		var willVisitArchitecture: ((Change<SwiftmoduleFinder.Architecture>) -> Void)? = nil
 		var didVisitArchitecture: ((Change<SwiftmoduleFinder.Architecture>) -> Void)? = nil
 
+		var shouldVisitFramework: ((Change<Framework>) -> Bool) = { _ in true }
 		var willVisitFramework: ((Change<Framework>) -> Void)? = nil
 		var didVisitFramework: ((Change<Framework>) -> Void)? = nil
 
+		var shouldVisitImport: ((Change<Import>) -> Bool) = { _ in true }
 		var willVisitImport: ((Change<Import>) -> Void)? = nil
 		var didVisitImport: ((Change<Import>) -> Void)? = nil
 
+		var shouldVisitDataType: ((Change<NamedType>) -> Bool) = { _ in true }
 		var willVisitDataType: ((Change<NamedType>) -> Void)? = nil
 		var didVisitDataType: ((Change<NamedType>) -> Void)? = nil
 
+		var shouldVisitMember: ((Change<Member>) -> Bool) = { _ in true }
 		var willVisitMember: ((Change<Member>) -> Void)? = nil
 		var didVisitMember: ((Change<Member>) -> Void)? = nil
 	}
@@ -119,6 +125,8 @@ extension Summarizer {
 
 	fileprivate func enumeratePlatformDifferences(visitor: ChangeVisitor) {
 		for platformChange in Change<SwiftmoduleFinder.Platform>.differences(from: old.keys, to: new.keys) {
+			guard visitor.shouldVisitPlatform(platformChange) else { continue }
+
 			visitor.willVisitPlatform?(platformChange)
 			switch platformChange {
 			case .added(_, let new):
@@ -139,6 +147,8 @@ extension Summarizer {
 		let newArchs = (new[platform] ?? [:]).keys
 
 		for architectureChange in Change<Framework>.differences(from: oldArchs, to: newArchs) {
+			guard visitor.shouldVisitArchitecture(architectureChange) else { continue }
+
 			visitor.willVisitArchitecture?(architectureChange)
 			switch architectureChange {
 			case .added(_, let new):
@@ -159,6 +169,8 @@ extension Summarizer {
 		let newFrameworks = new[platform]![architecture] ?? .init()
 
 		for frameworkChange in Change<Framework>.differences(from: oldFrameworks, to: newFrameworks) {
+			guard visitor.shouldVisitFramework(frameworkChange) else { continue }
+
 			visitor.willVisitFramework?(frameworkChange)
 			switch frameworkChange {
 			case .added(_, let new):
@@ -185,6 +197,8 @@ extension Summarizer {
 		let newDependencies = (new[platform]![architecture] ?? .init()).first { $0.name == framework.name }?.dependencies ?? []
 
 		for dependencyChange in Change<Framework>.differences(from: oldDependencies, to: newDependencies) {
+			guard visitor.shouldVisitDependency(dependencyChange) else { continue }
+
 			visitor.willVisitImport?(dependencyChange)
 			// ..anything to do?
 			visitor.didVisitImport?(dependencyChange)
@@ -215,6 +229,8 @@ extension Summarizer {
 
 	fileprivate func _enumerateNamedTypeDifferences(oldNamedTypes: [NamedType], newNamedTypes: [NamedType], visitor: ChangeVisitor) {
 		for namedTypeChange in Change<NamedType>.differences(from: oldNamedTypes, to: newNamedTypes) {
+			guard visitor.shouldVisitDataType(namedTypeChange) else { continue }
+
 			visitor.willVisitDataType?(namedTypeChange)
 			// recurse named types
 			visitor.didVisitDataType?(namedTypeChange)
