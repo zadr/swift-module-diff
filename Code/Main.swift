@@ -35,7 +35,16 @@ struct Main: ParsableCommand {
 	var trace: Bool = false
 
 	mutating func run() throws {
-		if trace { print("Start: \(Date())") }
+		if trace {
+			print("Old Xcode: \(old)")
+			print("New Xcode: \(new)")
+			print("Console Output: \(console)")
+			print("HTML: \(html), JSON: \(json)")
+			if (html || json) {
+				print("Directory: \(output)")
+			}
+			print("Start: \(Date())")
+		}
 
 		let oldFrameworks = Summary.createSummary(for: old, trace: trace)
 		let newFrameworks = Summary.createSummary(for: new, trace: trace)
