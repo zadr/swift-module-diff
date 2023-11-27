@@ -37,7 +37,12 @@ struct Main: ParsableCommand {
 	mutating func run() throws {
 		if trace { print("Start: \(Date())") }
 
+		let oldFrameworks = Summary.createSummary(for: old, trace: trace)
+		let newFrameworks = Summary.createSummary(for: new, trace: trace)
 
+		let summarizer = Summarizer(old: oldFrameworks, new: newFrameworks)
+		if console {
+			summarizer.printDifferencesToConsole()
 		}
 
 		if trace { print("End: \(Date())") }
