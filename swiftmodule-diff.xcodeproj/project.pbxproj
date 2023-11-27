@@ -10,6 +10,7 @@
 		190E3DFF2A41671400749773 /* Change.swift in Sources */ = {isa = PBXBuildFile; fileRef = 190E3DFE2A41671400749773 /* Change.swift */; };
 		192C58C52A3FF864001873C9 /* Parameter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 192C58C42A3FF864001873C9 /* Parameter.swift */; };
 		192C58C72A3FFAA7001873C9 /* InoutTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 192C58C62A3FFAA7001873C9 /* InoutTracker.swift */; };
+		192EBC7B2B1431B500747152 /* Summary+Console.swift in Sources */ = {isa = PBXBuildFile; fileRef = 192EBC7A2B1431B500747152 /* Summary+Console.swift */; };
 		196081992A2EC8BF006A6286 /* ParseSwiftmodule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 196081982A2EC8BF006A6286 /* ParseSwiftmodule.swift */; };
 		1960819B2A2EE446006A6286 /* SwiftmoduleFinder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1960819A2A2EE446006A6286 /* SwiftmoduleFinder.swift */; };
 		19D0EBD72A402CB4003C8B19 /* AttributeTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19D0EBD62A402CB4003C8B19 /* AttributeTracker.swift */; };
@@ -62,6 +63,7 @@
 		190E3DFE2A41671400749773 /* Change.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Change.swift; sourceTree = "<group>"; };
 		192C58C42A3FF864001873C9 /* Parameter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Parameter.swift; sourceTree = "<group>"; };
 		192C58C62A3FFAA7001873C9 /* InoutTracker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InoutTracker.swift; sourceTree = "<group>"; };
+		192EBC7A2B1431B500747152 /* Summary+Console.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Summary+Console.swift"; sourceTree = "<group>"; };
 		196081982A2EC8BF006A6286 /* ParseSwiftmodule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParseSwiftmodule.swift; sourceTree = "<group>"; };
 		1960819A2A2EE446006A6286 /* SwiftmoduleFinder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftmoduleFinder.swift; sourceTree = "<group>"; };
 		19D0EBD62A402CB4003C8B19 /* AttributeTracker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttributeTracker.swift; sourceTree = "<group>"; };
@@ -115,6 +117,7 @@
 			children = (
 				190E3DFE2A41671400749773 /* Change.swift */,
 				19D7CDAD2B13D9740030DA4A /* Summary.swift */,
+				192EBC7A2B1431B500747152 /* Summary+Console.swift */,
 			);
 			path = "Difference Finding";
 			sourceTree = "<group>";
@@ -326,6 +329,7 @@
 				19FF61122A3FABC2001303FB /* AnyTypeParser.swift in Sources */,
 				19FF60D62A3F9EE6001303FB /* TypeNameTracker.swift in Sources */,
 				19FF60F82A3FA2AC001303FB /* ExtensionTracker.swift in Sources */,
+				192EBC7B2B1431B500747152 /* Summary+Console.swift in Sources */,
 				19FF610E2A3FAAF1001303FB /* EnumCaseTracker.swift in Sources */,
 				19D0EBD92A403C0B003C8B19 /* Attribute.swift in Sources */,
 				19FF61052A3FA679001303FB /* Member.swift in Sources */,

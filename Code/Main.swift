@@ -40,10 +40,15 @@ struct Main: ParsableCommand {
 		let oldFrameworks = Summary.createSummary(for: old, trace: trace)
 		let newFrameworks = Summary.createSummary(for: new, trace: trace)
 
-		let summarizer = Summarizer(old: oldFrameworks, new: newFrameworks)
-		if console {
-			summarizer.printDifferencesToConsole()
-		}
+		let consoleVisitor = console ? nil : Summarizer.consoleVisitor()
+
+		Summarizer(old: oldFrameworks, new: newFrameworks)
+			.summarize(
+				consoleVisitor: consoleVisitor,
+				htmlVisitor: nil,
+				jsonVisitor: nil,
+				trace: trace
+			)
 
 		if trace { print("End: \(Date())") }
 	}

@@ -55,29 +55,61 @@ struct Summarizer {
 		self.new = new
 	}
 
-	func printDifferencesToConsole() {
-		let consoleVisitor = ChangeVisitor(willVisitPlatform: { change in
-			print("Platform: \(change.kind) > \(change.name)")
-		}, willVisitArchitecture: { change in
-			print("\tArchitecture: \(change.kind) > \(change.name)")
-		}, willVisitFramework: { change in
-			print("\t\tFramework: \(change.kind) > \(change.name)")
-		}, willVisitImport: { change in
-			print("\t\t\tImport: \(change.kind) > \(change.name)")
-		}, willVisitDataType: { change in
-			print("\t\t\tNamed Type: \(change.kind) > \(change.name)")
-		}, willVisitMember: { change in
-			print("\t\t\tMember: \(change.kind) > \(change.name)")
+	func summarize(consoleVisitor: ChangeVisitor? = nil, htmlVisitor: ChangeVisitor? = nil, jsonVisitor: ChangeVisitor? = nil, trace: Bool) {
+		enumeratePlatformDifferences(visitor: ChangeVisitor {
+			consoleVisitor?.willVisitPlatform?($0)
+			htmlVisitor?.willVisitPlatform?($0)
+			jsonVisitor?.willVisitPlatform?($0)
+		} didVisitPlatform: {
+			consoleVisitor?.didVisitPlatform?($0)
+			htmlVisitor?.didVisitPlatform?($0)
+			jsonVisitor?.didVisitPlatform?($0)
+		} willVisitArchitecture: {
+			consoleVisitor?.willVisitArchitecture?($0)
+			htmlVisitor?.willVisitArchitecture?($0)
+			jsonVisitor?.willVisitArchitecture?($0)
+		} didVisitArchitecture: {
+			consoleVisitor?.didVisitArchitecture?($0)
+			htmlVisitor?.didVisitArchitecture?($0)
+			jsonVisitor?.didVisitArchitecture?($0)
+		} willVisitFramework: {
+			consoleVisitor?.willVisitFramework?($0)
+			htmlVisitor?.willVisitFramework?($0)
+			jsonVisitor?.willVisitFramework?($0)
+		} didVisitFramework: {
+			consoleVisitor?.didVisitFramework?($0)
+			htmlVisitor?.didVisitFramework?($0)
+			jsonVisitor?.didVisitFramework?($0)
+		} willVisitImport: {
+			consoleVisitor?.willVisitImport?($0)
+			htmlVisitor?.willVisitImport?($0)
+			jsonVisitor?.willVisitImport?($0)
+		} didVisitImport: {
+			consoleVisitor?.didVisitImport?($0)
+			htmlVisitor?.didVisitImport?($0)
+			jsonVisitor?.didVisitImport?($0)
+		} willVisitDataType: {
+			consoleVisitor?.willVisitDataType?($0)
+			htmlVisitor?.willVisitDataType?($0)
+			jsonVisitor?.willVisitDataType?($0)
+		} didVisitDataType: {
+			consoleVisitor?.didVisitDataType?($0)
+			htmlVisitor?.didVisitDataType?($0)
+			jsonVisitor?.didVisitDataType?($0)
+		} willVisitMember: {
+			consoleVisitor?.willVisitMember?($0)
+			htmlVisitor?.willVisitMember?($0)
+			jsonVisitor?.willVisitMember?($0)
+		} didVisitMember: {
+			consoleVisitor?.didVisitMember?($0)
+			htmlVisitor?.didVisitMember?($0)
+			jsonVisitor?.didVisitMember?($0)
 		})
-
-		print("Console Start: \(Date())")
-		enumeratePlatformDifferences(visitor: consoleVisitor)
-		print("Console End: \(Date())")
 	}
 }
 
 extension Summarizer {
-	fileprivate struct ChangeVisitor {
+	internal struct ChangeVisitor {
 		var willVisitPlatform: ((Change<SwiftmoduleFinder.Platform>) -> Void)? = nil
 		var didVisitPlatform: ((Change<SwiftmoduleFinder.Platform>) -> Void)? = nil
 
