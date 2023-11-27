@@ -15,29 +15,29 @@ struct Summarizer {
 		let visitors = [consoleVisitor, htmlVisitor, jsonVisitor].compactMap { $0 }
 		let aggregateVisitor = ChangeVisitor(
 			willVisitPlatform: { platform in
-				visitors.forEach { v in v.willVisitPlatform?(platform) }
+				visitors.forEach { v in if v.shouldVisitPlatform(platform) { v.willVisitPlatform?(platform) } }
 			}, didVisitPlatform: { platform in
-				visitors.forEach { v in v.didVisitPlatform?(platform) }
+				visitors.forEach { v in if v.shouldVisitPlatform(platform) { v.didVisitPlatform?(platform) } }
 			}, willVisitArchitecture: { architecture in
-				visitors.forEach { v in v.willVisitArchitecture?(architecture) }
+				visitors.forEach { v in if v.shouldVisitArchitecture(architecture) { v.willVisitArchitecture?(architecture) } }
 			}, didVisitArchitecture: { architecture in
-				visitors.forEach { v in v.didVisitArchitecture?(architecture) }
+				visitors.forEach { v in if v.shouldVisitArchitecture(architecture) { v.didVisitArchitecture?(architecture) } }
 			}, willVisitFramework: { framework in
-				visitors.forEach { v in v.willVisitFramework?(framework) }
+				visitors.forEach { v in if v.shouldVisitFramework(framework) { v.willVisitFramework?(framework) } }
 			}, didVisitFramework: { framework in
-				visitors.forEach { v in v.didVisitFramework?(framework) }
+				visitors.forEach { v in if v.shouldVisitFramework(framework) { v.didVisitFramework?(framework) } }
 			}, willVisitDependency: { dependency in
-				visitors.forEach { v in v.willVisitDependency?(dependency) }
+				visitors.forEach { v in if v.shouldVisitDependency(dependency) { v.willVisitDependency?(dependency) } }
 			}, didVisitDependency: { dependency in
-				visitors.forEach { v in v.didVisitDependency?(dependency) }
+				visitors.forEach { v in if v.shouldVisitDependency(dependency) { v.didVisitDependency?(dependency) } }
 			}, willVisitNamedType: { namedType in
-				visitors.forEach { v in v.willVisitNamedType?(namedType) }
+				visitors.forEach { v in if v.shouldVisitNamedType(namedType) { v.willVisitNamedType?(namedType) } }
 			}, didVisitNamedType: { namedType in
-				visitors.forEach { v in v.didVisitNamedType?(namedType) }
+				visitors.forEach { v in if v.shouldVisitNamedType(namedType) { v.didVisitNamedType?(namedType) } }
 			}, willVisitMember: { member in
-				visitors.forEach { v in v.willVisitMember?(member) }
+				visitors.forEach { v in if v.shouldVisitMember(member) { v.willVisitMember?(member) } }
 			}, didVisitMember: { member in
-				visitors.forEach { v in v.didVisitMember?(member) }
+				visitors.forEach { v in if v.shouldVisitMember(member) { v.didVisitMember?(member) } }
 			}
 		)
 
