@@ -1,7 +1,7 @@
 import Foundation
 
 struct Member {
-	enum Kind: Codable, Hashable, Sendable {
+	enum Kind: String, Codable, Hashable, Sendable {
 		case `unknown`
 		case `let`
 		case `var`

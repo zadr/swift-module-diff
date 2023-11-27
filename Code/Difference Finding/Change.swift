@@ -19,10 +19,10 @@ enum Change<T: Named> {
 		}
 	}
 
-	var name: String {
+	var any: T {
 		switch self {
 		case .removed(let old, _), .modified(let old, _), .unchanged(let old, _), .added(let old, _):
-			old.name
+			old
 		}
 	}
 
