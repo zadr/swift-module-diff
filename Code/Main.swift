@@ -40,7 +40,7 @@ struct Main: ParsableCommand {
 		let oldFrameworks = Summary.createSummary(for: old, trace: trace)
 		let newFrameworks = Summary.createSummary(for: new, trace: trace)
 
-		let consoleVisitor = console ? nil : Summarizer.consoleVisitor()
+		let consoleVisitor = console ? Summarizer.consoleVisitor() : nil
 
 		Summarizer(old: oldFrameworks, new: newFrameworks)
 			.summarize(
