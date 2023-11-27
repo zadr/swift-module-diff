@@ -37,61 +37,35 @@ struct Member {
 	var parameters: [Parameter] = []
 
 	var description: String {
-		let attributes = self.attributes.map { attribute in
-			var baseName = "@" + attribute.name
-			if !attribute.parameters.isEmpty {
-				baseName += "("
-				baseName += attribute.parameters.reduce("") {
-					return $0 + $1.name + $1.type
-				}
-				baseName += ")"
-			}
-			return baseName
-		}.joined(separator: " ")
+		let attributes = attributes.map { $0.developerFacingName }.joined(separator: " ")
 
-		var decorators = self.decorators.map { $0.rawValue }.joined(separator: " ")
+		var decorators = decorators.map { $0.rawValue }.joined(separator: " ")
 		if !decorators.isEmpty { decorators += " " }
 		switch kind {
 		case .unknown:
 			return "<<MEMBER UNKNOWN>>"
 
 		case .let:
-			return """
-\(attributes)
-\(decorators)let \(name): \(returnType)
-"""
+			return "\(attributes) \(decorators)let \(name): \(returnType)".trimmingCharacters(in: .whitespaces)
 
 		case .var:
-			var accessors = self.accessors.map { $0.rawValue }.joined(separator: " ")
+			var accessors = accessors.map { $0.rawValue }.joined(separator: " ")
 			if !accessors.isEmpty {
 				accessors = " { \(accessors) }"
 			}
-			return """
-\(attributes)
-\(decorators)var \(name): \(returnType)\(accessors)
-"""
+			return "\(attributes) \(decorators)var \(name): \(returnType)\(accessors)".trimmingCharacters(in: .whitespaces)
 
 		case .func:
-			let parameters = self.parameters.map {
-				"\($0.name): \($0.type)"
-			}.joined(separator: ", ")
-			let returnType = self.returnType.isEmpty ? "" : " -> \(returnType)"
-			return """
-\(attributes)
-\(decorators)func \(name)(\(parameters))\(returnType)
-"""
+			let parameters = parameters.map { $0.developerFacingName }.joined(separator: ", ")
+			let returnType = returnType.isEmpty ? "" : " -> \(returnType)"
+			return "\(attributes) \(decorators)func \(name)(\(parameters))\(returnType)".trimmingCharacters(in: .whitespaces)
 
 		case .case:
-			var p = self.parameters.map {
-				"\($0.type)"
-			}.joined(separator: ", ")
-			if !p.isEmpty {
-				p = "(\(p))"
+			var parameters = parameters.map { $0.developerFacingName }.joined(separator: ", ")
+			if !parameters.isEmpty {
+				parameters = "(\(parameters))"
 			}
-			return """
-\(attributes)
-\(decorators)case \(name)\(p)
-"""
+			return "\(attributes) \(decorators)case \(name)\(parameters)".trimmingCharacters(in: .whitespaces)
 
 		case .associatedtype:
 			return "associatedtype \(name)"
