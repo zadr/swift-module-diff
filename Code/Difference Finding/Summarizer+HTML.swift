@@ -21,6 +21,46 @@ extension Summarizer {
 	<meta property="og:url" content="https://example.com/">
 	<meta property="og:site_name" content="example.com">
 	<meta property="og:type" content="website">
+	<style>
+		ul {
+			list-style: none;
+		}
+
+		li.added:before {
+			content: "➕";
+			padding-right: 5px;
+		}
+
+		li.modified:before {
+			content: "〰️";
+			padding-right: 5px;
+		}
+
+		li.removed:before {
+			content: "➖";
+			padding-right: 5px;
+		}
+
+		details {
+			border: 1px solid #aaa;
+			border-radius: 4px;
+			padding: 0.5em 0.5em 0;
+		}
+
+		summary {
+			font-weight: bold;
+			padding: 0.5em;
+		}
+
+		details[open] {
+			padding: 0.5em;
+		}
+
+		details[open] summary {
+			border-bottom: 1px solid #aaa;
+			margin-bottom: 0.5em;
+		}
+	</style>
 </head>
 
 <html lang="en-US">
