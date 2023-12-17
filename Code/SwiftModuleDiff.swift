@@ -1,23 +1,18 @@
 import ArgumentParser
 import Foundation
 
-enum Format: String {
-	case html
-	case json
-}
-
 @main
-struct Main: ParsableCommand {
+struct SwiftModuleDiff: ParsableCommand {
 	static var configuration = CommandConfiguration(
 		abstract: "A utility for diffing two Swift APIs",
 		version: "0.1.0"
 	)
 
 	@Option(name: .shortAndLong, help: "Path to the older API. Default: /Applications/Xcode.app")
-	var old: String = "/Applications/Xcode-14rc.app"
+	var old: String = "/Applications/Xcode-15.0.1.app"
 
 	@Option(name: .shortAndLong, help: "Path to the newer API. Default: /Applications/Xcode-beta.app")
-	var new: String = "/Applications/Xcode-15b3.app"
+	var new: String = "/Applications/Xcode-15.1.app"
 
 	@Option(name: .long, help: "Path to output results. Default: ~/Desktop/swiftmodule-diff/")
 	var output: String = "~/Desktop/swiftmodule-diff/"
@@ -31,7 +26,7 @@ struct Main: ParsableCommand {
 	@Option(name: .shortAndLong, help: "Write json to output directory. May be combined with --html or --console. Default: false")
 	var json: Bool = false
 
-	@Option(name: .shortAndLong, help: "Print trace output to console. Default: false")
+	@Option(name: .shortAndLong, help: "Create signposts for performance debugging, and print extra data to console. Default: false")
 	var trace: Bool = false
 
 	mutating func run() throws {
