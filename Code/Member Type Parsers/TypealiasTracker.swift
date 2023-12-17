@@ -1,7 +1,7 @@
 import Foundation
 import SwiftSyntax
 
-class TypealiasTracker: SyntaxVisitor, AnyTypeParser {
+class TypeAliasTracker: SyntaxVisitor, AnyTypeParser {
 	var value = Member()
 
 	required init() {
@@ -15,8 +15,8 @@ class TypealiasTracker: SyntaxVisitor, AnyTypeParser {
 		   return super.visit(node)
 	   }
 
-	override func visit(_ node: TypealiasDeclSyntax) -> SyntaxVisitorContinueKind {
-		value.name = node.identifier.text
+	override func visit(_ node: TypeAliasDeclSyntax) -> SyntaxVisitorContinueKind {
+		value.name = node.name.text
 		return super.visit(node)
 	}
 

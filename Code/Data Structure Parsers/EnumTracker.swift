@@ -16,7 +16,7 @@ class EnumTracker: SyntaxVisitor, AnyTypeParser {
 	}
 
 	override func visit(_ node: EnumDeclSyntax) -> SyntaxVisitorContinueKind {
-		value.name = node.identifier.text
+		value.name = node.name.text
 		return super.visit(node)
 	}
 
@@ -37,8 +37,8 @@ class EnumTracker: SyntaxVisitor, AnyTypeParser {
 		return super.visit(node)
 	}
 
-	override func visit(_ node: TypealiasDeclSyntax) -> SyntaxVisitorContinueKind {
-		let t = ParseAnyType<TypealiasTracker>(node: node).run()
+	override func visit(_ node: TypeAliasDeclSyntax) -> SyntaxVisitorContinueKind {
+		let t = ParseAnyType<TypeAliasTracker>(node: node).run()
 		value.members.append(t)
 		return super.visit(node)
 	}

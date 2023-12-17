@@ -22,7 +22,7 @@ class EnumCaseTracker: SyntaxVisitor, AnyTypeCollectionParser {
 	}
 
 	override func visit(_ node: EnumCaseElementSyntax) -> SyntaxVisitorContinueKind {
-		value.name = node.identifier.text
+		value.name = node.name.text
 		return super.visit(node)
 	}
 

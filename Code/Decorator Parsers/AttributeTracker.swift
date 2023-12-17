@@ -11,7 +11,7 @@ class AttributeTracker: SyntaxVisitor, AnyTypeParser {
 	override func visit(_ node: AttributeSyntax) -> SyntaxVisitorContinueKind {
 		value.name = ParseAnyType<TypeNameTracker>(node: node.attributeName).run()
 
-		if let argument = node.argument, case .token(let tokenSyntax) = argument {
+		if let argument = node.arguments, case .token(let tokenSyntax) = argument {
 			var parameter = Parameter()
 			parameter.name = tokenSyntax.text
 			value.parameters.append(parameter)
@@ -21,7 +21,7 @@ class AttributeTracker: SyntaxVisitor, AnyTypeParser {
 	}
 
 	override func visit(_ node: AvailabilityArgumentSyntax) -> SyntaxVisitorContinueKind {
-		if let entry = node.entry.as(AvailabilityVersionRestrictionSyntax.self) {
+		if let entry = node.argument.as(PlatformVersionSyntax.self) {
 			if let major = entry.version?.major, let remainder = entry.version?.components, !remainder.isEmpty {
 				var parameter = Parameter()
 				parameter.name = entry.platform.text
@@ -34,7 +34,7 @@ class AttributeTracker: SyntaxVisitor, AnyTypeParser {
 				value.parameters.append(parameter)
 			}
 		} else {
-			if case .token(let tokenSyntax) = node.entry {
+			if case .token(let tokenSyntax) = node.argument {
 				var parameter = Parameter()
 				parameter.name = tokenSyntax.text
 				value.parameters.append(parameter)
@@ -44,8 +44,8 @@ class AttributeTracker: SyntaxVisitor, AnyTypeParser {
 		return super.visit(node)
 	}
 
-	override func visit(_ node: TupleExprElementSyntax) -> SyntaxVisitorContinueKind {
-		if let name = node.expression.as(IdentifierExprSyntax.self)?.identifier.text {
+	override func visit(_ node: LabeledExprSyntax) -> SyntaxVisitorContinueKind {
+		if let name = node.expression.as(DeclReferenceExprSyntax.self)?.baseName.text {
 			var parameter = Parameter()
 			parameter.name = name
 			value.parameters.append(parameter)

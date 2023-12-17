@@ -81,8 +81,8 @@ private class SwiftmoduleTracker: SyntaxVisitor {
 		return super.visit(node)
 	}
 
-	override func visit(_ node: TypealiasDeclSyntax) -> SyntaxVisitorContinueKind {
-		let t = ParseAnyType<TypealiasTracker>(node: node).run()
+	override func visit(_ node: TypeAliasDeclSyntax) -> SyntaxVisitorContinueKind {
+		let t = ParseAnyType<TypeAliasTracker>(node: node).run()
 		framework.members.append(t)
 		return super.visit(node)
 	}

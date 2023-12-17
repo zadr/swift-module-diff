@@ -48,11 +48,11 @@ class TypeNameTracker: SyntaxVisitor, AnyTypeParser {
 	}
 
 	override func visit(_ node: AttributeSyntax) -> SyntaxVisitorContinueKind {
-		value += " " + node.atSignToken.text
+		value += " " + node.atSign.text
 		return super.visit(node)
 	}
 
-	override func visit(_ node: MemberTypeIdentifierSyntax) -> SyntaxVisitorContinueKind {
+	override func visit(_ node: MemberTypeSyntax) -> SyntaxVisitorContinueKind {
 		if value.isEmpty || value.hasSuffix(" -> ") || value.hasSuffix("(") {
 			value += node.name.text
 		} else {
@@ -65,7 +65,7 @@ class TypeNameTracker: SyntaxVisitor, AnyTypeParser {
 		return super.visit(node)
 	}
 	
-	override func visit(_ node: SimpleTypeIdentifierSyntax) -> SyntaxVisitorContinueKind {
+	override func visit(_ node: IdentifierTypeSyntax) -> SyntaxVisitorContinueKind {
 		if value.isEmpty || value.hasSuffix(" -> ") || value.hasSuffix("(") {
 			value += node.name.text
 		} else {

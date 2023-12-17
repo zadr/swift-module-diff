@@ -11,13 +11,11 @@ class VariableTracker: SyntaxVisitor, AnyTypeCollectionParser {
 	}
 
 	override func visit(_ node: AccessorBlockSyntax) -> SyntaxVisitorContinueKind {
-		for accessor in node.accessors {
-			if accessor.accessorKind.tokenKind == .keyword(.get) {
-				value.accessors.insert(.get)
-			}
-			if accessor.accessorKind.tokenKind == .keyword(.set) {
-				value.accessors.insert(.set)
-			}
+		switch node.accessors {
+		case .accessors:
+			value.accessors.insert(.set)
+		case .getter:
+			value.accessors.insert(.get)
 		}
 		return super.visit(node)
 	}
@@ -54,7 +52,7 @@ class VariableTracker: SyntaxVisitor, AnyTypeCollectionParser {
 	}
 
 	override func visit(_ node: VariableDeclSyntax) -> SyntaxVisitorContinueKind {
-		if node.bindingKeyword.tokenKind == .keyword(.let) {
+		if node.bindingSpecifier.tokenKind == .keyword(.let) {
 			value.kind = .let
 		}
 

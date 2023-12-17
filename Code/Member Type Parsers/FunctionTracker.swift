@@ -33,9 +33,9 @@ class FunctionTracker: SyntaxVisitor, AnyTypeParser {
 	}
 
 	override func visit(_ node: FunctionDeclSyntax) -> SyntaxVisitorContinueKind {
-		if case .binaryOperator(let token) = node.identifier.tokenKind {
+		if case .binaryOperator(let token) = node.name.tokenKind {
 			value.name = token
-		} else if case .identifier(let token) = node.identifier.tokenKind {
+		} else if case .identifier(let token) = node.name.tokenKind {
 			value.name = token
 		} else {
 			fatalError("unable to identify func name from decl")

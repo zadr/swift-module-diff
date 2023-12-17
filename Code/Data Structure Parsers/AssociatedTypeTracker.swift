@@ -9,8 +9,8 @@ class AssociatedTypeTracker: SyntaxVisitor, AnyTypeParser {
 		super.init(viewMode: .sourceAccurate)
 	}
 
-	override func visit(_ node: AssociatedtypeDeclSyntax) -> SyntaxVisitorContinueKind {
-		value.name = node.identifier.text
+	override func visit(_ node: AssociatedTypeDeclSyntax) -> SyntaxVisitorContinueKind {
+		value.name = node.name.text
 		return super.visit(node)
 	}
 

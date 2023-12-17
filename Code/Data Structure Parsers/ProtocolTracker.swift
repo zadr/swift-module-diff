@@ -16,7 +16,7 @@ class ProtocolTracker: SyntaxVisitor, AnyTypeParser {
 	}
 
 	override func visit(_ node: ProtocolDeclSyntax) -> SyntaxVisitorContinueKind {
-		value.name = node.identifier.text
+		value.name = node.name.text
 		return super.visit(node)
 	}
 
@@ -25,7 +25,7 @@ class ProtocolTracker: SyntaxVisitor, AnyTypeParser {
 		return super.visit(node)
 	}
 
-	override func visit(_ node: AssociatedtypeDeclSyntax) -> SyntaxVisitorContinueKind {
+	override func visit(_ node: AssociatedTypeDeclSyntax) -> SyntaxVisitorContinueKind {
 		let nestedType = ParseAnyType<AssociatedTypeTracker>(node: node).run()
 		value.nestedTypes.append(nestedType)
 		return super.visit(node)
@@ -37,8 +37,8 @@ class ProtocolTracker: SyntaxVisitor, AnyTypeParser {
 		return super.visit(node)
 	}
 
-	override func visit(_ node: TypealiasDeclSyntax) -> SyntaxVisitorContinueKind {
-		let member = ParseAnyType<TypealiasTracker>(node: node).run()
+	override func visit(_ node: TypeAliasDeclSyntax) -> SyntaxVisitorContinueKind {
+		let member = ParseAnyType<TypeAliasTracker>(node: node).run()
 		value.members.append(member)
 		return super.visit(node)
 	}

@@ -10,7 +10,7 @@ class OperatorTracker: SyntaxVisitor, AnyTypeParser {
 	}
 
 	override func visit(_ node: OperatorDeclSyntax) -> SyntaxVisitorContinueKind {
-		value.name = node.identifier.text
+		value.name = node.name.text
 		return super.visit(node)
 	}
 }

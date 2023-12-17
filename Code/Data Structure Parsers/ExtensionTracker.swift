@@ -31,8 +31,8 @@ class ExtensionTracker: SyntaxVisitor, AnyTypeParser {
 		return super.visit(node)
 	}
 
-	override func visit(_ node: TypealiasDeclSyntax) -> SyntaxVisitorContinueKind {
-		let member = ParseAnyType<TypealiasTracker>(node: node).run()
+	override func visit(_ node: TypeAliasDeclSyntax) -> SyntaxVisitorContinueKind {
+		let member = ParseAnyType<TypeAliasTracker>(node: node).run()
 		value.members.append(member)
 		return super.visit(node)
 	}
