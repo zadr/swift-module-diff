@@ -83,7 +83,7 @@ extension Summarizer {
 
 						html += "\(prefix)\t\t\t\t\t<ul>\n"
 						for member in members.sorted() {
-							html += "\(prefix)\t\t\t\t\t\t\t<li>\(member)</li>\n"
+							html += "\(prefix)\t\t\t\t\t\t\t<li class=\"\(member.kind)\">\(member.any)</li>\n"
 						}
 						html += "\(prefix)\t\t\t\t\t</ul>\n"
 						html += "\(prefix)\t\t\t\t\t</details>\n"
@@ -97,7 +97,6 @@ extension Summarizer {
 							html += "\(prefix)\t\t\t\t\t<summary>Types</summary>\n"
 						}
 						for type in namedTypes.sorted() {
-//							html += "\(prefix)\t\t\t\t\t\t\t<span>\(type.value)</span>\n"
 							append(members: type.members, namedTypes: type.types, includeTypeName: true, idStack: idStack + [type.value.any], depth: depth + 1)
 						}
 						html += "\(prefix)\t\t\t\t\t</details>\n"
@@ -106,11 +105,11 @@ extension Summarizer {
 
 				for platform in tree.sorted() {
 					html += "\t<details id=\"Platform: \(platform.value.any)\">\n"
-					html += "\t<summary>Platform: \(platform.value.any)</summary>\n"
+					html += "\t<summary>\(platform.value.any)</summary>\n"
 
 					for architecture in platform.architectures.sorted() {
 						html += "\t\t<details id=\"Platform: \(platform.value.any) Architecture: \(architecture.value.any)\">\n"
-						html += "\t\t<summary>Architecture: \(architecture.value.any)</summary>\n"
+						html += "\t\t<summary>\(architecture.value.any)</summary>\n"
 
 						for framework in architecture.frameworks.sorted() {
 							html += "\t\t\t<details id=\"Platform: \(platform.value.any) Architecture: \(architecture.value.any) Framework: \(framework.value.any)\">\n"
