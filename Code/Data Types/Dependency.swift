@@ -30,6 +30,6 @@ extension Dependency: Codable, CustomStringConvertible, Hashable, Sendable {
 
 extension Dependency: Attributed, Named, Displayable {
 	var developerFacingValue: String {
-		attributes.map { $0.developerFacingValue }.joined(separator: " ") + "import \(name)"
+		attributes.map { $0.developerFacingValue }.joined(separator: " ") + " import \(name)"
 	}
 }
