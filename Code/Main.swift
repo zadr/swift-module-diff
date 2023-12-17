@@ -49,11 +49,15 @@ struct Main: ParsableCommand {
 		let oldFrameworks = Summary.createSummary(for: old, trace: trace)
 		let newFrameworks = Summary.createSummary(for: new, trace: trace)
 
+		let fromVersion = Summarizer.Version(majorVersion: 15, minorVersion: 0, patchVersion: 1)
+		let toVersion = Summarizer.Version(majorVersion: 15, minorVersion: 1, patchVersion: 0)
+
 		let consoleVisitor = console ? Summarizer.consoleVisitor() : nil
+		let signpostVisitor = trace ? Summarizer.signpostVisitor(from: fromVersion, to: toVersion) : nil
 
 		Summarizer(old: oldFrameworks, new: newFrameworks)
 			.summarize(
-				visitors: consoleVisitor, htmlVisitor, jsonVisitor,
+				visitors: consoleVisitor, htmlVisitor, jsonVisitor, signpostVisitor,
 				trace: trace
 			)
 

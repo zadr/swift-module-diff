@@ -39,7 +39,7 @@ struct Summarizer {
 		let visitors = visitors.compactMap { $0 }
 		let aggregateVisitor = ChangeVisitor(
 			willBegin: { visitors.forEach { v in v.willBegin() } },
-			didEnd: { visitors.forEach { v in v.didEnd() }},
+			didEnd: { visitors.forEach { v in v.didEnd() } },
 			willVisitPlatform: { platform in
 				visitors.forEach { v in if v.shouldVisitPlatform(platform) { v.willVisitPlatform?(platform) } }
 			}, didVisitPlatform: { platform in
@@ -67,7 +67,9 @@ struct Summarizer {
 			}
 		)
 
+		aggregateVisitor.willBegin()
 		enumeratePlatformDifferences(visitor: aggregateVisitor)
+		aggregateVisitor.didEnd()
 	}
 }
 
