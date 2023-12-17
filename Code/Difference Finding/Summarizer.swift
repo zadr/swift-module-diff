@@ -6,12 +6,12 @@ struct Summarizer {
 			class Architecture: Equatable, Hashable, Comparable, Codable {
 				class Framework: Equatable, Hashable, Comparable, Codable {
 					class NamedType: Equatable, Hashable, Comparable, Codable {
-						let value: String
+						let value: Change<String>
 
-						var members = [String]()
+						var members = [Change<String>]()
 						var types = [Summarizer.Tree.Platform.Architecture.Framework.NamedType]()
 
-						init(value: String) {
+						init(value: Change<String>) {
 							self.value = value
 						}
 
@@ -24,16 +24,16 @@ struct Summarizer {
 						}
 
 						static func <(lhs: Summarizer.Tree.Platform.Architecture.Framework.NamedType, rhs: Summarizer.Tree.Platform.Architecture.Framework.NamedType) -> Bool {
-							return lhs.value < rhs.value
+							return lhs.value.any < rhs.value.any
 						}
 					}
 
-					let value: String
-					var dependencies = [String]()
-					var members = [String]()
+					let value: Change<String>
+					var dependencies = [Change<String>]()
+					var members = [Change<String>]()
 					var namedTypes = [Summarizer.Tree.Platform.Architecture.Framework.NamedType]()
 
-					init(value: String) {
+					init(value: Change<String>) {
 						self.value = value
 					}
 
@@ -46,14 +46,14 @@ struct Summarizer {
 					}
 
 					static func <(lhs: Summarizer.Tree.Platform.Architecture.Framework, rhs: Summarizer.Tree.Platform.Architecture.Framework) -> Bool {
-						return lhs.value < rhs.value
+						return lhs.value.any < rhs.value.any
 					}
 				}
 
-				let value: String
+				let value: Change<String>
 				var frameworks = [Summarizer.Tree.Platform.Architecture.Framework]()
 
-				init(value: String) {
+				init(value: Change<String>) {
 					self.value = value
 				}
 
@@ -66,14 +66,14 @@ struct Summarizer {
 				}
 
 				static func <(lhs: Summarizer.Tree.Platform.Architecture, rhs: Summarizer.Tree.Platform.Architecture) -> Bool {
-					return lhs.value < rhs.value
+					return lhs.value.any < rhs.value.any
 				}
 			}
 
-			let value: String
+			let value: Change<String>
 			var architectures = [Summarizer.Tree.Platform.Architecture]()
 
-			init(value: String) {
+			init(value: Change<String>) {
 				self.value = value
 			}
 
@@ -86,7 +86,7 @@ struct Summarizer {
 			}
 
 			static func <(lhs: Summarizer.Tree.Platform, rhs: Summarizer.Tree.Platform) -> Bool {
-				return lhs.value < rhs.value
+				return lhs.value.any < rhs.value.any
 			}
 		}
 	}
@@ -133,40 +133,53 @@ struct Summarizer {
 
 	func summarize(visitors: ChangeVisitor?..., trace: Bool) {
 		var tree = StorageTree()
+
+		var activeNamedTypeStack = [Tree.Platform.Architecture.Framework.NamedType]()
+
 		let visitors = visitors.compactMap { $0 }
 		let aggregateVisitor = ChangeVisitor(
 			willBegin: { visitors.forEach { v in v.willBegin() } },
 			didEnd: { tree in visitors.forEach { v in v.didEnd(tree) } },
 			willVisitPlatform: { platform in
-				tree.append(.init(value: platform.any.name))
+				tree.append(.init(value: platform.change(keyPath: \.name)))
 
 				visitors.forEach { v in if v.shouldVisitPlatform(platform) { v.willVisitPlatform?(platform) } }
 			}, didVisitPlatform: { platform in
 				visitors.forEach { v in if v.shouldVisitPlatform(platform) { v.didVisitPlatform?(platform) } }
 			}, willVisitArchitecture: { architecture in
-				tree.last!.architectures.append(.init(value: architecture.any.name))
+				tree.last!.architectures.append(.init(value: architecture.change(keyPath: \.name)))
 
 				visitors.forEach { v in if v.shouldVisitArchitecture(architecture) { v.willVisitArchitecture?(architecture) } }
 			}, didVisitArchitecture: { architecture in
 				visitors.forEach { v in if v.shouldVisitArchitecture(architecture) { v.didVisitArchitecture?(architecture) } }
 			}, willVisitFramework: { framework in
-				tree.last!.architectures.last!.frameworks.append(.init(value: framework.any.name))
+				tree.last!.architectures.last!.frameworks.append(.init(value: framework.change(keyPath: \.name)))
 
 				visitors.forEach { v in if v.shouldVisitFramework(framework) { v.willVisitFramework?(framework) } }
 			}, didVisitFramework: { framework in
 				visitors.forEach { v in if v.shouldVisitFramework(framework) { v.didVisitFramework?(framework) } }
 			}, willVisitDependency: { dependency in
-				tree.last!.architectures.last!.frameworks.last!.dependencies.append(dependency.any.developerFacingValue)
+				tree.last!.architectures.last!.frameworks.last!.dependencies.append(dependency.change(keyPath: \.developerFacingValue))
 
 				visitors.forEach { v in if v.shouldVisitDependency(dependency) { v.willVisitDependency?(dependency) } }
 			}, didVisitDependency: { dependency in
 				visitors.forEach { v in if v.shouldVisitDependency(dependency) { v.didVisitDependency?(dependency) } }
 			}, willVisitNamedType: { namedType in
-				tree.last!.architectures.last!.frameworks.last!.namedTypes.append(.init(value: namedType.any.developerFacingValue))
+				tree.last!.architectures.last!.frameworks.last!.namedTypes.append(.init(value: namedType.change(keyPath: \.developerFacingValue)))
+				activeNamedTypeStack.append(tree.last!.architectures.last!.frameworks.last!.namedTypes.last!)
+
 				visitors.forEach { v in if v.shouldVisitNamedType(namedType) { v.willVisitNamedType?(namedType) } }
 			}, didVisitNamedType: { namedType in
+				activeNamedTypeStack.removeLast()
+
 				visitors.forEach { v in if v.shouldVisitNamedType(namedType) { v.didVisitNamedType?(namedType) } }
 			}, willVisitMember: { member in
+				if let namedType = tree.last!.architectures.last!.frameworks.last!.namedTypes.last {
+					namedType.members.append(member.change(keyPath: \.developerFacingValue))
+				} else {
+					tree.last!.architectures.last!.frameworks.last!.members.append(member.change(keyPath: \.developerFacingValue))
+				}
+
 				visitors.forEach { v in if v.shouldVisitMember(member) { v.willVisitMember?(member) } }
 			}, didVisitMember: { member in
 				visitors.forEach { v in if v.shouldVisitMember(member) { v.didVisitMember?(member) } }

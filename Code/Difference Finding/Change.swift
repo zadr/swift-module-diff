@@ -6,6 +6,19 @@ enum Change<T: Named> {
 	case unchanged(_ old: T, _ new: T)
 	case added(_ old: T, _ new: T)
 
+	func change(keyPath: KeyPath<T, String>) -> Change<String> {
+		switch self {
+		case .removed(let old, let new):
+			return .removed(old[keyPath: keyPath], new[keyPath: keyPath])
+		case .modified(let old, let new):
+			return .modified(old[keyPath: keyPath], new[keyPath: keyPath])
+		case .unchanged(let old, let new):
+			return .unchanged(old[keyPath: keyPath], new[keyPath: keyPath])
+		case .added(let old, let new):
+			return .added(old[keyPath: keyPath], new[keyPath: keyPath])
+		}
+	}
+
 	var kind: String {
 		switch self {
 		case .removed(_, _):
@@ -146,3 +159,11 @@ enum Change<T: Named> {
 		return results
 	}
 }
+
+extension Change: Codable where T: Codable {}
+
+extension Change: Comparable where T: Comparable {}
+
+extension Change: Equatable where T: Equatable {}
+
+extension Change: Hashable where T: Hashable {}

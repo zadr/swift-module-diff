@@ -65,55 +65,74 @@ extension Summarizer {
 
 <html lang="en-US">
 """
+
+				func append(members m: [Change<String>], namedTypes: [Summarizer.Tree.Platform.Architecture.Framework.NamedType], includeTypeName: Bool = false, idStack: [String], depth: Int = 0) {
+					let id = idStack.joined(separator: " ")
+					let prefix = String(repeating: "\t", count: depth)
+					let members = m.filter {
+						if case .unchanged(_, _) = $0 { return false }
+							  return true
+						  }
+					if !members.isEmpty {
+						html += "\(prefix)\t\t\t\t<details id=\"\(id) members\">\n"
+						if includeTypeName {
+							html += "\(prefix)\t\t\t\t\t<summary>\(idStack.last!)</summary>\n"
+						} else {
+							html += "\(prefix)\t\t\t\t\t<summary>Members</summary>\n"
+						}
+
+						html += "\(prefix)\t\t\t\t\t<ul>\n"
+						for member in members.sorted() {
+							html += "\(prefix)\t\t\t\t\t\t\t<li>\(member)</li>\n"
+						}
+						html += "\(prefix)\t\t\t\t\t</ul>\n"
+						html += "\(prefix)\t\t\t\t\t</details>\n"
+					}
+
+					if !namedTypes.isEmpty {
+						html += "\(prefix)\t\t\t\t<details id=\"\(id) types\">\n"
+						if includeTypeName {
+							html += "\(prefix)\t\t\t\t\t<summary>\(idStack.last!)</summary>\n"
+						} else {
+							html += "\(prefix)\t\t\t\t\t<summary>Types</summary>\n"
+						}
+						for type in namedTypes.sorted() {
+//							html += "\(prefix)\t\t\t\t\t\t\t<span>\(type.value)</span>\n"
+							append(members: type.members, namedTypes: type.types, includeTypeName: true, idStack: idStack + [type.value.any], depth: depth + 1)
+						}
+						html += "\(prefix)\t\t\t\t\t</details>\n"
+					}
+				}
+
 				for platform in tree.sorted() {
-					html += "\t<details id=\"Platform: \(platform.value)\">\n"
-					html += "\t<summary>Platform: \(platform.value)</summary>\n"
+					html += "\t<details id=\"Platform: \(platform.value.any)\">\n"
+					html += "\t<summary>Platform: \(platform.value.any)</summary>\n"
 
 					for architecture in platform.architectures.sorted() {
-						html += "\t\t<details id=\"Platform: \(platform.value) Architecture: \(architecture.value)\">\n"
-						html += "\t\t<summary>Architecture: \(architecture.value)</summary>\n"
+						html += "\t\t<details id=\"Platform: \(platform.value.any) Architecture: \(architecture.value.any)\">\n"
+						html += "\t\t<summary>Architecture: \(architecture.value.any)</summary>\n"
 
 						for framework in architecture.frameworks.sorted() {
-							html += "\t\t\t<details id=\"Platform: \(platform.value) Architecture: \(architecture.value) Framework: \(framework.value)\">\n"
-							html += "\t\t\t<summary>Framework: \(framework.value)</summary>\n"
+							html += "\t\t\t<details id=\"Platform: \(platform.value.any) Architecture: \(architecture.value.any) Framework: \(framework.value.any)\">\n"
+							html += "\t\t\t<summary>Framework: \(framework.value.any)</summary>\n"
 
-							let dependencies = framework.dependencies
+							let dependencies = framework.dependencies.filter {
+								if case .unchanged(_, _) = $0 { return false }
+								return true
+							}
 							if !dependencies.isEmpty {
-								html += "\t\t\t\t<details id=\"Platform: \(platform.value) Architecture: \(architecture.value) Framework: \(framework.value) dependencies\">\n"
-								html += "\t\t\t\t\t<summary>dependencies</summary>\n"
-								html += "\t\t\t\t\t\t<table>\n"
+								html += "\t\t\t\t<details id=\"Platform: \(platform.value.any) Architecture: \(architecture.value.any) Framework: \(framework.value.any) dependencies\">\n"
+								html += "\t\t\t\t\t<summary>Dependencies</summary>\n"
+								html += "\t\t\t\t\t\t<ul>\n"
 								for dependency in dependencies.sorted() {
-									html += "\t\t\t\t\t\t\t<tr><td>\(dependency)</td>></tr>\n"
+									html += "\t\t\t\t\t\t\t<li>\(dependency)</li>\n"
 								}
-								html += "\t\t\t\t\t\t</table>\n"
+								html += "\t\t\t\t\t\t</ul>\n"
 								html += "\t\t\t\t\t</details>\n"
 							}
 
-							// TODO: nest members + types recursively
-							let members = framework.members
-							if !members.isEmpty {
-								html += "\t\t\t\t<details id=\"Platform: \(platform.value) Architecture: \(architecture.value) Framework: \(framework.value) members\">\n"
-								html += "\t\t\t\t\t<summary>members</summary>\n"
-								html += "\t\t\t\t\t\t<table>\n"
-								for member in members.sorted() {
-									html += "\t\t\t\t\t\t\t<tr><td>\(member)</td>></tr>\n"
-								}
-								html += "\t\t\t\t\t\t</table>\n"
-								html += "\t\t\t\t\t</details>\n"
-							}
-
-							let types = framework.namedTypes
-							if !types.isEmpty {
-								html += "\t\t\t\t<details id=\"Platform: \(platform.value) Architecture: \(architecture.value) Framework: \(framework.value) types\">\n"
-								html += "\t\t\t\t\t<summary>types</summary>\n"
-								html += "\t\t\t\t\t\t<table>\n"
-								for type in types.sorted() {
-									html += "\t\t\t\t\t\t\t<tr><td>\(type.value)</td></tr>\n"
-								}
-								html += "\t\t\t\t\t\t</table>\n"
-								html += "\t\t\t\t\t</details>\n"
-							}
-							html += "\t\t\t</details>\n"
+							append(members: framework.members, namedTypes: framework.namedTypes, idStack: ["Platform: \(platform.value.any) Architecture: \(architecture.value.any) Framework: \(framework.value.any)"])
+							html += "\(framework.value)\t\t\t</details>\n"
 						}
 						html += "\t\t</details>\n"
 					}
