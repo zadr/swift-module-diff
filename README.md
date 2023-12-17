@@ -26,8 +26,6 @@ Swift is a big language, and there is still more to track. Things missing includ
 
 Beyond parsing of `swiftinterface` files: diffing to show Framework changes, Data Type / Member changes, and Import changes hasn't been completed yet
 
-And the output isn't written to disk in a readable format yet.
-
 #### But Why?
 Having everything that changed one one page can be nice
 
