@@ -16,3 +16,4 @@ syntax: glob
 *DerivedData*
 *.xcworkspacedata
 *.xcodeproj/project.xcworkspace
+*.swiftpm
