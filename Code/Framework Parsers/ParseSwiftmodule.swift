@@ -49,6 +49,12 @@ private class SwiftmoduleTracker: SyntaxVisitor {
 		return super.visit(node)
 	}
 
+	override func visit(_ node: ActorDeclSyntax) -> SyntaxVisitorContinueKind {
+		let a = ParseAnyType<ActorTracker>(node: node).run()
+		framework.namedTypes.append(a)
+		return super.visit(node)
+	}
+
 	override func visit(_ node: StructDeclSyntax) -> SyntaxVisitorContinueKind {
 		let s = ParseAnyType<StructTracker>(node: node).run()
 		framework.namedTypes.append(s)

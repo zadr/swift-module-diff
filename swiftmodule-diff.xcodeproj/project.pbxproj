@@ -12,6 +12,7 @@
 		192C58C72A3FFAA7001873C9 /* InoutTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 192C58C62A3FFAA7001873C9 /* InoutTracker.swift */; };
 		192EBC7B2B1431B500747152 /* Summarizer+Console.swift in Sources */ = {isa = PBXBuildFile; fileRef = 192EBC7A2B1431B500747152 /* Summarizer+Console.swift */; };
 		192EBC7D2B1478AF00747152 /* Summarizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 192EBC7C2B1478AF00747152 /* Summarizer.swift */; };
+		192EBC7F2B1540F100747152 /* ActorTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 192EBC7E2B1540F100747152 /* ActorTracker.swift */; };
 		193248432B2EDE44002B239B /* Summarizer+JSON.swift in Sources */ = {isa = PBXBuildFile; fileRef = 193248422B2EDE44002B239B /* Summarizer+JSON.swift */; };
 		193248472B2EE04E002B239B /* Summarizer+Signpost.swift in Sources */ = {isa = PBXBuildFile; fileRef = 193248462B2EE04E002B239B /* Summarizer+Signpost.swift */; };
 		196081992A2EC8BF006A6286 /* ParseSwiftmodule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 196081982A2EC8BF006A6286 /* ParseSwiftmodule.swift */; };
@@ -69,6 +70,7 @@
 		192C58C62A3FFAA7001873C9 /* InoutTracker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InoutTracker.swift; sourceTree = "<group>"; };
 		192EBC7A2B1431B500747152 /* Summarizer+Console.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Summarizer+Console.swift"; sourceTree = "<group>"; };
 		192EBC7C2B1478AF00747152 /* Summarizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Summarizer.swift; sourceTree = "<group>"; };
+		192EBC7E2B1540F100747152 /* ActorTracker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActorTracker.swift; sourceTree = "<group>"; };
 		193248422B2EDE44002B239B /* Summarizer+JSON.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Summarizer+JSON.swift"; sourceTree = "<group>"; };
 		193248462B2EE04E002B239B /* Summarizer+Signpost.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Summarizer+Signpost.swift"; sourceTree = "<group>"; };
 		196081982A2EC8BF006A6286 /* ParseSwiftmodule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParseSwiftmodule.swift; sourceTree = "<group>"; };
@@ -189,6 +191,7 @@
 			isa = PBXGroup;
 			children = (
 				19FF610F2A3FAB71001303FB /* AssociatedTypeTracker.swift */,
+				192EBC7E2B1540F100747152 /* ActorTracker.swift */,
 				19FF60EF2A3FA270001303FB /* ClassTracker.swift */,
 				19FF60F12A3FA277001303FB /* EnumTracker.swift */,
 				19FF60F72A3FA2AC001303FB /* ExtensionTracker.swift */,
@@ -324,6 +327,7 @@
 				190E3DFF2A41671400749773 /* Change.swift in Sources */,
 				19D0EBE02A40E043003C8B19 /* Dependency.swift in Sources */,
 				19FF60F02A3FA270001303FB /* ClassTracker.swift in Sources */,
+				192EBC7F2B1540F100747152 /* ActorTracker.swift in Sources */,
 				19FF61182A3FD4F5001303FB /* InheritanceTracker.swift in Sources */,
 				19FF60FE2A3FA538001303FB /* OperatorTracker.swift in Sources */,
 				19FF60F42A3FA27E001303FB /* ProtocolTracker.swift in Sources */,
