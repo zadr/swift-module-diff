@@ -47,7 +47,7 @@ extension Summarizer {
 			willBegin: {
 				beginSignpost("signposting")
 			},
-			didEnd: {
+			didEnd: { _ in
 				endSignpost("signposting")
 			},
 			willVisitPlatform: { change in

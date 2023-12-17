@@ -2,14 +2,12 @@ import Foundation
 
 extension Summarizer {
 	static func htmlVisitor(from fromVersion: Version, to toVersion: Version, root: String) -> ChangeVisitor {
-		var html = ""
 		return ChangeVisitor(
-			willBegin: {
+			didEnd: { tree in
 				let title = "swiftmodule \(fromVersion.name) to Xcode \(toVersion.name) Diff"
 				let description = "API changes between Xcode \(fromVersion.name) and Xcode \(toVersion.name)"
 
-				print("starting html")
-				html += """
+				var html = """
 <!DOCTYPE html>
 <head>
 	<meta charset="utf-8">
@@ -24,99 +22,66 @@ extension Summarizer {
 	<meta property="og:site_name" content="example.com">
 	<meta property="og:type" content="website">
 </head>
+
 <html lang="en-US">
 """
-			},
-			didEnd: {
-html += """
-</html>
-"""
+				for platform in tree.sorted() {
+					html += "\t<details id=\"Platform: \(platform.value)\">\n"
+					html += "\t<summary>Platform: \(platform.value)</summary>\n"
+
+					for architecture in platform.architectures.sorted() {
+						html += "\t\t<details id=\"Platform: \(platform.value) Architecture: \(architecture.value)\">\n"
+						html += "\t\t<summary>Architecture: \(architecture.value)</summary>\n"
+
+						for framework in architecture.frameworks.sorted() {
+							html += "\t\t\t<details id=\"Platform: \(platform.value) Architecture: \(architecture.value) Framework: \(framework.value)\">\n"
+							html += "\t\t\t<summary>Framework: \(framework.value)</summary>\n"
+
+							let dependencies = framework.dependencies
+							if !dependencies.isEmpty {
+								html += "\t\t\t\t<details id=\"Platform: \(platform.value) Architecture: \(architecture.value) Framework: \(framework.value) dependencies\">\n"
+								html += "\t\t\t\t\t<summary>dependencies</summary>\n"
+								html += "\t\t\t\t\t\t<table>\n"
+								for dependency in dependencies.sorted() {
+									html += "\t\t\t\t\t\t\t<tr><td>\(dependency)</td>></tr>\n"
+								}
+								html += "\t\t\t\t\t\t</table>\n"
+								html += "\t\t\t\t\t</details>\n"
+							}
+
+							// TODO: nest members + types recursively
+							let members = framework.members
+							if !members.isEmpty {
+								html += "\t\t\t\t<details id=\"Platform: \(platform.value) Architecture: \(architecture.value) Framework: \(framework.value) members\">\n"
+								html += "\t\t\t\t\t<summary>members</summary>\n"
+								html += "\t\t\t\t\t\t<table>\n"
+								for member in members.sorted() {
+									html += "\t\t\t\t\t\t\t<tr><td>\(member)</td>></tr>\n"
+								}
+								html += "\t\t\t\t\t\t</table>\n"
+								html += "\t\t\t\t\t</details>\n"
+							}
+
+							let types = framework.namedTypes
+							if !types.isEmpty {
+								html += "\t\t\t\t<details id=\"Platform: \(platform.value) Architecture: \(architecture.value) Framework: \(framework.value) types\">\n"
+								html += "\t\t\t\t\t<summary>types</summary>\n"
+								html += "\t\t\t\t\t\t<table>\n"
+								for type in types.sorted() {
+									html += "\t\t\t\t\t\t\t<tr><td>\(type.value)</td></tr>\n"
+								}
+								html += "\t\t\t\t\t\t</table>\n"
+								html += "\t\t\t\t\t</details>\n"
+							}
+							html += "\t\t\t</details>\n"
+						}
+						html += "\t\t</details>\n"
+					}
+					html += "\t</details>\n"
+				}
+				html += "</html>\n"
 				let path = ("\(root)/swiftmodule-diff-\(fromVersion.name)-to-\(toVersion.name).html" as NSString).expandingTildeInPath
 				try! html.write(to: URL(fileURLWithPath: path), atomically: true, encoding: .utf8)
-			},
-			willVisitPlatform: { change in
-				html += """
-
-	<details id="\(change.any.name)">
-		<summary>
-			\(change.kind) \(change.any.name)
-"""
-//				  <details id="x">
-//					<summary>X</summary>
-//					Long text about x.
-//				  </details>
-//				<a href="#x>Go to X</a>
-			},
-			didVisitPlatform: { change in
-				html += """
-		</summary>
-	</details>
-"""
-			},
-			willVisitArchitecture: { change in
-				html += """
-	<details id="\(change.any.name)">
-		<summary>
-			\(change.kind) \(change.any.name)
-"""
-			},
-			didVisitArchitecture: { change in
-				html += """
-		</summary>
-	</details>
-"""
-			},
-			willVisitFramework: { change in
-				html += """
-	<details id="\(change.any.name)">
-		<summary>
-			\(change.kind) \(change.any.name)
-"""
-			},
-			didVisitFramework: { change in
-				html += """
-		</summary>
-	</details>
-"""
-			},
-			willVisitDependency: { change in
-				html += """
-	<details id="\(change.any.name)">
-		<summary>
-			\(change.kind) \(change.any.developerFacingValue)
-"""
-			},
-			didVisitDependency: { change in
-				html += """
-		</summary>
-	</details>
-"""
-			},
-			willVisitNamedType: { change in
-				html += """
-	<details id="\(change.any.name)">
-		<summary>
-			\(change.kind) \(change.any.developerFacingValue)
-"""
-			},
-			didVisitNamedType: { change in
-				html += """
-		</summary>
-	</details>
-"""
-			},
-			willVisitMember: { change in
-				html += """
-	<details id="\(change.any.name)">
-		<summary>
-			\(change.kind) \(change.any.developerFacingValue)
-"""
-			},
-			didVisitMember: { change in
-				html += """
-		</summary>
-	</details>
-"""
 			}
 		)
 	}

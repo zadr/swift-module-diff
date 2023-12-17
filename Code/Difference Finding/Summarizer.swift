@@ -1,11 +1,102 @@
 import Foundation
 
 struct Summarizer {
+	enum Tree {
+		class Platform: Equatable, Hashable, Comparable, Codable {
+			class Architecture: Equatable, Hashable, Comparable, Codable {
+				class Framework: Equatable, Hashable, Comparable, Codable {
+					class NamedType: Equatable, Hashable, Comparable, Codable {
+						let value: String
+
+						var members = [String]()
+						var types = [Summarizer.Tree.Platform.Architecture.Framework.NamedType]()
+
+						init(value: String) {
+							self.value = value
+						}
+
+						static func ==(lhs: Summarizer.Tree.Platform.Architecture.Framework.NamedType, rhs: Summarizer.Tree.Platform.Architecture.Framework.NamedType) -> Bool {
+							lhs.value == rhs.value
+						}
+
+						func hash(into hasher: inout Hasher) {
+							hasher.combine(value)
+						}
+
+						static func <(lhs: Summarizer.Tree.Platform.Architecture.Framework.NamedType, rhs: Summarizer.Tree.Platform.Architecture.Framework.NamedType) -> Bool {
+							return lhs.value < rhs.value
+						}
+					}
+
+					let value: String
+					var dependencies = [String]()
+					var members = [String]()
+					var namedTypes = [Summarizer.Tree.Platform.Architecture.Framework.NamedType]()
+
+					init(value: String) {
+						self.value = value
+					}
+
+					static func ==(lhs: Summarizer.Tree.Platform.Architecture.Framework, rhs: Summarizer.Tree.Platform.Architecture.Framework) -> Bool {
+						lhs.value == rhs.value
+					}
+
+					func hash(into hasher: inout Hasher) {
+						hasher.combine(value)
+					}
+
+					static func <(lhs: Summarizer.Tree.Platform.Architecture.Framework, rhs: Summarizer.Tree.Platform.Architecture.Framework) -> Bool {
+						return lhs.value < rhs.value
+					}
+				}
+
+				let value: String
+				var frameworks = [Summarizer.Tree.Platform.Architecture.Framework]()
+
+				init(value: String) {
+					self.value = value
+				}
+
+				static func ==(lhs: Summarizer.Tree.Platform.Architecture, rhs: Summarizer.Tree.Platform.Architecture) -> Bool {
+					lhs.value == rhs.value
+				}
+
+				func hash(into hasher: inout Hasher) {
+					hasher.combine(value)
+				}
+
+				static func <(lhs: Summarizer.Tree.Platform.Architecture, rhs: Summarizer.Tree.Platform.Architecture) -> Bool {
+					return lhs.value < rhs.value
+				}
+			}
+
+			let value: String
+			var architectures = [Summarizer.Tree.Platform.Architecture]()
+
+			init(value: String) {
+				self.value = value
+			}
+
+			static func ==(lhs: Summarizer.Tree.Platform, rhs: Summarizer.Tree.Platform) -> Bool {
+				lhs.value == rhs.value
+			}
+
+			func hash(into hasher: inout Hasher) {
+				hasher.combine(value)
+			}
+
+			static func <(lhs: Summarizer.Tree.Platform, rhs: Summarizer.Tree.Platform) -> Bool {
+				return lhs.value < rhs.value
+			}
+		}
+	}
+
 	typealias Version = OperatingSystemVersion
+	typealias StorageTree = [Summarizer.Tree.Platform]
 
 	struct ChangeVisitor {
 		var willBegin: (() -> Void) = {}
-		var didEnd: (() -> Void) = {}
+		var didEnd: ((StorageTree) -> Void) = { _ in }
 
 		var shouldVisitPlatform: ((Change<SwiftmoduleFinder.Platform>) -> Bool) = { _ in true }
 		var willVisitPlatform: ((Change<SwiftmoduleFinder.Platform>) -> Void)? = nil
@@ -41,27 +132,37 @@ struct Summarizer {
 	}
 
 	func summarize(visitors: ChangeVisitor?..., trace: Bool) {
+		var tree = StorageTree()
 		let visitors = visitors.compactMap { $0 }
 		let aggregateVisitor = ChangeVisitor(
 			willBegin: { visitors.forEach { v in v.willBegin() } },
-			didEnd: { visitors.forEach { v in v.didEnd() } },
+			didEnd: { tree in visitors.forEach { v in v.didEnd(tree) } },
 			willVisitPlatform: { platform in
+				tree.append(.init(value: platform.any.name))
+
 				visitors.forEach { v in if v.shouldVisitPlatform(platform) { v.willVisitPlatform?(platform) } }
 			}, didVisitPlatform: { platform in
 				visitors.forEach { v in if v.shouldVisitPlatform(platform) { v.didVisitPlatform?(platform) } }
 			}, willVisitArchitecture: { architecture in
+				tree.last!.architectures.append(.init(value: architecture.any.name))
+
 				visitors.forEach { v in if v.shouldVisitArchitecture(architecture) { v.willVisitArchitecture?(architecture) } }
 			}, didVisitArchitecture: { architecture in
 				visitors.forEach { v in if v.shouldVisitArchitecture(architecture) { v.didVisitArchitecture?(architecture) } }
 			}, willVisitFramework: { framework in
+				tree.last!.architectures.last!.frameworks.append(.init(value: framework.any.name))
+
 				visitors.forEach { v in if v.shouldVisitFramework(framework) { v.willVisitFramework?(framework) } }
 			}, didVisitFramework: { framework in
 				visitors.forEach { v in if v.shouldVisitFramework(framework) { v.didVisitFramework?(framework) } }
 			}, willVisitDependency: { dependency in
+				tree.last!.architectures.last!.frameworks.last!.dependencies.append(dependency.any.developerFacingValue)
+
 				visitors.forEach { v in if v.shouldVisitDependency(dependency) { v.willVisitDependency?(dependency) } }
 			}, didVisitDependency: { dependency in
 				visitors.forEach { v in if v.shouldVisitDependency(dependency) { v.didVisitDependency?(dependency) } }
 			}, willVisitNamedType: { namedType in
+				tree.last!.architectures.last!.frameworks.last!.namedTypes.append(.init(value: namedType.any.developerFacingValue))
 				visitors.forEach { v in if v.shouldVisitNamedType(namedType) { v.willVisitNamedType?(namedType) } }
 			}, didVisitNamedType: { namedType in
 				visitors.forEach { v in if v.shouldVisitNamedType(namedType) { v.didVisitNamedType?(namedType) } }
@@ -74,7 +175,7 @@ struct Summarizer {
 
 		aggregateVisitor.willBegin()
 		enumeratePlatformDifferences(visitor: aggregateVisitor)
-		aggregateVisitor.didEnd()
+		aggregateVisitor.didEnd(tree)
 	}
 }
 
