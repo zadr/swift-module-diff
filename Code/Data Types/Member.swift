@@ -17,7 +17,7 @@ struct Member {
 		case `set`
 	}
 
-	enum Decorator: String, Codable, Hashable, Sendable {
+	enum Decorator: String, Codable, Equatable, Hashable, Sendable {
 		case `final`
 		case `open`
 		case `static`

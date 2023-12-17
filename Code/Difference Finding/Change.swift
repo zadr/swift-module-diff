@@ -26,30 +26,15 @@ enum Change<T: Named> {
 		}
 	}
 
+	// MARK: - Differences
+
 	/// Find differences between two sets, e.g. any platforms that were introduced or removed across packages, such as **visionOS** being introduced
 	/// architectures that were introduced, modified, or removed across packages like _armv6_ being removed or _arm64_ being added,
 	/// or modifications like a type becoming `Sendable`.
-	static func differences<U: Named & Equatable & Hashable>(from old: any Sequence<U>, to new: any Sequence<U>) -> [Change<U>] {
+	static func differences<U: Attributed & Decorated & Named & Equatable & Hashable>(from old: any Sequence<U>, to new: any Sequence<U>) -> [Change<U>] {
 		func calculateModifiedOrUnchanged(between old: U, and new: U) -> Change<U> {
 			precondition(old.name == new.name)
-
-			if let oldAD = old as? Attributed & Decorated, let newAD = new as? Attributed & Decorated {
-				if oldAD.attributes == newAD.attributes && oldAD.decorators == newAD.decorators {
-					return .unchanged(old, new)
-				}
-				return .modified(old, new)
-			}
-
-			if let oldA = old as? Attributed, let newA = new as? Attributed {
-				if oldA.attributes == newA.attributes {
-					return .unchanged(old, new)
-				}
-
-				return .modified(old, new)
-			}
-
-			// no attributes + no decorators = same name but nothing else to check against
-			return .unchanged(old, new)
+			return (old.decorators == new.decorators && old.attributes == new.attributes) ? .unchanged(old, new) : .modified(old, new)
 		}
 
 		let oldSet = Set(old)
@@ -59,14 +44,103 @@ enum Change<T: Named> {
 			if !newSet.contains(value) {
 				results.append(.removed(value, value))
 			} else {
-				results.append(calculateModifiedOrUnchanged(between: value, and: value))
+				let newValue = newSet.first { $0.name == value.name }!
+				results.append(calculateModifiedOrUnchanged(between: value, and: newValue))
 			}
 		}
 		for value in newSet {
 			if !oldSet.contains(value) {
 				results.append(.added(value, value))
 			}
-			// else { diff already calculated from old iteration }
+			// else { remove/updated/unchanged diff calculated from old iteration }
+		}
+
+		return results
+	}
+
+	/// Find differences between two sets, e.g. any platforms that were introduced or removed across packages, such as **visionOS** being introduced
+	/// architectures that were introduced, modified, or removed across packages like _armv6_ being removed or _arm64_ being added,
+	/// or modifications like a type becoming `Sendable`.
+	static func differences<U: Attributed & Named & Equatable & Hashable>(from old: any Sequence<U>, to new: any Sequence<U>) -> [Change<U>] {
+		func calculateModifiedOrUnchanged(between old: U, and new: U) -> Change<U> {
+			precondition(old.name == new.name)
+			return (old.attributes == new.attributes) ? .unchanged(old, new) : .modified(old, new)
+		}
+		let oldSet = Set(old)
+		let newSet = Set(new)
+		var results = [Change<U>]()
+		for value in oldSet {
+			if !newSet.contains(value) {
+				results.append(.removed(value, value))
+			} else {
+				let newValue = newSet.first { $0.name == value.name }!
+				results.append(calculateModifiedOrUnchanged(between: value, and: newValue))
+			}
+		}
+		for value in newSet {
+			if !oldSet.contains(value) {
+				results.append(.added(value, value))
+			}
+			// else { remove/updated/unchanged diff calculated from old iteration }
+		}
+
+		return results
+	}
+
+	/// Find differences between two sets, e.g. any platforms that were introduced or removed across packages, such as **visionOS** being introduced
+	/// architectures that were introduced, modified, or removed across packages like _armv6_ being removed or _arm64_ being added,
+	/// or modifications like a type becoming `Sendable`.
+	static func differences<U: Decorated & Named & Equatable & Hashable>(from old: any Sequence<U>, to new: any Sequence<U>) -> [Change<U>] {
+		func calculateModifiedOrUnchanged(between old: U, and new: U) -> Change<U> {
+			precondition(old.name == new.name)
+			return (old.decorators == new.decorators) ? .unchanged(old, new) : .modified(old, new)
+		}
+
+		let oldSet = Set(old)
+		let newSet = Set(new)
+		var results = [Change<U>]()
+		for value in oldSet {
+			if !newSet.contains(value) {
+				results.append(.removed(value, value))
+			} else {
+				let newValue = newSet.first { $0.name == value.name }!
+				results.append(calculateModifiedOrUnchanged(between: value, and: newValue))
+			}
+		}
+		for value in newSet {
+			if !oldSet.contains(value) {
+				results.append(.added(value, value))
+			}
+			// else { remove/updated/unchanged diff calculated from old iteration }
+		}
+
+		return results
+	}
+
+	/// Find differences between two sets, e.g. any platforms that were introduced or removed across packages, such as **visionOS** being introduced
+	/// architectures that were introduced, modified, or removed across packages like _armv6_ being removed or _arm64_ being added,
+	/// or modifications like a type becoming `Sendable`.
+	static func differences<U: Equatable & Hashable>(from old: any Sequence<U>, to new: any Sequence<U>) -> [Change<U>] {
+		func calculateModifiedOrUnchanged(between old: U, and new: U) -> Change<U> {
+			return (old == new) ? .unchanged(old, new) : .modified(old, new)
+		}
+
+		let oldSet = Set(old)
+		let newSet = Set(new)
+		var results = [Change<U>]()
+		for value in oldSet {
+			if !newSet.contains(value) {
+				results.append(.removed(value, value))
+			} else {
+				let newValue = newSet.first { $0.name == value.name }!
+				results.append(calculateModifiedOrUnchanged(between: value, and: newValue))
+			}
+		}
+		for value in newSet {
+			if !oldSet.contains(value) {
+				results.append(.added(value, value))
+			}
+			// else { remove/updated/unchanged diff calculated from old iteration }
 		}
 
 		return results

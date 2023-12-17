@@ -5,7 +5,9 @@ protocol Attributed {
 }
 
 protocol Decorated {
-	var decorators: Set<Member.Decorator> { get }
+	associatedtype Decorator: Hashable, Equatable
+
+	var decorators: Set<Decorator> { get }
 }
 
 protocol Named {

@@ -24,7 +24,7 @@ struct Framework {
 
 // MARK: - Swift Protocol Conformances
 
-extension Framework: Codable, CustomStringConvertible, Hashable, Sendable {
+extension Framework: Codable, CustomStringConvertible, Equatable, Hashable, Sendable {
 	func hash(into hasher: inout Hasher) {
 		hasher.combine(name)
 	}

@@ -1,8 +1,20 @@
 import Foundation
 
 struct NamedType {
+	enum Decorator: String, Equatable, Codable, Hashable, Sendable {
+		case `final`
+		case `open`
+		case `static`
+		case `throwing`
+		case `async`
+		case `weak`
+		case `unsafe`
+		case `unowned`
+	}
+
 	enum Kind: String, Codable, Hashable {
 		case unknown
+		case `actor`
 		case `class`
 		case `enum`
 		case `struct`
@@ -12,6 +24,7 @@ struct NamedType {
 	}
 
 	var attributes: Set<Attribute> = .init()
+	var decorators: Set<Decorator> = .init()
 	var kind: Kind = .unknown
 	var isFinal: Bool = false
 	var isOpen: Bool = false
@@ -52,7 +65,7 @@ extension NamedType: Codable, CustomStringConvertible, Hashable, Sendable {
 
 // MARK: - Custom Protocol Conformances
 
-extension NamedType: Attributed, Named, Displayable {
+extension NamedType: Attributed, Decorated, Named, Displayable {
 	var developerFacingValue: String {
 		let attributes = self.attributes.sorted { $0.name > $1.name }.map { $0.developerFacingValue }.joined(separator: " ")
 
