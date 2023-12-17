@@ -1,7 +1,12 @@
 import Foundation
 
 struct Summarizer {
+	typealias Version = OperatingSystemVersion
+
 	struct ChangeVisitor {
+		var willBegin: (() -> Void) = {}
+		var didEnd: (() -> Void) = {}
+
 		var shouldVisitPlatform: ((Change<SwiftmoduleFinder.Platform>) -> Bool) = { _ in true }
 		var willVisitPlatform: ((Change<SwiftmoduleFinder.Platform>) -> Void)? = nil
 		var didVisitPlatform: ((Change<SwiftmoduleFinder.Platform>) -> Void)? = nil
@@ -207,4 +212,8 @@ extension Summarizer {
 			visitor.didVisitMember?(memberChange)
 		}
 	}
+}
+
+extension Summarizer.Version {
+	var name: String { "\(majorVersion).\(minorVersion).\(patchVersion)" }
 }

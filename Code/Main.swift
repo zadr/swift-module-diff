@@ -53,6 +53,8 @@ struct Main: ParsableCommand {
 		let toVersion = Summarizer.Version(majorVersion: 15, minorVersion: 1, patchVersion: 0)
 
 		let consoleVisitor = console ? Summarizer.consoleVisitor() : nil
+		let htmlVisitor = html ? Summarizer.htmlVisitor(from: fromVersion, to: toVersion, root: output) : nil
+		let jsonVisitor = json ? Summarizer.jsonVisitor(from: fromVersion, to: toVersion, root: output) : nil
 		let signpostVisitor = trace ? Summarizer.signpostVisitor(from: fromVersion, to: toVersion) : nil
 
 		Summarizer(old: oldFrameworks, new: newFrameworks)
