@@ -35,11 +35,11 @@ struct Summarizer {
 		self.new = new
 	}
 
-	func summarize(consoleVisitor: ChangeVisitor? = nil, htmlVisitor: ChangeVisitor? = nil, jsonVisitor: ChangeVisitor? = nil, trace: Bool) {
-		precondition(consoleVisitor != nil || htmlVisitor != nil || jsonVisitor != nil)
-
-		let visitors = [consoleVisitor, htmlVisitor, jsonVisitor].compactMap { $0 }
+	func summarize(visitors: ChangeVisitor?..., trace: Bool) {
+		let visitors = visitors.compactMap { $0 }
 		let aggregateVisitor = ChangeVisitor(
+			willBegin: { visitors.forEach { v in v.willBegin() } },
+			didEnd: { visitors.forEach { v in v.didEnd() }},
 			willVisitPlatform: { platform in
 				visitors.forEach { v in if v.shouldVisitPlatform(platform) { v.willVisitPlatform?(platform) } }
 			}, didVisitPlatform: { platform in

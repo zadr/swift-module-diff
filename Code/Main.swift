@@ -53,9 +53,7 @@ struct Main: ParsableCommand {
 
 		Summarizer(old: oldFrameworks, new: newFrameworks)
 			.summarize(
-				consoleVisitor: consoleVisitor,
-				htmlVisitor: nil,
-				jsonVisitor: nil,
+				visitors: consoleVisitor, htmlVisitor, jsonVisitor,
 				trace: trace
 			)
 
