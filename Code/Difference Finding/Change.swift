@@ -19,6 +19,13 @@ enum Change<T: Named> {
 		}
 	}
 
+	var isUnchanged: Bool {
+		if case .unchanged(_, _) = self {
+			return true
+		}
+		return false
+	}
+
 	var kind: String {
 		switch self {
 		case .removed(_, _):

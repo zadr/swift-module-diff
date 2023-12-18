@@ -17,6 +17,12 @@ struct Summarizer {
 						var members = [Change<String>]()
 						var namedTypes = [Summarizer.Tree.Platform.Architecture.Framework.NamedType]()
 
+						var isInteresting: Bool {
+							return !value.isUnchanged ||
+								members.reduce(false) { $0 || !$1.isUnchanged } ||
+								namedTypes.reduce(false) { $0 || $1.isInteresting }
+						}
+
 						init(value: Change<String>) {
 							self.value = value
 						}

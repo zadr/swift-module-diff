@@ -66,14 +66,11 @@ extension Summarizer {
 <html lang="en-US">
 """
 
-				func append(members m: [Change<String>], namedTypes: [Summarizer.Tree.Platform.Architecture.Framework.NamedType], includeTypeName: Bool = false, idStack: [String], depth: Int = 0) {
+				func append(members: [Change<String>], namedTypes: [Summarizer.Tree.Platform.Architecture.Framework.NamedType], includeTypeName: Bool = false, idStack: [String], depth: Int = 0) {
 					let id = idStack.joined(separator: " ")
 					let prefix = String(repeating: "\t", count: depth)
-					let members = m.filter {
-						if case .unchanged(_, _) = $0 { return false }
-							  return true
-						  }
-					if !members.isEmpty {
+					let filteredMembers = members.filter { !$0.isUnchanged }
+					if !filteredMembers.isEmpty {
 						html += "\(prefix)\t\t\t\t<details id=\"\(id) members\">\n"
 						if includeTypeName {
 							html += "\(prefix)\t\t\t\t\t<summary>\(idStack.last!)</summary>\n"
@@ -82,21 +79,22 @@ extension Summarizer {
 						}
 
 						html += "\(prefix)\t\t\t\t\t<ul>\n"
-						for member in members.sorted() {
+						for member in filteredMembers.sorted() {
 							html += "\(prefix)\t\t\t\t\t\t\t<li class=\"\(member.kind)\">\(member.any)</li>\n"
 						}
 						html += "\(prefix)\t\t\t\t\t</ul>\n"
 						html += "\(prefix)\t\t\t\t\t</details>\n"
 					}
 
-					if !namedTypes.isEmpty {
+					let filteredNamedTypes = namedTypes.filter { $0.isInteresting }
+					if !filteredNamedTypes.isEmpty {
 						html += "\(prefix)\t\t\t\t<details id=\"\(id) types\">\n"
 						if includeTypeName {
 							html += "\(prefix)\t\t\t\t\t<summary>\(idStack.last!)</summary>\n"
 						} else {
 							html += "\(prefix)\t\t\t\t\t<summary>Types</summary>\n"
 						}
-						for type in namedTypes.sorted() {
+						for type in filteredNamedTypes.sorted() {
 							append(members: type.members, namedTypes: type.namedTypes, includeTypeName: true, idStack: idStack + [type.value.any], depth: depth + 1)
 						}
 						html += "\(prefix)\t\t\t\t\t</details>\n"
@@ -112,16 +110,11 @@ extension Summarizer {
 						html += "\t\t<summary>\(architecture.value.any)</summary>\n"
 
 						for framework in architecture.frameworks.sorted() {
-							let dependencies = framework.dependencies.filter {
-								if case .unchanged(_, _) = $0 { return false }
-								return true
-							}
-							let members = framework.members.filter {
-								if case .unchanged(_, _) = $0 { return false }
-								return true
-							}
+							let dependencies = framework.dependencies.filter { !$0.isUnchanged }
+							let members = framework.members.filter { !$0.isUnchanged }
+							let namedTypes = framework.namedTypes.filter { $0.isInteresting }
 
-							guard !dependencies.isEmpty || !members.isEmpty else { continue } // TODO: also needs to track nested named type changes
+							if dependencies.isEmpty && members.isEmpty && namedTypes.isEmpty { continue }
 
 							html += "\t\t\t<details id=\"Platform: \(platform.value.any) Architecture: \(architecture.value.any) Framework: \(framework.value.any)\">\n"
 							html += "\t\t\t<summary>\(framework.value.any)</summary>\n"
