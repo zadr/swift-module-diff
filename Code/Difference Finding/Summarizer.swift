@@ -1,15 +1,21 @@
 import Foundation
 
+protocol Nested {
+	var namedTypes: [Summarizer.Tree.Platform.Architecture.Framework.NamedType] { get set }
+	var members: [Change<String>] { get set }
+}
+
 struct Summarizer {
 	enum Tree {
 		class Platform: Equatable, Hashable, Comparable, Codable {
 			class Architecture: Equatable, Hashable, Comparable, Codable {
-				class Framework: Equatable, Hashable, Comparable, Codable {
-					class NamedType: Equatable, Hashable, Comparable, Codable {
+				class Framework: Equatable, Hashable, Comparable, Codable, Nested {
+					class NamedType: Equatable, Hashable, Comparable, Codable, Named, Nested {
 						let value: Change<String>
 
+						var name: String { value.any }
 						var members = [Change<String>]()
-						var types = [Summarizer.Tree.Platform.Architecture.Framework.NamedType]()
+						var namedTypes = [Summarizer.Tree.Platform.Architecture.Framework.NamedType]()
 
 						init(value: Change<String>) {
 							self.value = value
@@ -134,7 +140,7 @@ struct Summarizer {
 	func summarize(visitors: ChangeVisitor?..., trace: Bool) {
 		var tree = StorageTree()
 
-		var activeNamedTypeStack = [Tree.Platform.Architecture.Framework.NamedType]()
+		var activeNamedTypeStack = [Nested]()
 
 		let visitors = visitors.compactMap { $0 }
 		let aggregateVisitor = ChangeVisitor(
@@ -154,9 +160,12 @@ struct Summarizer {
 				visitors.forEach { v in if v.shouldVisitArchitecture(architecture) { v.didVisitArchitecture?(architecture) } }
 			}, willVisitFramework: { framework in
 				tree.last!.architectures.last!.frameworks.append(.init(value: framework.change(keyPath: \.name)))
+				activeNamedTypeStack.append(tree.last!.architectures.last!.frameworks.last!)
 
 				visitors.forEach { v in if v.shouldVisitFramework(framework) { v.willVisitFramework?(framework) } }
 			}, didVisitFramework: { framework in
+				activeNamedTypeStack.removeLast()
+
 				visitors.forEach { v in if v.shouldVisitFramework(framework) { v.didVisitFramework?(framework) } }
 			}, willVisitDependency: { dependency in
 				tree.last!.architectures.last!.frameworks.last!.dependencies.append(dependency.change(keyPath: \.developerFacingValue))
@@ -165,20 +174,21 @@ struct Summarizer {
 			}, didVisitDependency: { dependency in
 				visitors.forEach { v in if v.shouldVisitDependency(dependency) { v.didVisitDependency?(dependency) } }
 			}, willVisitNamedType: { namedType in
-				tree.last!.architectures.last!.frameworks.last!.namedTypes.append(.init(value: namedType.change(keyPath: \.developerFacingValue)))
-				activeNamedTypeStack.append(tree.last!.architectures.last!.frameworks.last!.namedTypes.last!)
+				activeNamedTypeStack.append(Summarizer.Tree.Platform.Architecture.Framework.NamedType(value: namedType.change(keyPath: \.developerFacingValue)))
 
 				visitors.forEach { v in if v.shouldVisitNamedType(namedType) { v.willVisitNamedType?(namedType) } }
 			}, didVisitNamedType: { namedType in
-				activeNamedTypeStack.removeLast()
+				let completedType = activeNamedTypeStack.removeLast() as! Summarizer.Tree.Platform.Architecture.Framework.NamedType
+				var copy = activeNamedTypeStack.removeLast()
+				copy.namedTypes.append(completedType)
+				activeNamedTypeStack.append(copy)
 
 				visitors.forEach { v in if v.shouldVisitNamedType(namedType) { v.didVisitNamedType?(namedType) } }
 			}, willVisitMember: { member in
-				if let namedType = tree.last!.architectures.last!.frameworks.last!.namedTypes.last {
-					namedType.members.append(member.change(keyPath: \.developerFacingValue))
-				} else {
-					tree.last!.architectures.last!.frameworks.last!.members.append(member.change(keyPath: \.developerFacingValue))
-				}
+				var copy = activeNamedTypeStack.removeLast()
+				print("\(copy) gets \(member.change(keyPath: \.developerFacingValue).any)")
+				copy.members.append(member.change(keyPath: \.developerFacingValue))
+				activeNamedTypeStack.append(copy)
 
 				visitors.forEach { v in if v.shouldVisitMember(member) { v.willVisitMember?(member) } }
 			}, didVisitMember: { member in

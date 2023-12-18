@@ -97,7 +97,7 @@ extension Summarizer {
 							html += "\(prefix)\t\t\t\t\t<summary>Types</summary>\n"
 						}
 						for type in namedTypes.sorted() {
-							append(members: type.members, namedTypes: type.types, includeTypeName: true, idStack: idStack + [type.value.any], depth: depth + 1)
+							append(members: type.members, namedTypes: type.namedTypes, includeTypeName: true, idStack: idStack + [type.value.any], depth: depth + 1)
 						}
 						html += "\(prefix)\t\t\t\t\t</details>\n"
 					}
@@ -112,26 +112,34 @@ extension Summarizer {
 						html += "\t\t<summary>\(architecture.value.any)</summary>\n"
 
 						for framework in architecture.frameworks.sorted() {
-							html += "\t\t\t<details id=\"Platform: \(platform.value.any) Architecture: \(architecture.value.any) Framework: \(framework.value.any)\">\n"
-							html += "\t\t\t<summary>Framework: \(framework.value.any)</summary>\n"
-
 							let dependencies = framework.dependencies.filter {
 								if case .unchanged(_, _) = $0 { return false }
 								return true
 							}
+							let members = framework.members.filter {
+								if case .unchanged(_, _) = $0 { return false }
+								return true
+							}
+
+							guard !dependencies.isEmpty || !members.isEmpty else { continue } // TODO: also needs to track nested named type changes
+
+							html += "\t\t\t<details id=\"Platform: \(platform.value.any) Architecture: \(architecture.value.any) Framework: \(framework.value.any)\">\n"
+							html += "\t\t\t<summary>\(framework.value.any)</summary>\n"
+
 							if !dependencies.isEmpty {
 								html += "\t\t\t\t<details id=\"Platform: \(platform.value.any) Architecture: \(architecture.value.any) Framework: \(framework.value.any) dependencies\">\n"
 								html += "\t\t\t\t\t<summary>Dependencies</summary>\n"
 								html += "\t\t\t\t\t\t<ul>\n"
 								for dependency in dependencies.sorted() {
-									html += "\t\t\t\t\t\t\t<li>\(dependency)</li>\n"
+									html += "\t\t\t\t\t\t\t<li class=\"\(dependency.kind)\">\(dependency.any)</li>\n"
 								}
 								html += "\t\t\t\t\t\t</ul>\n"
 								html += "\t\t\t\t\t</details>\n"
 							}
 
 							append(members: framework.members, namedTypes: framework.namedTypes, idStack: ["Platform: \(platform.value.any) Architecture: \(architecture.value.any) Framework: \(framework.value.any)"])
-							html += "\(framework.value)\t\t\t</details>\n"
+
+							html += "\t\t\t</details>\n"
 						}
 						html += "\t\t</details>\n"
 					}
