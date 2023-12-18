@@ -41,11 +41,11 @@ struct SwiftModuleDiff: ParsableCommand {
 			print("Start: \(Date())")
 		}
 
-		let oldFrameworks = Summary.createSummary(for: old, trace: trace)
-		let newFrameworks = Summary.createSummary(for: new, trace: trace)
+		let oldFrameworks = Summary.createSummary(for: old, trace: false)
+		let newFrameworks = Summary.createSummary(for: new, trace: false)
 
-		let fromVersion = Summarizer.Version(majorVersion: 15, minorVersion: 0, patchVersion: 1)
-		let toVersion = Summarizer.Version(majorVersion: 15, minorVersion: 1, patchVersion: 0)
+		let fromVersion = Summarizer.Version(appPath: old)!
+		let toVersion = Summarizer.Version(appPath: new)!
 
 		let consoleVisitor = console ? Summarizer.consoleVisitor() : nil
 		let htmlVisitor = html ? Summarizer.htmlVisitor(from: fromVersion, to: toVersion, root: output) : nil

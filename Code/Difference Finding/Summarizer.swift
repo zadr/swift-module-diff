@@ -345,4 +345,21 @@ extension Summarizer {
 
 extension Summarizer.Version {
 	var name: String { "\(majorVersion).\(minorVersion).\(patchVersion)" }
+
+	init?(appPath root: String) {
+		let plistPath = "Contents/Info.plist"
+		let url = URL(fileURLWithPath: root + "/" + plistPath)
+		guard let data = try? Data(contentsOf: url) else { return nil }
+		guard let plist = try? PropertyListSerialization.propertyList(from: data, options: [], format: nil) as? [String: Any] else { return nil }
+		guard let version = plist["CFBundleShortVersionString"] as? String else { return nil }
+
+		let components = version.components(separatedBy: ".")
+		switch components.count {
+		case 0: return nil
+		case 1: self = .init(majorVersion: Int(components[0]) ?? 0, minorVersion: 0, patchVersion: 0)
+		case 2: self = .init(majorVersion: Int(components[0]) ?? 0, minorVersion: Int(components[1]) ?? 0, patchVersion: 0)
+		case 3..<Int.max: self = .init(majorVersion: Int(components[0]) ?? 0, minorVersion: Int(components[1]) ?? 0, patchVersion: Int(components[2]) ?? 0)
+		default: return nil
+		}
+	}
 }
