@@ -4,7 +4,7 @@ extension Summarizer {
 	static func htmlVisitor(from fromVersion: Version, to toVersion: Version, root: String) -> ChangeVisitor {
 		return ChangeVisitor(
 			didEnd: { tree in
-				let title = "swiftmodule \(fromVersion.name) to Xcode \(toVersion.name) Diff"
+				let title = "Xcode \(fromVersion.name) to Xcode \(toVersion.name) Diff"
 				let description = "API changes between Xcode \(fromVersion.name) and Xcode \(toVersion.name)"
 
 				var html = """
@@ -15,7 +15,7 @@ extension Summarizer {
 	<meta name="generator" content="swiftmodule-diff">
 	<meta property="og:title" content="\(title)">
 	<meta property="og:locale" content="en_US">
-	<meta name="description" content"\(description)"=>
+	<meta name="description" content="\(description)">
 	<meta property="og:description" content="\(description)™">
 	<link rel="canonical" href="https://example.com/">
 	<meta property="og:url" content="https://example.com/">
