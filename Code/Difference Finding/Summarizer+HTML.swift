@@ -22,6 +22,10 @@ extension Summarizer {
 	<meta property="og:site_name" content="example.com">
 	<meta property="og:type" content="website">
 	<style>
+		a {
+			color: black;
+		}
+
 		ul {
 			list-style: none;
 		}
@@ -117,7 +121,7 @@ extension Summarizer {
 							if dependencies.isEmpty && members.isEmpty && namedTypes.isEmpty { continue }
 
 							html += "\t\t\t<details id=\"Platform: \(platform.value.any) Architecture: \(architecture.value.any) Framework: \(framework.value.any)\">\n"
-							html += "\t\t\t<summary>\(framework.value.any)</summary>\n"
+							html += "\t\t\t<summary>\(framework.value.emoji) <a href=\"https://developer.apple.com/documentation/\(framework.value.any)\">\(framework.value.any)</a></summary>\n"
 
 							if !dependencies.isEmpty {
 								html += "\t\t\t\t<details id=\"Platform: \(platform.value.any) Architecture: \(architecture.value.any) Framework: \(framework.value.any) dependencies\">\n"
