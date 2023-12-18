@@ -12,6 +12,14 @@ struct ParseSwiftmodule {
 	func run() -> Framework {
 		autoreleasepool {
 			let tracker = SwiftmoduleTracker()
+			tracker.framework.name = (
+				(
+					(
+						path as NSString
+					).deletingLastPathComponent as NSString
+				).lastPathComponent as NSString
+			).deletingPathExtension
+
 			let contents = try! String(contentsOf: URL(fileURLWithPath: path))
 			tracker.walk(Parser.parse(source: contents))
 			return tracker.framework

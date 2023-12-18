@@ -18,14 +18,7 @@ extension Summary {
 					if trace { print(module.absoluteString) }
 
 					let path = module.absoluteString.replacingOccurrences(of: "file://", with: "")
-					var framework = ParseSwiftmodule(path: path).run()
-					framework.name = (
-						(
-							(
-								module.absoluteString as NSString
-							).deletingLastPathComponent as NSString
-						).lastPathComponent as NSString
-					).deletingPathExtension
+					let framework = ParseSwiftmodule(path: path).run()
 
 					architectureFrameworks.insert(framework)
 				}
