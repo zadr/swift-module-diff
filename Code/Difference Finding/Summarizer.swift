@@ -186,7 +186,6 @@ struct Summarizer {
 				visitors.forEach { v in if v.shouldVisitNamedType(namedType) { v.didVisitNamedType?(namedType) } }
 			}, willVisitMember: { member in
 				var copy = activeNamedTypeStack.removeLast()
-				print("\(copy) gets \(member.change(keyPath: \.developerFacingValue).any)")
 				copy.members.append(member.change(keyPath: \.developerFacingValue))
 				activeNamedTypeStack.append(copy)
 
