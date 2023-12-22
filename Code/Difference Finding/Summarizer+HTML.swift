@@ -119,7 +119,7 @@ extension Summarizer {
 								html += "\t\t\t\t\t<summary>Dependencies</summary>\n"
 								html += "\t\t\t\t\t\t<ul>\n"
 								for dependency in dependencies.sorted() {
-									html += "\t\t\t\t\t\t\t<li class=\"\(dependency.kind)\">\(dependency.any)</li>\n"
+									html += "\t\t\t\t\t\t<li class=\"\(dependency.kind)\">\(dependency.any)</li>\n"
 								}
 								html += "\t\t\t\t\t\t</ul>\n"
 								html += "\t\t\t\t\t</details>\n"
