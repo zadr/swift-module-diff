@@ -21,6 +21,7 @@ struct NamedType {
 		case `protocol`
 		case `extension`
 		case `associatedtype`
+		case `macro`
 	}
 
 	var attributes: Set<Attribute> = .init()

@@ -120,6 +120,12 @@ private class SwiftmoduleTracker: SyntaxVisitor {
 
 	// MARK: - Content
 
+	override func visit(_ node: MacroDeclSyntax) -> SyntaxVisitorContinueKind {
+		let m = ParseAnyType<MacroTracker>(node: node).run()
+		framework.namedTypes.append(m)
+		return super.visit(node)
+	}
+
 	override func visit(_ node: OperatorDeclSyntax) -> SyntaxVisitorContinueKind {
 		let o = ParseAnyType<OperatorTracker>(node: node).run()
 		framework.members.append(o)
