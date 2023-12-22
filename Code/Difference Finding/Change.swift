@@ -19,11 +19,11 @@ enum Change<T: Named> {
 		}
 	}
 
-	var isUnchanged: Bool {
+	var isNotUnchanged: Bool {
 		if case .unchanged(_, _) = self {
-			return true
+			return false
 		}
-		return false
+		return true
 	}
 
 	var emoji: String {
@@ -180,7 +180,19 @@ enum Change<T: Named> {
 	}
 }
 
-extension Change: Codable where T: Codable {}
+extension Change: Encodable where T: Encodable {
+	enum CodingKeys: String, CodingKey {
+		case change
+		case value
+	}
+
+	func encode(to encoder: Encoder) throws {
+		var container = encoder.container(keyedBy: CodingKeys.self)
+
+		try container.encode(kind, forKey: .change)
+		try container.encode(any, forKey: .value)
+	}
+}
 
 extension Change: Comparable where T: Comparable {}
 

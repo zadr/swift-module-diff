@@ -70,10 +70,10 @@ extension Summarizer {
 <html lang="en-US">
 """
 
-				func append(members: [Change<String>], namedTypes: [Summarizer.Tree.Platform.Architecture.Framework.NamedType], includeTypeName: Bool = false, idStack: [String], depth: Int = 0) {
+				func append(members: [Change<String>], namedTypes: [Summarizer.Platform.Architecture.Framework.NamedType], includeTypeName: Bool = false, idStack: [String], depth: Int = 0) {
 					let id = idStack.joined(separator: " ")
 					let prefix = String(repeating: "\t", count: depth)
-					let filteredMembers = members.filter { !$0.isUnchanged }
+					let filteredMembers = members.filter { $0.isNotUnchanged }
 					if !filteredMembers.isEmpty {
 						html += "\(prefix)\t\t\t\t<details id=\"\(id) members\">\n"
 						if includeTypeName {
@@ -114,8 +114,8 @@ extension Summarizer {
 						html += "\t\t<summary>\(architecture.value.any)</summary>\n"
 
 						for framework in architecture.frameworks.sorted() {
-							let dependencies = framework.dependencies.filter { !$0.isUnchanged }
-							let members = framework.members.filter { !$0.isUnchanged }
+							let dependencies = framework.dependencies.filter { $0.isNotUnchanged }
+							let members = framework.members.filter { $0.isNotUnchanged }
 							let namedTypes = framework.namedTypes.filter { $0.isInteresting }
 
 							if dependencies.isEmpty && members.isEmpty && namedTypes.isEmpty { continue }
