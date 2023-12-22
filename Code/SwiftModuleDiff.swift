@@ -9,10 +9,10 @@ struct SwiftModuleDiff: ParsableCommand {
 	)
 
 	@Option(name: .shortAndLong, help: "Path to the older API. Default: /Applications/Xcode.app")
-	var old: String = "/Applications/Xcode-15.0.1.app"
+	var old: String = "/Applications/Xcode.app"
 
 	@Option(name: .shortAndLong, help: "Path to the newer API. Default: /Applications/Xcode-beta.app")
-	var new: String = "/Applications/Xcode-15.1.app"
+	var new: String = "/Applications/Xcode-beta.app"
 
 	@Option(name: .long, help: "Path to output results. Default: ~/Desktop/swiftmodule-diff/")
 	var output: String = "~/Desktop/swiftmodule-diff/"
