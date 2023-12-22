@@ -1,7 +1,7 @@
 import Foundation
 
 extension Summarizer {
-	static func consoleVisitor() -> ChangeVisitor {
+	static func progressVisitor() -> ChangeVisitor {
 		ChangeVisitor(willVisitPlatform: { change in
 			ifNotUnchanged(change: change) {
 				print("\t\tPlatform: \(change.kind) > \(change.any.name)")

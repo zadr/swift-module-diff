@@ -17,8 +17,8 @@ struct SwiftModuleDiff: ParsableCommand {
 	@Option(name: .long, help: "Path to output results. Default: ~/Desktop/swiftmodule-diff/")
 	var output: String = "~/Desktop/swiftmodule-diff/"
 
-	@Option(name: .shortAndLong, help: "Print diff to console. May be combined with --html or --json. Default: true")
-	var console: Bool = true
+	@Option(name: .shortAndLong, help: "Print files to console as they're visited. Default: true")
+	var progress: Bool = true
 
 	@Option(name: .shortAndLong, help: "Write html to output directory. May be combined with --json or --console. Default: false.")
 	var html: Bool = false
@@ -33,7 +33,7 @@ struct SwiftModuleDiff: ParsableCommand {
 		if trace {
 			print("Old Xcode: \(old)")
 			print("New Xcode: \(new)")
-			print("Console Output: \(console)")
+			print("Show Progress: \(progress)")
 			print("HTML: \(html), JSON: \(json)")
 			if (html || json) {
 				print("Directory: \(output)")
@@ -47,14 +47,14 @@ struct SwiftModuleDiff: ParsableCommand {
 		let fromVersion = Summarizer.Version(appPath: old)!
 		let toVersion = Summarizer.Version(appPath: new)!
 
-		let consoleVisitor = console ? Summarizer.consoleVisitor() : nil
+		let progressVisitor = progress ? Summarizer.progressVisitor() : nil
 		let htmlVisitor = html ? Summarizer.htmlVisitor(from: fromVersion, to: toVersion, root: output) : nil
 		let jsonVisitor = json ? Summarizer.jsonVisitor(from: fromVersion, to: toVersion, root: output) : nil
 		let signpostVisitor = trace ? Summarizer.signpostVisitor(from: fromVersion, to: toVersion) : nil
 
 		Summarizer(old: oldFrameworks, new: newFrameworks)
 			.summarize(
-				visitors: consoleVisitor, htmlVisitor, jsonVisitor, signpostVisitor,
+				visitors: progressVisitor, htmlVisitor, jsonVisitor, signpostVisitor,
 				trace: trace
 			)
 
