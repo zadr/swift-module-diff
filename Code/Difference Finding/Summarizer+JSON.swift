@@ -14,7 +14,6 @@ extension Summarizer {
 
 					let filteredNamedTypes = namedTypes.filter { $0.isInteresting }
 					for type in filteredNamedTypes.sorted() {
-						print("making type \(type.value)")
 						var nested: Nested = Summarizer.Platform.Architecture.Framework.NamedType(value: type.value)
 						append(members: type.members, nested: type.namedTypes, to: &nested)
 						parent.namedTypes.append(type)
