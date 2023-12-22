@@ -206,14 +206,6 @@ struct Summarizer {
 }
 
 extension Summarizer {
-	internal static func ifNotUnchanged<T>(change: Change<T>, perform: () -> Void, else elseBlock: () -> Void = {}) {
-		if case .unchanged(_, _) = change {
-			elseBlock()
-		} else {
-			perform()
-		}
-	}
-
 	fileprivate func enumeratePlatformDifferences(visitor: ChangeVisitor) {
 		for platformChange in Change<SwiftmoduleFinder.Platform>.differences(from: old.keys, to: new.keys) {
 			guard visitor.shouldVisitPlatform(platformChange) else { continue }
