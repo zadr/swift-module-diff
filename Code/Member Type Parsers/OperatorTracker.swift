@@ -5,7 +5,7 @@ class OperatorTracker: SyntaxVisitor, AnyTypeParser {
 	var value = Member()
 
 	required init() {
-		self.value.kind = .operator
+		value.kind = .operator
 		super.init(viewMode: .sourceAccurate)
 	}
 

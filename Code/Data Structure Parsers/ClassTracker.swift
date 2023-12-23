@@ -5,7 +5,7 @@ class ClassTracker: SyntaxVisitor, AnyTypeParser {
 	var value = NamedType()
 
 	required init() {
-		self.value.kind = .class
+		value.kind = .class
 		super.init(viewMode: .sourceAccurate)
 	}
 

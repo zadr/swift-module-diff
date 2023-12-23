@@ -5,7 +5,7 @@ class ProtocolTracker: SyntaxVisitor, AnyTypeParser {
 	var value = NamedType()
 
 	required init() {
-		self.value.kind = .protocol
+		value.kind = .protocol
 		super.init(viewMode: .sourceAccurate)
 	}
 

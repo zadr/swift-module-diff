@@ -68,9 +68,9 @@ extension NamedType: Codable, CustomStringConvertible, Hashable, Sendable {
 
 extension NamedType: Attributed, Decorated, Named, Displayable {
 	var developerFacingValue: String {
-		let attributes = self.attributes.sorted { $0.name > $1.name }.map { $0.developerFacingValue }.joined(separator: " ")
+		let attributes = attributes.sorted { $0.name > $1.name }.map { $0.developerFacingValue }.joined(separator: " ")
 
-		var conformances = self.conformances.sorted().joined(separator: ", ")
+		var conformances = conformances.sorted().joined(separator: ", ")
 		if !conformances.isEmpty {
 			conformances = ": \(conformances)"
 		}

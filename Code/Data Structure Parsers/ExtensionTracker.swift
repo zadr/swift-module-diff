@@ -5,7 +5,7 @@ class ExtensionTracker: SyntaxVisitor, AnyTypeParser {
 	var value = NamedType()
 
 	required init() {
-		self.value.kind = .extension
+		value.kind = .extension
 		super.init(viewMode: .sourceAccurate)
 	}
 

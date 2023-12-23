@@ -5,7 +5,7 @@ class MacroTracker: SyntaxVisitor, AnyTypeParser {
 	var value = NamedType()
 
 	required init() {
-		self.value.kind = .macro
+		value.kind = .macro
 		super.init(viewMode: .sourceAccurate)
 	}
 

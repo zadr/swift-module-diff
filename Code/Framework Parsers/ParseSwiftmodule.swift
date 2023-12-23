@@ -34,7 +34,7 @@ private class SwiftmoduleTracker: SyntaxVisitor {
 	var nestingCount = 0
 
 	public init() {
-		self.framework = Framework()
+		framework = Framework()
 		super.init(viewMode: .sourceAccurate)
 	}
 

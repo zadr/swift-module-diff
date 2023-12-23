@@ -5,7 +5,7 @@ class AssociatedTypeTracker: SyntaxVisitor, AnyTypeParser {
 	var value = NamedType()
 
 	required init() {
-		self.value.kind = .associatedtype
+		value.kind = .associatedtype
 		super.init(viewMode: .sourceAccurate)
 	}
 

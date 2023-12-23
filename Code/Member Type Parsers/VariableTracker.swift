@@ -6,7 +6,7 @@ class VariableTracker: SyntaxVisitor, AnyTypeCollectionParser {
 	var collection = [Member]()
 
 	required init() {
-		self.value.kind = .var
+		value.kind = .var
 		super.init(viewMode: .sourceAccurate)
 	}
 

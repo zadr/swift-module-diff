@@ -6,7 +6,7 @@ class EnumCaseTracker: SyntaxVisitor, AnyTypeCollectionParser {
 	var collection = [Member]()
 	
 	required init() {
-		self.value.kind = .case
+		value.kind = .case
 		super.init(viewMode: .sourceAccurate)
 	}
 	

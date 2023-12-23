@@ -5,7 +5,7 @@ class StructTracker: SyntaxVisitor, AnyTypeParser {
 	var value = NamedType()
 
 	required init() {
-		self.value.kind = .struct
+		value.kind = .struct
 		super.init(viewMode: .sourceAccurate)
 	}
 

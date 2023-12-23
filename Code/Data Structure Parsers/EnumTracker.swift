@@ -5,7 +5,7 @@ class EnumTracker: SyntaxVisitor, AnyTypeParser {
 	var value = NamedType()
 
 	required init() {
-		self.value.kind = .enum
+		value.kind = .enum
 		super.init(viewMode: .sourceAccurate)
 	}
 

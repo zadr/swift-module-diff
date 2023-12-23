@@ -5,7 +5,7 @@ class TypeAliasTracker: SyntaxVisitor, AnyTypeParser {
 	var value = Member()
 
 	required init() {
-		self.value.kind = .typealias
+		value.kind = .typealias
 		super.init(viewMode: .sourceAccurate)
 	}
 

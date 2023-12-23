@@ -5,7 +5,7 @@ class FunctionTracker: SyntaxVisitor, AnyTypeParser {
 	var value = Member()
 
 	required init() {
-		self.value.kind = .func
+		value.kind = .func
 		super.init(viewMode: .sourceAccurate)
 	}
 

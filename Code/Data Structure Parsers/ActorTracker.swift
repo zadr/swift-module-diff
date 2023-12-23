@@ -5,7 +5,7 @@ class ActorTracker: SyntaxVisitor, AnyTypeParser {
 	var value = NamedType()
 
 	required init() {
-		self.value.kind = .actor
+		value.kind = .actor
 		super.init(viewMode: .sourceAccurate)
 	}
 

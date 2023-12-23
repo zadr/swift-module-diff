@@ -83,5 +83,5 @@ extension SwiftmoduleFinder.Architecture: Named {
 }
 
 extension SwiftmoduleFinder.Platform: Named {
-	var name: String { self.rawValue }
+	var name: String { rawValue }
 }
