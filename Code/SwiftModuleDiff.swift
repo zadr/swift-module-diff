@@ -29,7 +29,23 @@ struct SwiftModuleDiff: ParsableCommand {
 	@Option(name: .shortAndLong, help: "Create signposts for performance debugging, and print extra data to console. Default: false")
 	var trace: Bool = false
 
+	@Option(name: .shortAndLong, help: "Parse a single file, for testing. Takes precedence over --old --new")
+	var singleFile: String? = nil
+
 	mutating func run() throws {
+		if let singleFile {
+			if trace {
+				print("Single File: \(singleFile)")
+				print("Start: \(Date())")
+			}
+
+			print(ParseSwiftmodule(path: singleFile).run())
+
+			if trace { print("End: \(Date())") }
+
+			return
+		}
+
 		if trace {
 			print("Old Xcode: \(old)")
 			print("New Xcode: \(new)")
