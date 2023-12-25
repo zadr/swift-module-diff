@@ -26,6 +26,13 @@ class StructTracker: SyntaxVisitor, AnyTypeParser {
 		return super.visit(node)
 	}
 
+	override func visit(_ node: DeinitializerDeclSyntax) -> SyntaxVisitorContinueKind {
+		var member = Member()
+		member.name = "deinit" // ~Copyable types may have deinitializers
+		value.members.append(member)
+		return super.visit(node)
+	}
+
 	override func visit(_ node: InheritedTypeListSyntax) -> SyntaxVisitorContinueKind {
 		value.conformances = ParseAnyType<InheritanceTracker>(node: node).run()
 		return super.visit(node)
