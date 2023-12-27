@@ -26,6 +26,8 @@ struct NamedType {
 
 	var attributes: Set<Attribute> = .init()
 	var decorators: Set<Decorator> = .init()
+	var generics: Set<String> = .init()
+	var genericConstraints: Set<String> = .init()
 	var kind: Kind = .unknown
 	var isFinal: Bool = false
 	var isOpen: Bool = false
@@ -45,6 +47,7 @@ struct NamedType {
     attributes: \(attributes)
     final > '\(isFinal)' || open > '\(isOpen)' for kind > '\(kind)' named > '\(name)'
     conformances: \(conformances.joined(separator: ", "))
+	generics: \(generics) constraints \(genericConstraints)
     has:
 \(members)
 ------
@@ -57,16 +60,18 @@ struct NamedType {
 extension NamedType: Codable, CustomStringConvertible, Hashable, Sendable {
 	func hash(into hasher: inout Hasher) {
 		hasher.combine(name)
+		hasher.combine(generics)
+		hasher.combine(genericConstraints)
 	}
 
 	static func ==(lhs: NamedType, rhs: NamedType) -> Bool {
-		lhs.name == rhs.name
+		lhs.name == rhs.name && lhs.generics == rhs.generics && lhs.genericConstraints == rhs.genericConstraints
 	}
 }
 
 // MARK: - Custom Protocol Conformances
 
-extension NamedType: Attributed, Decorated, Named, Displayable {
+extension NamedType: Attributed, Decorated, Displayable, Named {
 	var developerFacingValue: String {
 		let attributes = attributes.sorted { $0.name > $1.name }.map { $0.developerFacingValue }.joined(separator: " ")
 
@@ -74,10 +79,16 @@ extension NamedType: Attributed, Decorated, Named, Displayable {
 		if !conformances.isEmpty {
 			conformances = ": \(conformances)"
 		}
+		var generics = generics.joined(separator: ", ")
+		var genericConstraints = genericConstraints.joined(separator: ", ")
+		if !generics.isEmpty {
+			generics = "<\(generics)>"
+			genericConstraints = " where \(genericConstraints)"
+		}
 
 		let openString = isOpen ? "open " : ""
 		let finalString = isFinal ? "final " : ""
 
-		return "\(attributes) \(openString)\(finalString)\(kind.rawValue) \(name)\(conformances)".trimmingCharacters(in: .whitespaces)
+		return "\(attributes) \(openString)\(finalString)\(kind.rawValue) \(name)\(generics)\(conformances)\(genericConstraints)".trimmingCharacters(in: .whitespaces)
 	}
 }

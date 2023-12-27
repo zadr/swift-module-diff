@@ -32,6 +32,8 @@ struct Member {
 	var attributes: Set<Attribute> = .init()
 	var kind: Kind = .unknown
 	var decorators: Set<Decorator> = .init()
+	var generics: Set<String> = .init()
+	var genericConstraints: Set<String> = .init()
 	var name: String = ""
 	var returnType: String = ""
 	var parameters: [Parameter] = []
@@ -45,6 +47,7 @@ struct Member {
        name: \(name)
  returnType: \(returnType)
  parameters: \(parameters)
+   generics: \(generics) constraints \(genericConstraints)
 """
 	}
 }
@@ -54,10 +57,12 @@ struct Member {
 extension Member: Codable, CustomStringConvertible, Hashable, Sendable {
 	func hash(into hasher: inout Hasher) {
 		hasher.combine(name)
+		hasher.combine(generics)
+		hasher.combine(genericConstraints)
 	}
 
 	static func ==(lhs: Member, rhs: Member) -> Bool {
-		lhs.name == rhs.name
+		lhs.name == rhs.name && lhs.generics == rhs.generics && lhs.genericConstraints == rhs.genericConstraints
 	}
 }
 

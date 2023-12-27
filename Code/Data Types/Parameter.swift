@@ -5,6 +5,8 @@ struct Parameter {
 	var type: String = ""
 	var isInout: Bool = false
 	var attributes: Set<Attribute> = .init()
+	var generics: Set<String> = .init()
+	var genericConstraints: Set<String> = .init()
 
 	var description: String {
 """
@@ -13,6 +15,7 @@ struct Parameter {
     type: \(type)
     isInout: \(isInout)
     attributes: \(attributes)
+    generics: \(generics) constraints \(genericConstraints)
 ------
 """
 	}
@@ -23,10 +26,12 @@ struct Parameter {
 extension Parameter: Codable, CustomStringConvertible, Hashable, Sendable {
 	func hash(into hasher: inout Hasher) {
 		hasher.combine(name)
+		hasher.combine(generics)
+		hasher.combine(genericConstraints)
 	}
 
 	static func ==(lhs: Parameter, rhs: Parameter) -> Bool {
-		lhs.name == rhs.name
+		lhs.name == rhs.name && lhs.generics == rhs.generics && lhs.genericConstraints == rhs.genericConstraints
 	}
 }
 
