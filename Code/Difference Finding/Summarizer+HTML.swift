@@ -122,7 +122,7 @@ extension Summarizer {
 									html += "\t\t\t\t\t\t<li class=\"\(dependency.kind)\">\(dependency.any)</li>\n"
 								}
 								html += "\t\t\t\t\t\t</ul>\n"
-								html += "\t\t\t\t\t</details>\n"
+								html += "\t\t\t\t</details>\n"
 							}
 
 							append(members: framework.members, namedTypes: framework.namedTypes, idStack: ["Platform: \(platform.value.any) Architecture: \(architecture.value.any) Framework: \(framework.value.any)"])
