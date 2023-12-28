@@ -53,6 +53,6 @@ extension Parameter: Attributed, Named, Displayable {
 		if isInout {
 			return "inout \(name): \(type)"
 		}
-		return "\(name) \(separator.rawValue) \(type)"
+		return "\(name)\(separator.rawValue) \(type)"
 	}
 }
