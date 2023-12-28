@@ -52,6 +52,8 @@ class FunctionTracker: SyntaxVisitor, AnyTypeParser {
 
 		let pairs: [Keyword: Parameter.Decorator] = [
 			.inout: .inout,
+			.borrowing: .borrowing,
+			.consuming: .consuming,
 		]
 
 		for (keyword, decorator) in pairs {

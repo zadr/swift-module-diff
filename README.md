@@ -12,13 +12,12 @@ Given a pair of Xcode apps (such as Xcode.app and Xcode-beta.app):
 #### Things Left To Do
 Swift is a big and evolving language, so it is likely that edge-cases or lesser-used features are missing. Some known gaps are:
 
-- [ ] handle borrowing / consuming keyword on function parameters
 - [ ] varargs on function parameters
 - [ ] subscript support
-- [ ] operator precedence tracking
+- [ ] operator precedencegroup support
 - [ ] Dictionary literal support in type names
 - [ ] Array literal support in type names
-- [ ] `any` keyword in type names
+- [ ] `some`/`any` keyword in return types
 
 #### But Why?
 Having everything that changed one one page can be nice

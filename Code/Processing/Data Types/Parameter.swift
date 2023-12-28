@@ -3,6 +3,9 @@ import Foundation
 struct Parameter {
 	enum Decorator: String, Codable, Equatable, Hashable, Sendable {
 		case `inout`
+		case `borrowing`
+		case `consuming`
+	}
 
 	enum Separator: String, Codable, Equatable, Hashable, Sendable {
 		case colon = ":"
