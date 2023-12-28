@@ -3,13 +3,31 @@ import Foundation
 struct SwiftmoduleFinder {
 	typealias Architecture = String
 
-	enum Platform: String, CaseIterable, Equatable, Hashable {
+	enum Platform: Equatable, Hashable {
 		case iOS
 		case driverKit
 		case macOS
 		case tvOS
 		case watchOS
 		case xrOS
+		case custom(_ name: String, _ paths: [String])
+
+		static var allCases: [Platform] {
+			[.iOS, .driverKit, .macOS, .tvOS, .watchOS, .xrOS]
+		}
+
+		var rawValue: String {
+			switch self {
+			case .iOS: "iOS"
+			case .driverKit: "DriverKit"
+			case .macOS: "macOS"
+			case .tvOS: "tvOS"
+			case .watchOS: "watchOS"
+			case .xrOS: "visionOS"
+			case .custom(let name, _):
+				name
+			}
+		}
 
 		var paths: [String] {
 			switch self {
@@ -41,6 +59,8 @@ struct SwiftmoduleFinder {
 				"Contents/Developer/Platforms/XROS.platform/Developer/SDKs/WatchOS.sdk/usr/lib/swift",
 				"Contents/Developer/Platforms/XROS.platform/Developer/usr/lib" // find XCTest changes
 			]
+			case .custom(_, let paths):
+				paths
 			}
 		}
 	}
