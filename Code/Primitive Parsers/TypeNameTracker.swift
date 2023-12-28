@@ -65,6 +65,21 @@ class TypeNameTracker: SyntaxVisitor, AnyTypeParser {
 		return super.visit(node)
 	}
 	
+	override func visit(_ node: CompositionTypeElementListSyntax) -> SyntaxVisitorContinueKind {
+		let name = node.compactMap { $0.type.as(IdentifierTypeSyntax.self ) }.map { ParseAnyType<TypeNameTracker>(node: $0).run() }.joined(separator: " & ")
+		if value.isEmpty || value.hasSuffix(" -> ") || value.hasSuffix("(") {
+			value += name
+		} else {
+			if !isInTuple {
+				value = (name + joiner + value)
+			} else {
+				value += (joiner + name)
+			}
+		}
+
+		return .skipChildren
+	}
+
 	override func visit(_ node: IdentifierTypeSyntax) -> SyntaxVisitorContinueKind {
 		if value.isEmpty || value.hasSuffix(" -> ") || value.hasSuffix("(") {
 			value += node.name.text
