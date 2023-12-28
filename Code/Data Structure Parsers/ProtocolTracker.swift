@@ -17,6 +17,11 @@ class ProtocolTracker: SyntaxVisitor, AnyTypeParser {
 
 	override func visit(_ node: ProtocolDeclSyntax) -> SyntaxVisitorContinueKind {
 		value.name = node.name.text
+
+		let generics = GenericsTracker(parametersNode: nil, requirementsNode: node.genericWhereClause).run()
+		value.generics.formUnion(generics.parameters)
+		value.genericConstraints.formUnion(generics.constraints)
+
 		return super.visit(node)
 	}
 

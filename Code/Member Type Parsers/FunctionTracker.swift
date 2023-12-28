@@ -40,6 +40,12 @@ class FunctionTracker: SyntaxVisitor, AnyTypeParser {
 		} else {
 			fatalError("unable to identify func name from decl")
 		}
+
+
+		let generics = GenericsTracker(parametersNode: node.genericParameterClause, requirementsNode: node.genericWhereClause).run()
+		value.generics.formUnion(generics.parameters)
+		value.genericConstraints.formUnion(generics.constraints)
+
 		return super.visit(node)
 	}
 

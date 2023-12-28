@@ -17,6 +17,11 @@ class ExtensionTracker: SyntaxVisitor, AnyTypeParser {
 
 	override func visit(_ node: ExtensionDeclSyntax) -> SyntaxVisitorContinueKind {
 		value.name = ParseAnyType<TypeNameTracker>(node: node.extendedType).run()
+
+		let generics = GenericsTracker(parametersNode: nil, requirementsNode: node.genericWhereClause).run()
+		value.generics.formUnion(generics.parameters)
+		value.genericConstraints.formUnion(generics.constraints)
+
 		return super.visit(node)
 	}
 

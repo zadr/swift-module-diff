@@ -23,6 +23,11 @@ class ClassTracker: SyntaxVisitor, AnyTypeParser {
 
 	override func visit(_ node: ClassDeclSyntax) -> SyntaxVisitorContinueKind {
 		value.name = node.name.text
+
+		let generics = GenericsTracker(parametersNode: node.genericParameterClause, requirementsNode: node.genericWhereClause).run()
+		value.generics.formUnion(generics.parameters)
+		value.genericConstraints.formUnion(generics.constraints)
+
 		return super.visit(node)
 	}
 
