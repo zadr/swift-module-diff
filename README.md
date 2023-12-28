@@ -10,14 +10,16 @@ Given a pair of Xcode apps (such as Xcode.app and Xcode-beta.app):
 7. Be able to click into a framework to see all modifications to types, and members (additions, deprecations, etc)
 
 #### Things Left To Do
-This command-line tool integrates SwiftSyntax and can handle the basics, such as listing and tracking…:
-- `class`es, `struct`s, `enum`s
-- member types (`func`s, `var`s, `let`s)
-- non-generic parameter lists (including `inout`)
-- member decorations (`async`, `throws`, `static`, etc)
-- availability attributes
+Swift is a big and evolving language, so it is likely that edge-cases or lesser-used features are missing. Some known gaps are:
 
-Swift is a big and evolving language, so it is likely that edge-cases are missing. Feel free to open a PR or file an issue.
+- [ ] handle indirect keyword on enum declarations
+- [ ] handle borrowing / consuming keyword on function parameters
+- [ ] varargs on function parameters
+- [ ] subscript support
+- [ ] operator prefix/postfix/infix tracking
+- [ ] Dictionary literal support in type names
+- [ ] Array literal support in type names
+- [ ] `any` keyword in type names
 
 #### But Why?
 Having everything that changed one one page can be nice
