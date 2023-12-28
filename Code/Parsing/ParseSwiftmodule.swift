@@ -128,7 +128,7 @@ private class SwiftmoduleTracker: SyntaxVisitor {
 
 	override func visit(_ node: OperatorDeclSyntax) -> SyntaxVisitorContinueKind {
 		let o = ParseAnyType<OperatorTracker>(node: node).run()
-		framework.members.append(o)
+		framework.namedTypes.append(o)
 		return super.visit(node)
 	}
 

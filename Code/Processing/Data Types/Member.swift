@@ -9,7 +9,6 @@ struct Member {
 		case `case`
 		case `associatedtype`
 		case `typealias`
-		case `operator`
 	}
 
 	enum Accessor: String, Codable, Hashable, Sendable {
@@ -113,9 +112,6 @@ extension Member: Attributed, Decorated, Named, Displayable {
 
 		case .typealias:
 			return "typealias \(name) = \(returnType)"
-
-		case .operator:
-			return "operator \(name)"
 		}
 	}
 }

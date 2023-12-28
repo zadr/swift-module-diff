@@ -11,6 +11,9 @@ struct NamedType {
 		case `unsafe`
 		case `unowned`
 		case `indirect`
+		case `prefix`
+		case `postfix`
+		case `infix`
 	}
 
 	enum Kind: String, Codable, Hashable {
@@ -23,6 +26,7 @@ struct NamedType {
 		case `extension`
 		case `associatedtype`
 		case `macro`
+		case `operator`
 	}
 
 	var attributes: Set<Attribute> = .init()

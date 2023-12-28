@@ -15,7 +15,7 @@ Swift is a big and evolving language, so it is likely that edge-cases or lesser-
 - [ ] handle borrowing / consuming keyword on function parameters
 - [ ] varargs on function parameters
 - [ ] subscript support
-- [ ] operator prefix/postfix/infix tracking
+- [ ] operator precedence tracking
 - [ ] Dictionary literal support in type names
 - [ ] Array literal support in type names
 - [ ] `any` keyword in type names
