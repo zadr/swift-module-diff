@@ -71,6 +71,11 @@ class FunctionTracker: SyntaxVisitor, AnyTypeParser {
 			}
 		}
 
+		if node.ellipsis != nil {
+			parameter.suffix = "..."
+		}
+
+		print(node.debugDescription)
 		value.parameters.append(parameter)
 		return super.visit(node)
 	}

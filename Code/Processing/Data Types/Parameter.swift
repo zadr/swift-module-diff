@@ -21,6 +21,7 @@ struct Parameter {
 	var generics: [String] = []
 	var genericConstraints: [Parameter] = []
 	var separator: Separator = .colon
+	var suffix: String = ""
 
 	var description: String {
 """
@@ -31,6 +32,7 @@ struct Parameter {
     attributes: \(attributes)
     separator: \(separator)
     generics: \(generics) constraints \(genericConstraints)
+    suffix: \(suffix)
 ------
 """
 	}
@@ -45,10 +47,11 @@ extension Parameter: Codable, CustomStringConvertible, Hashable, Sendable {
 		hasher.combine(type)
 		hasher.combine(generics)
 		hasher.combine(genericConstraints)
+		hasher.combine(suffix)
 	}
 
 	static func ==(lhs: Parameter, rhs: Parameter) -> Bool {
-		lhs.name == rhs.name && lhs.decorators == rhs.decorators && lhs.type == rhs.type && lhs.generics == rhs.generics && lhs.genericConstraints == rhs.genericConstraints
+		lhs.name == rhs.name && lhs.decorators == rhs.decorators && lhs.type == rhs.type && lhs.generics == rhs.generics && lhs.genericConstraints == rhs.genericConstraints && lhs.suffix == rhs.suffix
 	}
 }
 
@@ -67,7 +70,7 @@ extension Parameter: Attributed, Named, Displayable {
 		if !decorators.isEmpty {
 			decorators += " "
 		}
-		return "\(decorators)\(name)\(separator.rawValue) \(type)\(generics)"
+		return "\(decorators)\(name)\(separator.rawValue) \(type)\(generics)\(suffix)"
 	}
 }
 
