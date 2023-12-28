@@ -20,12 +20,6 @@ class VariableTracker: SyntaxVisitor, AnyTypeCollectionParser {
 		return super.visit(node)
 	}
 
-	override func visit(_ node: AttributeSyntax) -> SyntaxVisitorContinueKind {
-		   let attribute = ParseAnyType<AttributeTracker>(node: node).run()
-		   value.attributes.insert(attribute)
-		   return super.visit(node)
-	   }
-
 	override func visit(_ node: DeclModifierSyntax) -> SyntaxVisitorContinueKind {
 		let pairs: [Keyword: Member.Decorator] = [
 			.async: .async,
@@ -67,10 +61,8 @@ class VariableTracker: SyntaxVisitor, AnyTypeCollectionParser {
 			}
 
 			if let attributes = pattern.typeAnnotation?.type.as(AttributedTypeSyntax.self)?.attributes {
-				for attribute in attributes {
-					let name = ParseAnyType<AttributeTracker>(node: attribute).run()
-					copy.attributes.insert(name)
-				}
+				let attributes = attributes.map { ParseAnyType<AttributeTracker>(node: $0).run() }
+				copy.attributes.formUnion(attributes)
 			}
 
 			collection.append(copy)

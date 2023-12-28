@@ -9,12 +9,6 @@ class FunctionTracker: SyntaxVisitor, AnyTypeParser {
 		super.init(viewMode: .sourceAccurate)
 	}
 
-	override func visit(_ node: AttributeSyntax) -> SyntaxVisitorContinueKind {
-		let attribute = ParseAnyType<AttributeTracker>(node: node).run()
-		value.attributes.insert(attribute)
-		return super.visit(node)
-	}
-
 	override func visit(_ node: DeclModifierSyntax) -> SyntaxVisitorContinueKind {
 		let pairs: [Keyword: Member.Decorator] = [
 			.async: .async,
@@ -41,10 +35,12 @@ class FunctionTracker: SyntaxVisitor, AnyTypeParser {
 			fatalError("unable to identify func name from decl")
 		}
 
-
 		let generics = GenericsTracker(parametersNode: node.genericParameterClause, requirementsNode: node.genericWhereClause).run()
 		value.generics.formUnion(generics.parameters)
 		value.genericConstraints.formUnion(generics.constraints)
+
+		let attributes = node.attributes.map { ParseAnyType<AttributeTracker>(node: $0).run() }
+		value.attributes.formUnion(attributes)
 
 		return super.visit(node)
 	}

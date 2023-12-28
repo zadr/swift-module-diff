@@ -16,17 +16,14 @@ class ActorTracker: SyntaxVisitor, AnyTypeParser {
 		value.generics.formUnion(generics.parameters)
 		value.genericConstraints.formUnion(generics.constraints)
 
+		let attributes = node.attributes.map { ParseAnyType<AttributeTracker>(node: $0).run() }
+		value.attributes.formUnion(attributes)
+
 		return super.visit(node)
 	}
 
 	override func visitPost(_ node: ActorDeclSyntax) {
 		super.visitPost(node)
-	}
-
-	override func visit(_ node: AttributeSyntax) -> SyntaxVisitorContinueKind {
-		let attribute = ParseAnyType<AttributeTracker>(node: node).run()
-		value.attributes.insert(attribute)
-		return super.visit(node)
 	}
 
 	override func visit(_ node: DeclModifierSyntax) -> SyntaxVisitorContinueKind {
