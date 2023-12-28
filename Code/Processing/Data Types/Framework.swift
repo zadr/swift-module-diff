@@ -1,7 +1,7 @@
 import Foundation
 
 struct Framework {
-	var attributes: Set<Attribute> = .init()
+	var attributes: [Attribute] = []
 	var dependencies = [Dependency]()
 	var namedTypes = [NamedType]()
 	var members = [Member]()

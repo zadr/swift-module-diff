@@ -17,7 +17,7 @@ struct Parameter {
 	var name: String = ""
 	var type: String = ""
 	var decorators: Set<Decorator> = .init()
-	var attributes: Set<Attribute> = .init()
+	var attributes: [Attribute] = []
 	var generics: [String] = []
 	var genericConstraints: [Parameter] = []
 	var separator: Separator = .colon

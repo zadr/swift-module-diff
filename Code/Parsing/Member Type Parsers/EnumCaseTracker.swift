@@ -13,8 +13,7 @@ class EnumCaseTracker: SyntaxVisitor, AnyTypeCollectionParser {
 	override func visit(_ node: EnumCaseDeclSyntax) -> SyntaxVisitorContinueKind {
 		value.kind = .case
 
-		let attributes = node.attributes.map { ParseAnyType<AttributeTracker>(node: $0).run() }
-		value.attributes.formUnion(attributes)
+		value.attributes += node.attributes.map { ParseAnyType<AttributeTracker>(node: $0).run() }
 
 		return super.visit(node)
 	}

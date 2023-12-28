@@ -62,8 +62,7 @@ class VariableTracker: SyntaxVisitor, AnyTypeCollectionParser {
 			}
 
 			if let attributes = pattern.typeAnnotation?.type.as(AttributedTypeSyntax.self)?.attributes {
-				let attributes = attributes.map { ParseAnyType<AttributeTracker>(node: $0).run() }
-				copy.attributes.formUnion(attributes)
+				value.attributes += attributes.map { ParseAnyType<AttributeTracker>(node: $0).run() }
 			}
 
 			collection.append(copy)

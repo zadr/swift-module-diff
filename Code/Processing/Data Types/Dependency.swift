@@ -2,7 +2,7 @@ import Foundation
 
 struct Dependency {
 	var name: String = ""
-	var attributes: Set<Attribute> = .init()
+	var attributes: [Attribute] = []
 
 	var description: String {
 """

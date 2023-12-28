@@ -29,7 +29,7 @@ struct NamedType {
 		case `operator`
 	}
 
-	var attributes: Set<Attribute> = .init()
+	var attributes: [Attribute] = []
 	var decorators: Set<Decorator> = .init()
 	var generics: [String] = []
 	var genericConstraints: [Parameter] = []

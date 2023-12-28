@@ -10,7 +10,7 @@ class DependencyTracker: SyntaxVisitor, AnyTypeParser {
 	
 	override func visit(_ node: AttributeSyntax) -> SyntaxVisitorContinueKind {
 		let attribute = ParseAnyType<AttributeTracker>(node: node).run()
-		value.attributes.insert(attribute)
+		value.attributes.append(attribute)
 		return super.visit(node)
 	}
 	

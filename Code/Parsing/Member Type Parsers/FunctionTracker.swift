@@ -39,8 +39,7 @@ class FunctionTracker: SyntaxVisitor, AnyTypeParser {
 		value.generics += generics.parameters
 		value.genericConstraints += generics.constraints
 
-		let attributes = node.attributes.map { ParseAnyType<AttributeTracker>(node: $0).run() }
-		value.attributes.formUnion(attributes)
+		value.attributes += node.attributes.map { ParseAnyType<AttributeTracker>(node: $0).run() }
 
 		return super.visit(node)
 	}
@@ -65,10 +64,7 @@ class FunctionTracker: SyntaxVisitor, AnyTypeParser {
 		}
 
 		if let attributes = node.type.as(AttributedTypeSyntax.self)?.attributes {
-			for attribute in attributes {
-				let name = ParseAnyType<AttributeTracker>(node: attribute).run()
-				parameter.attributes.insert(name)
-			}
+			parameter.attributes += attributes.map { ParseAnyType<AttributeTracker>(node: $0 ).run() }
 		}
 
 		if node.ellipsis != nil {

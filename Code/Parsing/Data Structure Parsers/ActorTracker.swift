@@ -16,8 +16,7 @@ class ActorTracker: SyntaxVisitor, AnyTypeParser {
 		value.generics += generics.parameters
 		value.genericConstraints += generics.constraints
 
-		let attributes = node.attributes.map { ParseAnyType<AttributeTracker>(node: $0).run() }
-		value.attributes.formUnion(attributes)
+		value.attributes += node.attributes.map { ParseAnyType<AttributeTracker>(node: $0).run() }
 
 		return super.visit(node)
 	}

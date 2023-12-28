@@ -1,7 +1,7 @@
 import Foundation
 
 protocol Attributed {
-	var attributes: Set<Attribute> { get }
+	var attributes: [Attribute] { get }
 }
 
 protocol Decorated {

@@ -29,7 +29,7 @@ struct Member {
 	}
 
 	var accessors: Set<Accessor> = .init()
-	var attributes: Set<Attribute> = .init()
+	var attributes: [Attribute] = []
 	var kind: Kind = .unknown
 	var decorators: Set<Decorator> = .init()
 	var generics: [String] = []
