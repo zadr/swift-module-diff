@@ -54,6 +54,8 @@ class FunctionTracker: SyntaxVisitor, AnyTypeParser {
 			.inout: .inout,
 			.borrowing: .borrowing,
 			.consuming: .consuming,
+			.any: .any,
+			.some: .some,
 		]
 
 		for (keyword, decorator) in pairs {
