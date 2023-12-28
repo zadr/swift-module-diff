@@ -56,13 +56,21 @@ struct Member {
 
 extension Member: Codable, CustomStringConvertible, Hashable, Sendable {
 	func hash(into hasher: inout Hasher) {
+		hasher.combine(kind)
 		hasher.combine(name)
+		hasher.combine(parameters)
 		hasher.combine(generics)
 		hasher.combine(genericConstraints)
+		hasher.combine(returnType)
 	}
 
 	static func ==(lhs: Member, rhs: Member) -> Bool {
-		lhs.name == rhs.name && lhs.generics == rhs.generics && lhs.genericConstraints == rhs.genericConstraints
+		lhs.kind == rhs.kind &&
+			lhs.name == rhs.name &&
+			lhs.parameters == rhs.parameters &&
+			lhs.generics == rhs.generics &&
+			lhs.genericConstraints == rhs.genericConstraints &&
+			lhs.returnType == rhs.returnType
 	}
 }
 

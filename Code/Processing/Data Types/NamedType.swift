@@ -59,13 +59,19 @@ struct NamedType {
 
 extension NamedType: Codable, CustomStringConvertible, Hashable, Sendable {
 	func hash(into hasher: inout Hasher) {
+		hasher.combine(kind)
 		hasher.combine(name)
+		hasher.combine(conformances)
 		hasher.combine(generics)
 		hasher.combine(genericConstraints)
 	}
 
 	static func ==(lhs: NamedType, rhs: NamedType) -> Bool {
-		lhs.name == rhs.name && lhs.generics == rhs.generics && lhs.genericConstraints == rhs.genericConstraints
+		lhs.kind == rhs.kind &&
+			lhs.name == rhs.name &&
+			lhs.conformances == rhs.conformances &&
+			lhs.generics == rhs.generics &&
+			lhs.genericConstraints == rhs.genericConstraints
 	}
 }
 
