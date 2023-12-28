@@ -33,12 +33,13 @@ struct Parameter {
 extension Parameter: Codable, CustomStringConvertible, Hashable, Sendable {
 	func hash(into hasher: inout Hasher) {
 		hasher.combine(name)
+		hasher.combine(type)
 		hasher.combine(generics)
 		hasher.combine(genericConstraints)
 	}
 
 	static func ==(lhs: Parameter, rhs: Parameter) -> Bool {
-		lhs.name == rhs.name && lhs.generics == rhs.generics && lhs.genericConstraints == rhs.genericConstraints
+		lhs.name == rhs.name && lhs.type == rhs.type && lhs.generics == rhs.generics && lhs.genericConstraints == rhs.genericConstraints
 	}
 }
 
