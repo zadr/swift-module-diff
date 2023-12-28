@@ -2,7 +2,7 @@ import Foundation
 
 extension ChangedTree {
 	static func htmlVisitor(from fromVersion: Version, to toVersion: Version, root: String) -> ChangeVisitor {
-		return ChangeVisitor(
+		ChangeVisitor(
 			didEnd: { tree in
 				let title = "Xcode \(fromVersion.name) to Xcode \(toVersion.name) Diff"
 				let description = "API changes between Xcode \(fromVersion.name) and Xcode \(toVersion.name)"

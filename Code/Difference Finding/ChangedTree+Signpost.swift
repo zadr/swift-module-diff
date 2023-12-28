@@ -50,40 +50,40 @@ extension ChangedTree {
 			didEnd: { _ in
 				endSignpost("signposting")
 			},
-			willVisitPlatform: { change in
+			willVisitPlatform: { _ in
 				beginSignpost("platform")
 			},
-			didVisitPlatform: { change in
+			didVisitPlatform: { _ in
 				endSignpost("platform")
 			},
-			willVisitArchitecture: { change in
+			willVisitArchitecture: { _ in
 				beginSignpost("architecture")
 			},
-			didVisitArchitecture: { change in
+			didVisitArchitecture: { _ in
 				endSignpost("architecture")
 			},
-			willVisitFramework: { change in
+			willVisitFramework: { _ in
 				beginSignpost("framework")
 			},
-			didVisitFramework: { change in
+			didVisitFramework: { _ in
 				endSignpost("framework")
 			},
-			willVisitDependency: { change in
+			willVisitDependency: { _ in
 				beginSignpost("dependency")
 			},
-			didVisitDependency: { change in
+			didVisitDependency: { _ in
 				endSignpost("dependency")
 			},
-			willVisitNamedType: { change in
+			willVisitNamedType: { _ in
 				beginSignpost("type")
 			},
-			didVisitNamedType: { change in
+			didVisitNamedType: { _ in
 				endSignpost("type")
 			},
-			willVisitMember: { change in
+			willVisitMember: { _ in
 				beginSignpost("member")
 			},
-			didVisitMember: { change in
+			didVisitMember: { _ in
 				endSignpost("member")
 			}
 		)
