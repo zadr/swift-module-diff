@@ -1,12 +1,18 @@
 import Foundation
 
 struct Parameter {
+	enum Separator: String, Codable, Hashable, Sendable {
+		case colon = ":"
+		case doubleEqual = "=="
+	}
+
 	var name: String = ""
 	var type: String = ""
 	var isInout: Bool = false
 	var attributes: Set<Attribute> = .init()
 	var generics: Set<String> = .init()
-	var genericConstraints: Set<String> = .init()
+	var genericConstraints: Set<Parameter> = .init()
+	var separator: Separator = .colon
 
 	var description: String {
 """
@@ -15,6 +21,7 @@ struct Parameter {
     type: \(type)
     isInout: \(isInout)
     attributes: \(attributes)
+    separator: \(separator)
     generics: \(generics) constraints \(genericConstraints)
 ------
 """
@@ -45,6 +52,6 @@ extension Parameter: Attributed, Named, Displayable {
 		if isInout {
 			return "inout \(name): \(type)"
 		}
-		return "\(name): \(type)"
+		return "\(name) \(separator.rawValue) \(type)"
 	}
 }
