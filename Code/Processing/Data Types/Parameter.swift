@@ -47,12 +47,22 @@ extension Parameter: Codable, CustomStringConvertible, Hashable, Sendable {
 
 extension Parameter: Attributed, Named, Displayable {
 	var developerFacingValue: String {
+		var generics = generics.joined(separator: ", ")
+		if !generics.isEmpty {
+			generics = "<\(generics)>"
+		}
 		if type.isEmpty {
 			return name
 		}
 		if isInout {
 			return "inout \(name): \(type)"
 		}
-		return "\(name)\(separator.rawValue) \(type)"
+		return "\(name)\(separator.rawValue) \(type)\(generics)"
+	}
+}
+
+extension Parameter: Comparable {
+	static func <(lhs: Parameter, rhs: Parameter) -> Bool {
+		lhs.developerFacingValue < rhs.developerFacingValue
 	}
 }
