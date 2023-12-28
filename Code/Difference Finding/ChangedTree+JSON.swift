@@ -1,6 +1,6 @@
 import Foundation
 
-extension Summarizer {
+extension ChangedTree {
 	static func jsonVisitor(from fromVersion: Version, to toVersion: Version, root: String) -> ChangeVisitor {
 		return ChangeVisitor(
 			didEnd: { tree in

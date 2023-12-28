@@ -1,11 +1,11 @@
 import Foundation
 
 protocol Nested {
-	var namedTypes: [Summarizer.Platform.Architecture.Framework.NamedType] { get set }
+	var namedTypes: [ChangedTree.Platform.Architecture.Framework.NamedType] { get set }
 	var members: [Change<String>] { get set }
 }
 
-struct Summarizer {
+struct ChangedTree {
 	class Platform: Equatable, Hashable, Comparable, Encodable {
 		class Architecture: Equatable, Hashable, Comparable, Encodable {
 			class Framework: Equatable, Hashable, Comparable, Encodable, Nested {
@@ -14,7 +14,7 @@ struct Summarizer {
 
 					var name: String { value.any }
 					var members = [Change<String>]()
-					var namedTypes = [Summarizer.Platform.Architecture.Framework.NamedType]()
+					var namedTypes = [ChangedTree.Platform.Architecture.Framework.NamedType]()
 
 					var isInteresting: Bool {
 						return value.isNotUnchanged ||
@@ -26,7 +26,7 @@ struct Summarizer {
 						self.value = value
 					}
 
-					static func ==(lhs: Summarizer.Platform.Architecture.Framework.NamedType, rhs: Summarizer.Platform.Architecture.Framework.NamedType) -> Bool {
+					static func ==(lhs: ChangedTree.Platform.Architecture.Framework.NamedType, rhs: ChangedTree.Platform.Architecture.Framework.NamedType) -> Bool {
 						lhs.value == rhs.value
 					}
 
@@ -34,7 +34,7 @@ struct Summarizer {
 						hasher.combine(value)
 					}
 
-					static func <(lhs: Summarizer.Platform.Architecture.Framework.NamedType, rhs: Summarizer.Platform.Architecture.Framework.NamedType) -> Bool {
+					static func <(lhs: ChangedTree.Platform.Architecture.Framework.NamedType, rhs: ChangedTree.Platform.Architecture.Framework.NamedType) -> Bool {
 						return lhs.value.any < rhs.value.any
 					}
 				}
@@ -42,13 +42,13 @@ struct Summarizer {
 				let value: Change<String>
 				var dependencies = [Change<String>]()
 				var members = [Change<String>]()
-				var namedTypes = [Summarizer.Platform.Architecture.Framework.NamedType]()
+				var namedTypes = [ChangedTree.Platform.Architecture.Framework.NamedType]()
 
 				init(value: Change<String>) {
 					self.value = value
 				}
 
-				static func ==(lhs: Summarizer.Platform.Architecture.Framework, rhs: Summarizer.Platform.Architecture.Framework) -> Bool {
+				static func ==(lhs: ChangedTree.Platform.Architecture.Framework, rhs: ChangedTree.Platform.Architecture.Framework) -> Bool {
 					lhs.value == rhs.value
 				}
 
@@ -56,19 +56,19 @@ struct Summarizer {
 					hasher.combine(value)
 				}
 
-				static func <(lhs: Summarizer.Platform.Architecture.Framework, rhs: Summarizer.Platform.Architecture.Framework) -> Bool {
+				static func <(lhs: ChangedTree.Platform.Architecture.Framework, rhs: ChangedTree.Platform.Architecture.Framework) -> Bool {
 					return lhs.value.any < rhs.value.any
 				}
 			}
 
 			let value: Change<String>
-			var frameworks = [Summarizer.Platform.Architecture.Framework]()
+			var frameworks = [ChangedTree.Platform.Architecture.Framework]()
 
 			init(value: Change<String>) {
 				self.value = value
 			}
 
-			static func ==(lhs: Summarizer.Platform.Architecture, rhs: Summarizer.Platform.Architecture) -> Bool {
+			static func ==(lhs: ChangedTree.Platform.Architecture, rhs: ChangedTree.Platform.Architecture) -> Bool {
 				lhs.value == rhs.value
 			}
 
@@ -76,19 +76,19 @@ struct Summarizer {
 				hasher.combine(value)
 			}
 
-			static func <(lhs: Summarizer.Platform.Architecture, rhs: Summarizer.Platform.Architecture) -> Bool {
+			static func <(lhs: ChangedTree.Platform.Architecture, rhs: ChangedTree.Platform.Architecture) -> Bool {
 				return lhs.value.any < rhs.value.any
 			}
 		}
 
 		let value: Change<String>
-		var architectures = [Summarizer.Platform.Architecture]()
+		var architectures = [ChangedTree.Platform.Architecture]()
 
 		init(value: Change<String>) {
 			self.value = value
 		}
 
-		static func ==(lhs: Summarizer.Platform, rhs: Summarizer.Platform) -> Bool {
+		static func ==(lhs: ChangedTree.Platform, rhs: ChangedTree.Platform) -> Bool {
 			lhs.value == rhs.value
 		}
 
@@ -96,13 +96,13 @@ struct Summarizer {
 			hasher.combine(value)
 		}
 
-		static func <(lhs: Summarizer.Platform, rhs: Summarizer.Platform) -> Bool {
+		static func <(lhs: ChangedTree.Platform, rhs: ChangedTree.Platform) -> Bool {
 			return lhs.value.any < rhs.value.any
 		}
 	}
 
 	typealias Version = OperatingSystemVersion
-	typealias StorageTree = [Summarizer.Platform]
+	typealias StorageTree = [ChangedTree.Platform]
 
 	struct ChangeVisitor {
 		var willBegin: (() -> Void) = {}
@@ -178,11 +178,11 @@ struct Summarizer {
 			}, didVisitDependency: { dependency in
 				visitors.forEach { v in if v.shouldVisitDependency(dependency) { v.didVisitDependency?(dependency) } }
 			}, willVisitNamedType: { namedType in
-				activeNamedTypeStack.append(Summarizer.Platform.Architecture.Framework.NamedType(value: namedType.change(keyPath: \.developerFacingValue)))
+				activeNamedTypeStack.append(ChangedTree.Platform.Architecture.Framework.NamedType(value: namedType.change(keyPath: \.developerFacingValue)))
 
 				visitors.forEach { v in if v.shouldVisitNamedType(namedType) { v.willVisitNamedType?(namedType) } }
 			}, didVisitNamedType: { namedType in
-				let completedType = activeNamedTypeStack.removeLast() as! Summarizer.Platform.Architecture.Framework.NamedType
+				let completedType = activeNamedTypeStack.removeLast() as! ChangedTree.Platform.Architecture.Framework.NamedType
 				var copy = activeNamedTypeStack.removeLast()
 				copy.namedTypes.append(completedType)
 				activeNamedTypeStack.append(copy)
@@ -205,7 +205,7 @@ struct Summarizer {
 	}
 }
 
-extension Summarizer {
+extension ChangedTree {
 	fileprivate func enumeratePlatformDifferences(visitor: ChangeVisitor) {
 		for platformChange in Change<SwiftmoduleFinder.Platform>.differences(from: old.keys, to: new.keys) {
 			guard visitor.shouldVisitPlatform(platformChange) else { continue }
@@ -333,7 +333,7 @@ extension Summarizer {
 	}
 }
 
-extension Summarizer.Version {
+extension ChangedTree.Version {
 	var name: String { "\(majorVersion).\(minorVersion).\(patchVersion)" }
 
 	init?(appPath root: String) {
@@ -354,11 +354,11 @@ extension Summarizer.Version {
 	}
 }
 
-extension Array where Element == Summarizer.Platform {
-	func notableDifferences() -> [Summarizer.Platform] {
-		var interestingTree = [Summarizer.Platform]()
+extension Array where Element == ChangedTree.Platform {
+	func notableDifferences() -> [ChangedTree.Platform] {
+		var interestingTree = [ChangedTree.Platform]()
 
-		func append(members: [Change<String>], nested namedTypes: [Summarizer.Platform.Architecture.Framework.NamedType], to parent: inout Nested) {
+		func append(members: [Change<String>], nested namedTypes: [ChangedTree.Platform.Architecture.Framework.NamedType], to parent: inout Nested) {
 			let filteredMembers = members.filter { $0.isNotUnchanged }
 			if !filteredMembers.isEmpty {
 				parent.members.append(contentsOf: filteredMembers.sorted())
@@ -366,7 +366,7 @@ extension Array where Element == Summarizer.Platform {
 
 			let filteredNamedTypes = namedTypes.filter { $0.isInteresting }
 			for type in filteredNamedTypes.sorted() {
-				var nested: Nested = Summarizer.Platform.Architecture.Framework.NamedType(value: type.value)
+				var nested: Nested = ChangedTree.Platform.Architecture.Framework.NamedType(value: type.value)
 				append(members: type.members, nested: type.namedTypes, to: &nested)
 				parent.namedTypes.append(type)
 			}
@@ -387,7 +387,7 @@ extension Array where Element == Summarizer.Platform {
 						continue
 					}
 
-					let frameworkAsFramework = Summarizer.Platform.Architecture.Framework(value: framework.value)
+					let frameworkAsFramework = ChangedTree.Platform.Architecture.Framework(value: framework.value)
 					if !dependencies.isEmpty {
 						frameworkAsFramework.dependencies += dependencies
 					}

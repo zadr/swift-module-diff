@@ -1,6 +1,6 @@
 import Foundation
 
-extension Summarizer {
+extension ChangedTree {
 	static func progressVisitor() -> ChangeVisitor {
 		ChangeVisitor(willVisitPlatform: { change in
 			if change.isNotUnchanged {

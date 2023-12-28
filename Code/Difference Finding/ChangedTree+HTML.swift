@@ -1,6 +1,6 @@
 import Foundation
 
-extension Summarizer {
+extension ChangedTree {
 	static func htmlVisitor(from fromVersion: Version, to toVersion: Version, root: String) -> ChangeVisitor {
 		return ChangeVisitor(
 			didEnd: { tree in
@@ -61,7 +61,7 @@ extension Summarizer {
 <html lang="en-US">
 """
 
-				func append(members: [Change<String>], namedTypes: [Summarizer.Platform.Architecture.Framework.NamedType], includeTypeName: Bool = false, idStack: [String], depth: Int = 0) {
+				func append(members: [Change<String>], namedTypes: [ChangedTree.Platform.Architecture.Framework.NamedType], includeTypeName: Bool = false, idStack: [String], depth: Int = 0) {
 					let id = idStack.joined(separator: " ")
 					let prefix = String(repeating: "\t", count: depth)
 					let filteredMembers = members.filter { $0.isNotUnchanged }

@@ -25,7 +25,7 @@ extension StaticString: Hashable, Equatable {
 	}
 }
 
-extension Summarizer {
+extension ChangedTree {
 	static func signpostVisitor(from fromVersion: Version, to toVersion: Version) -> ChangeVisitor {
 		let signposter = OSSignposter()
 		var signpostIDCache = [StaticString: OSSignpostID]()

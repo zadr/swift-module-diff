@@ -60,15 +60,15 @@ struct SwiftModuleDiff: ParsableCommand {
 		let oldFrameworks = Summary.createSummary(for: old, trace: trace)
 		let newFrameworks = Summary.createSummary(for: new, trace: trace)
 
-		let fromVersion = Summarizer.Version(appPath: old)!
-		let toVersion = Summarizer.Version(appPath: new)!
+		let fromVersion = ChangedTree.Version(appPath: old)!
+		let toVersion = ChangedTree.Version(appPath: new)!
 
-		let progressVisitor = progress ? Summarizer.progressVisitor() : nil
-		let htmlVisitor = html ? Summarizer.htmlVisitor(from: fromVersion, to: toVersion, root: output) : nil
-		let jsonVisitor = json ? Summarizer.jsonVisitor(from: fromVersion, to: toVersion, root: output) : nil
-		let signpostVisitor = trace ? Summarizer.signpostVisitor(from: fromVersion, to: toVersion) : nil
+		let progressVisitor = progress ? ChangedTree.progressVisitor() : nil
+		let htmlVisitor = html ? ChangedTree.htmlVisitor(from: fromVersion, to: toVersion, root: output) : nil
+		let jsonVisitor = json ? ChangedTree.jsonVisitor(from: fromVersion, to: toVersion, root: output) : nil
+		let signpostVisitor = trace ? ChangedTree.signpostVisitor(from: fromVersion, to: toVersion) : nil
 
-		Summarizer(old: oldFrameworks, new: newFrameworks)
+		ChangedTree(old: oldFrameworks, new: newFrameworks)
 			.summarize(
 				visitors: progressVisitor, htmlVisitor, jsonVisitor, signpostVisitor,
 				trace: trace
