@@ -80,9 +80,11 @@ extension NamedType: Attributed, Decorated, Displayable, Named {
 			conformances = ": \(conformances)"
 		}
 		var generics = generics.joined(separator: ", ")
-		var genericConstraints = genericConstraints.map { $0.developerFacingValue }.joined(separator: ", ")
 		if !generics.isEmpty {
 			generics = "<\(generics)>"
+		}
+		var genericConstraints = genericConstraints.map { $0.developerFacingValue }.joined(separator: ", ")
+		if !genericConstraints.isEmpty {
 			genericConstraints = " where \(genericConstraints)"
 		}
 
