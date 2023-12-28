@@ -1,6 +1,6 @@
 import Foundation
 
-protocol Nested {
+fileprivate protocol Nested {
 	var namedTypes: [ChangedTree.Platform.Architecture.Framework.NamedType] { get set }
 	var members: [Change<String>] { get set }
 }
