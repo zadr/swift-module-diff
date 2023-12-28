@@ -10,6 +10,7 @@ struct NamedType {
 		case `weak`
 		case `unsafe`
 		case `unowned`
+		case `indirect`
 	}
 
 	enum Kind: String, Codable, Hashable {
