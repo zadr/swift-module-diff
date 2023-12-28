@@ -17,12 +17,7 @@ This command-line tool integrates SwiftSyntax and can handle the basics, such as
 - member decorations (`async`, `throws`, `static`, etc)
 - availability attributes
 
-Swift is a big language, and there is still more to track. Things missing include (but are not limited to):
-
-- [ ] Track generics in type declarations (e.g. `struct TypeName<T> {}`)
-- [ ] Track generics in function parameters (e.g. `func functionName<T>() {}`)
-- [ ] Track generic constraints in extension declarations (e.g. `extension Array where Element == Int {}` or `extension Collection where Iterator.Element: Equatable {}`)
-- [ ] Track nested type names (e.g. for `enum X { enum Y {} }`, consider the inner enum name to be X.Y)
+Swift is a big and evolving language, so it is likely that edge-cases are missing. Feel free to open a PR or file an issue.
 
 #### But Why?
 Having everything that changed one one page can be nice
