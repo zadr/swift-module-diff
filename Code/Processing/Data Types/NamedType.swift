@@ -46,6 +46,7 @@ struct NamedType {
 """
 ------
     attributes: \(attributes)
+	decorators > \(decorators)
     final > '\(isFinal)' || open > '\(isOpen)' for kind > '\(kind)' named > '\(name)'
     conformances: \(conformances.joined(separator: ", "))
 	generics: \(generics) constraints \(genericConstraints)
