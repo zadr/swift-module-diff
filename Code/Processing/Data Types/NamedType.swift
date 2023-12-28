@@ -30,8 +30,6 @@ struct NamedType {
 	var generics: [String] = []
 	var genericConstraints: [Parameter] = []
 	var kind: Kind = .unknown
-	var isFinal: Bool = false
-	var isOpen: Bool = false
 	var name: String = ""
 
 	var conformances = [String]()
@@ -47,7 +45,7 @@ struct NamedType {
 ------
     attributes: \(attributes)
 	decorators > \(decorators)
-    final > '\(isFinal)' || open > '\(isOpen)' for kind > '\(kind)' named > '\(name)'
+    kind > '\(kind)' named > '\(name)'
     conformances: \(conformances.joined(separator: ", "))
 	generics: \(generics) constraints \(genericConstraints)
     has:
@@ -96,9 +94,10 @@ extension NamedType: Attributed, Decorated, Displayable, Named {
 			genericConstraints = " where \(genericConstraints)"
 		}
 
-		let openString = isOpen ? "open " : ""
-		let finalString = isFinal ? "final " : ""
-
-		return "\(attributes) \(openString)\(finalString)\(kind.rawValue) \(name)\(generics)\(conformances)\(genericConstraints)".trimmingCharacters(in: .whitespaces)
+		var decorators = Array(decorators).map { $0.rawValue }.sorted().joined(separator: " ")
+		if !decorators.isEmpty {
+			decorators = " \(decorators) "
+		}
+		return "\(attributes)\(decorators)\(kind.rawValue) \(name)\(generics)\(conformances)\(genericConstraints)".trimmingCharacters(in: .whitespaces)
 	}
 }

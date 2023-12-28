@@ -10,8 +10,16 @@ class ClassTracker: SyntaxVisitor, AnyTypeParser {
 	}
 
 	override func visit(_ node: DeclModifierSyntax) -> SyntaxVisitorContinueKind {
-		value.isOpen = value.isOpen || ParseDecl<DeclTracker>(node: node).run(keyword: .open)
-		value.isFinal = value.isFinal || ParseDecl<DeclTracker>(node: node).run(keyword: .final)
+		let pairs: [Keyword: NamedType.Decorator] = [
+			.open: .open,
+			.final: .final
+		]
+
+		for (keyword, decorator) in pairs {
+			if ParseDecl<DeclTracker>(node: node).run(keyword: keyword) {
+				value.decorators.insert(decorator)
+			}
+		}
 		return super.visit(node)
 	}
 
