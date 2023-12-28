@@ -140,3 +140,18 @@ extension ChangedTree {
 		)
 	}
 }
+
+extension Change {
+	var emoji: String {
+		switch self {
+		case .removed(_, _):
+			""
+		case .modified(_, _):
+			"〰️"
+		case .unchanged(_, _):
+			""
+		case .added(_, _):
+			"➕"
+		}
+	}
+}

@@ -26,19 +26,6 @@ enum Change<T: Named> {
 		return true
 	}
 
-	var emoji: String {
-		switch self {
-		case .removed(_, _):
-			""
-		case .modified(_, _):
-			"〰️"
-		case .unchanged(_, _):
-			""
-		case .added(_, _):
-			"➕"
-		}
-	}
-
 	var kind: String {
 		switch self {
 		case .removed(_, _):
