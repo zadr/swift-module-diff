@@ -30,6 +30,7 @@ class VariableTracker: SyntaxVisitor, AnyTypeCollectionParser {
 			.weak: .weak,
 			.unsafe: .unsafe,
 			.unowned: .unowned,
+			.nonisolated: .nonisolated
 		]
 
 		for (keyword, decorator) in pairs {

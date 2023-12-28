@@ -25,6 +25,7 @@ struct Member {
 		case `weak`
 		case `unsafe`
 		case `unowned`
+		case `nonisolated`
 	}
 
 	var accessors: Set<Accessor> = .init()
