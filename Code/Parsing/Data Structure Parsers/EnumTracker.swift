@@ -23,10 +23,6 @@ class EnumTracker: SyntaxVisitor, AnyTypeParser {
 	}
 
 	override func visit(_ node: DeclModifierSyntax) -> SyntaxVisitorContinueKind {
-		let pairs: [Keyword: NamedType.Decorator] = [
-			.indirect: .indirect
-		]
-
 		if ParseDecl<DeclTracker>(node: node).run(keyword: .indirect) {
 			value.decorators.insert(.indirect)
 		}
