@@ -2,7 +2,7 @@ import ArgumentParser
 import Foundation
 
 @main
-struct SwiftModuleDiff: ParsableCommand {
+struct SwiftmoduleDiff: ParsableCommand {
 	static var configuration = CommandConfiguration(
 		abstract: "A utility for diffing two Swift APIs",
 		version: "0.1.0"
