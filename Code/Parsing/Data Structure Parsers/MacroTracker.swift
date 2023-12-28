@@ -13,8 +13,8 @@ class MacroTracker: SyntaxVisitor, AnyTypeParser {
 		value.name = node.name.text
 
 		let generics = GenericsTracker(parametersNode: node.genericParameterClause, requirementsNode: node.genericWhereClause).run()
-		value.generics.formUnion(generics.parameters)
-		value.genericConstraints.formUnion(generics.constraints)
+		value.generics += generics.parameters
+		value.genericConstraints += generics.constraints
 
 		let attributes = node.attributes.map { ParseAnyType<AttributeTracker>(node: $0).run() }
 		value.attributes.formUnion(attributes)

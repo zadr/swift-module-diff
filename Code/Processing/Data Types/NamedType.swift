@@ -26,8 +26,8 @@ struct NamedType {
 
 	var attributes: Set<Attribute> = .init()
 	var decorators: Set<Decorator> = .init()
-	var generics: Set<String> = .init()
-	var genericConstraints: Set<Parameter> = .init()
+	var generics: [String] = []
+	var genericConstraints: [Parameter] = []
 	var kind: Kind = .unknown
 	var isFinal: Bool = false
 	var isOpen: Bool = false

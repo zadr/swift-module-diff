@@ -32,8 +32,8 @@ struct Member {
 	var attributes: Set<Attribute> = .init()
 	var kind: Kind = .unknown
 	var decorators: Set<Decorator> = .init()
-	var generics: Set<String> = .init()
-	var genericConstraints: Set<Parameter> = .init()
+	var generics: [String] = []
+	var genericConstraints: [Parameter] = []
 	var name: String = ""
 	var returnType: String = ""
 	var parameters: [Parameter] = []

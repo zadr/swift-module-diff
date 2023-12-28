@@ -10,8 +10,8 @@ struct Parameter {
 	var type: String = ""
 	var isInout: Bool = false
 	var attributes: Set<Attribute> = .init()
-	var generics: Set<String> = .init()
-	var genericConstraints: Set<Parameter> = .init()
+	var generics: [String] = []
+	var genericConstraints: [Parameter] = []
 	var separator: Separator = .colon
 
 	var description: String {

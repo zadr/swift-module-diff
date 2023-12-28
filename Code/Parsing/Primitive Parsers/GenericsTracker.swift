@@ -10,13 +10,13 @@ struct GenericsTracker {
 		self.requirementsNode = requirementsNode
 	}
 
-	func run() -> (parameters: Set<String>, constraints: Set<Parameter>) {
-		var parameters = Set<String>()
-		var constraints = Set<Parameter>()
+	func run() -> (parameters: [String], constraints: [Parameter]) {
+		var parameters = [String]()
+		var constraints = [Parameter]()
 
 		for parameter in parametersNode?.parameters ?? [] {
 			if case .identifier(let name) = parameter.name.tokenKind {
-				parameters.insert(name)
+				parameters.append(name)
 			}
 		}
 
@@ -48,7 +48,7 @@ struct GenericsTracker {
 				parameter.type = ParseAnyType<TypeNameTracker>(node: conformance.rightType).run()
 			}
 
-			constraints.insert(parameter)
+			constraints.append(parameter)
 		}
 
 		return (parameters: parameters, constraints: constraints)
