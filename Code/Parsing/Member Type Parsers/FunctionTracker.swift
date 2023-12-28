@@ -49,7 +49,16 @@ class FunctionTracker: SyntaxVisitor, AnyTypeParser {
 		var parameter = Parameter()
 		parameter.name = node.firstName.text + (node.secondName != nil ? " " + node.secondName!.text : "")
 		parameter.type = ParseAnyType<TypeNameTracker>(node: node.type).run()
-		parameter.isInout = ParseAnyType<InoutTracker>(node: node.type).run()
+
+		let pairs: [Keyword: Parameter.Decorator] = [
+			.inout: .inout,
+		]
+
+		for (keyword, decorator) in pairs {
+			if ParseDecl<AttributedTypeTracker>(node: node.type).run(keyword: keyword) {
+				parameter.decorators.insert(decorator)
+			}
+		}
 
 		if let attributes = node.type.as(AttributedTypeSyntax.self)?.attributes {
 			for attribute in attributes {

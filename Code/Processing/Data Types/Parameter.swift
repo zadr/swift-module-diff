@@ -1,14 +1,17 @@
 import Foundation
 
 struct Parameter {
-	enum Separator: String, Codable, Hashable, Sendable {
+	enum Decorator: String, Codable, Equatable, Hashable, Sendable {
+		case `inout`
+
+	enum Separator: String, Codable, Equatable, Hashable, Sendable {
 		case colon = ":"
 		case doubleEqual = "=="
 	}
 
 	var name: String = ""
 	var type: String = ""
-	var isInout: Bool = false
+	var decorators: Set<Decorator> = .init()
 	var attributes: Set<Attribute> = .init()
 	var generics: [String] = []
 	var genericConstraints: [Parameter] = []
@@ -19,7 +22,7 @@ struct Parameter {
 ------
     name: \(name)
     type: \(type)
-    isInout: \(isInout)
+	decorators: \(decorators)
     attributes: \(attributes)
     separator: \(separator)
     generics: \(generics) constraints \(genericConstraints)
@@ -33,13 +36,14 @@ struct Parameter {
 extension Parameter: Codable, CustomStringConvertible, Hashable, Sendable {
 	func hash(into hasher: inout Hasher) {
 		hasher.combine(name)
+		hasher.combine(decorators)
 		hasher.combine(type)
 		hasher.combine(generics)
 		hasher.combine(genericConstraints)
 	}
 
 	static func ==(lhs: Parameter, rhs: Parameter) -> Bool {
-		lhs.name == rhs.name && lhs.type == rhs.type && lhs.generics == rhs.generics && lhs.genericConstraints == rhs.genericConstraints
+		lhs.name == rhs.name && lhs.decorators == rhs.decorators && lhs.type == rhs.type && lhs.generics == rhs.generics && lhs.genericConstraints == rhs.genericConstraints
 	}
 }
 
@@ -54,10 +58,11 @@ extension Parameter: Attributed, Named, Displayable {
 		if type.isEmpty {
 			return name
 		}
-		if isInout {
-			return "inout \(name): \(type)"
+		var decorators = decorators.map { $0.rawValue }.sorted().joined(separator: " ")
+		if !decorators.isEmpty {
+			decorators += " "
 		}
-		return "\(name)\(separator.rawValue) \(type)\(generics)"
+		return "\(decorators)\(name)\(separator.rawValue) \(type)\(generics)"
 	}
 }
 

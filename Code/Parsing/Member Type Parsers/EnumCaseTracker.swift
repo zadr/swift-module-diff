@@ -29,9 +29,13 @@ class EnumCaseTracker: SyntaxVisitor, AnyTypeCollectionParser {
 		if let firstName = node.firstName {
 			parameter.name = firstName.text + (node.secondName != nil ? " " + node.secondName!.text : "")
 		}
+
 		parameter.type = ParseAnyType<TypeNameTracker>(node: node.type).run()
-		parameter.isInout = ParseAnyType<InoutTracker>(node: node.type).run()
-		
+
+		if ParseDecl<AttributedTypeTracker>(node: node.type).run(keyword: .inout) {
+			parameter.decorators.insert(.inout)
+		}
+
 		value.parameters.append(parameter)
 		return super.visit(node)
 	}

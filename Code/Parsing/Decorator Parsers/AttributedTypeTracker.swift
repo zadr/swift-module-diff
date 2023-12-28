@@ -1,13 +1,7 @@
 import Foundation
 import SwiftSyntax
 
-class InoutTracker: SyntaxVisitor, AnyTypeParser {
-	var value = false
-
-	required init() {
-		super.init(viewMode: .sourceAccurate)
-	}
-
+class AttributedTypeTracker: DeclTracker {
 	override func visit(_ node: AttributedTypeSyntax) -> SyntaxVisitorContinueKind {
 		if node.specifier?.tokenKind == .keyword(.inout) {
 			value = true
