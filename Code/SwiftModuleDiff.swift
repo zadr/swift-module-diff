@@ -69,7 +69,7 @@ struct SwiftModuleDiff: ParsableCommand {
 		let signpostVisitor = trace ? ChangedTree.signpostVisitor(from: fromVersion, to: toVersion) : nil
 
 		ChangedTree(old: oldFrameworks, new: newFrameworks)
-			.summarize(
+			.walk(
 				visitors: progressVisitor, htmlVisitor, jsonVisitor, signpostVisitor,
 				trace: trace
 			)
