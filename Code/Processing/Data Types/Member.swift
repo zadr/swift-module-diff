@@ -14,6 +14,8 @@ struct Member {
 	enum Accessor: String, Codable, Hashable, Sendable {
 		case `get`
 		case `set`
+		case `mutating`
+		case `nonmutating`
 	}
 
 	enum Decorator: String, Codable, Equatable, Hashable, Sendable {
@@ -26,9 +28,11 @@ struct Member {
 		case `unsafe`
 		case `unowned`
 		case `nonisolated`
+		case `mutating`
+		case `nonmutating`
 	}
 
-	var accessors: Set<Accessor> = .init()
+	var accessors: [Accessor] = []
 	var attributes: [Attribute] = []
 	var kind: Kind = .unknown
 	var decorators: Set<Decorator> = .init()

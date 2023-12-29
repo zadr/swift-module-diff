@@ -10,17 +10,8 @@ class VariableTracker: SyntaxVisitor, AnyTypeCollectionParser {
 		super.init(viewMode: .sourceAccurate)
 	}
 
-	override func visit(_ node: AccessorBlockSyntax) -> SyntaxVisitorContinueKind {
-		switch node.accessors {
-		case .accessors:
-			value.accessors.insert(.set)
-		case .getter:
-			value.accessors.insert(.get)
-		}
-		return super.visit(node)
-	}
-
 	override func visit(_ node: DeclModifierSyntax) -> SyntaxVisitorContinueKind {
+		print("\(#function) \(type(of: node))")
 		let pairs: [Keyword: Member.Decorator] = [
 			.async: .async,
 			.static: .static,
@@ -47,6 +38,7 @@ class VariableTracker: SyntaxVisitor, AnyTypeCollectionParser {
 	}
 
 	override func visit(_ node: VariableDeclSyntax) -> SyntaxVisitorContinueKind {
+		print("\(#function) \(type(of: node))")
 		if node.bindingSpecifier.tokenKind == .keyword(.let) {
 			value.kind = .let
 		}
@@ -62,7 +54,27 @@ class VariableTracker: SyntaxVisitor, AnyTypeCollectionParser {
 			}
 
 			if let attributes = pattern.typeAnnotation?.type.as(AttributedTypeSyntax.self)?.attributes {
-				value.attributes += attributes.map { ParseAnyType<AttributeTracker>(node: $0).run() }
+				copy.attributes += attributes.map { ParseAnyType<AttributeTracker>(node: $0).run() }
+			}
+
+			if case .accessors(let accessors) = pattern.accessorBlock?.accessors {
+				for accessor in accessors {
+					switch accessor.modifier?.name.tokenKind ?? .keyword(.none) {
+					case .keyword(.nonmutating):
+						copy.accessors.append(.nonmutating)
+					case .keyword(.mutating):
+						copy.accessors.append(.mutating)
+					default: break;
+					}
+
+					switch accessor.accessorSpecifier.tokenKind {
+					case .keyword(.set):
+						copy.accessors.append(.set)
+					case .keyword(.get):
+						copy.accessors.append(.get)
+					default: break
+					}
+				}
 			}
 
 			collection.append(copy)
