@@ -34,6 +34,8 @@ struct Member {
 		case `lazy`
 		case `dynamic`
 		case `indirect`
+		case `required`
+		case `convenience`
 	}
 
 	var accessors: [Accessor] = []

@@ -19,7 +19,6 @@ Swift is a big and evolving language, so it is likely that edge-cases or lesser-
 - [ ] `some`/`any` keyword in return types
 - [ ] default values in function parameters
 - [ ] `rethrows` keyword
-- [ ] `convenience` and `required` on init
 - [ ] `unowned(safe)` and `unowned(unsafe)` on member storage
 
 #### But Why?
