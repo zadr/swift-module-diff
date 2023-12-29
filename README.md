@@ -18,6 +18,7 @@ Swift is a big and evolving language, so it is likely that edge-cases or lesser-
 - [ ] `some`/`any` keyword in return types
 - [ ] default values in function parameters
 - [ ] `unowned(safe)` and `unowned(unsafe)` on member storage
+- [ ] optionals in return types
 
 #### But Why?
 Having everything that changed one one page can be nice
@@ -26,3 +27,63 @@ If more information than base additions / deprecations / removals is needed, off
 
 #### Inspiration
 Code Workshop's [`objc-diff`](http://codeworkshop.net/objc-diff/)
+
+#### Notes on development
+As a hypothetical, consider adding support for a new `magic` keyword that can appear before `func` declarations in `class` contexts.
+
+Starting with a new `Magic.swiftmodule` containing the following:
+
+```
+class C {
+    magic func x(y: Int = 1) -> Int { 0 }
+}
+```
+
+Running with `--single-file` flag set: `swift-module-diff --single-file=/path/to/Magic.swiftmodule` will parse a single file.
+
+From there, breakpoints make for a quick way to the AST. For example, in `FunctionTracker.visit(_ node: FunctionDeclSyntax) -> SyntaxVisitorContinueKind`,
+running `vo node` will produce something that looks like this:
+
+```
+(lldb) vo node
+(SwiftSyntax.FunctionDeclSyntax) node = FunctionDeclSyntax
+├─attributes: AttributeListSyntax
+├─modifiers: DeclModifierListSyntax
+│ ╰─[0]: DeclModifierSyntax
+│   ╰─name: keyword(SwiftSyntax.Keyword.magic)
+├─funcKeyword: keyword(SwiftSyntax.Keyword.func)
+├─name: identifier("x")
+├─signature: FunctionSignatureSyntax
+│ ├─parameterClause: FunctionParameterClauseSyntax
+│ │ ├─leftParen: leftParen
+│ │ ├─parameters: FunctionParameterListSyntax
+│ │ │ ╰─[0]: FunctionParameterSyntax
+│ │ │   ├─attributes: AttributeListSyntax
+│ │ │   ├─modifiers: DeclModifierListSyntax
+│ │ │   ├─firstName: identifier("y")
+│ │ │   ├─colon: colon
+│ │ │   ├─type: IdentifierTypeSyntax
+│ │ │   │ ╰─name: identifier("Int")
+│ │ │   ╰─defaultValue: InitializerClauseSyntax
+│ │ │     ├─equal: equal
+│ │ │     ╰─value: IntegerLiteralExprSyntax
+│ │ │       ╰─literal: integerLiteral("1")
+│ │ ╰─rightParen: rightParen
+│ ╰─returnClause: ReturnClauseSyntax
+│   ├─arrow: arrow
+│   ╰─type: IdentifierTypeSyntax
+│     ╰─name: identifier("Int")
+╰─body: CodeBlockSyntax
+  ├─leftBrace: leftBrace
+  ├─statements: CodeBlockItemListSyntax
+  │ ╰─[0]: CodeBlockItemSyntax
+  │   ╰─item: IntegerLiteralExprSyntax
+  │     ╰─literal: integerLiteral("0")
+  ╰─rightBrace: rightBrace
+```
+
+which shows that `magic` is a declaration modifier.
+
+`swift-module-diff` tracks member types (functions, vars, typealiases, and so on) with the `Member` type, and `Member` includes a `Decorator` enum with results stored in a `decorators` set.
+
+All together, the results will look something like [this](https://github.com/zadr/swift-module-diff/commit/85bf1fb3fdbeb5982900264dac0ba4ed722976fc) commit that added support for tracking `optional` conformances of members within protocols.
