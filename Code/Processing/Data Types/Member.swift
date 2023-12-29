@@ -26,7 +26,8 @@ struct Member {
 		case `open`
 		case `static`
 		case `weak`
-		case `unsafe`
+		case `unsafe` = "unowned(unsafe)"
+		case `safe` = "unowned(safe)"
 		case `unowned`
 		case `nonisolated`
 		case `mutating`

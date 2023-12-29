@@ -23,13 +23,25 @@ class VariableTracker: SyntaxVisitor, AnyTypeCollectionParser {
 			.lazy: .lazy,
 			.dynamic: .dynamic
 		]
+		let details: [Keyword: [String?: Member.Decorator]] = [
+			.unowned: [
+				"unsafe": .unsafe,
+				"safe": .safe,
+				nil: .unowned,
+			]
+		]
 
-		for (keyword, decorator) in pairs {
-			if ParseDecl<DeclTracker>(node: node).run(keyword: keyword) {
-				collection = collection.map {
-					var copy = $0
-					copy.decorators.insert(decorator)
-					return copy
+		for (keyword, primaryDecorator) in pairs {
+			let detailsToCheck = details[keyword] ?? [nil: primaryDecorator]
+			var found = false
+			for (detailKeyword, detailedDecorator) in detailsToCheck where !found {
+				if ParseDecl<DeclTracker>(node: node).run(keyword: keyword, detailKeyword: detailKeyword) {
+					found = true
+					collection = collection.map {
+						var copy = $0
+						copy.decorators.insert(detailedDecorator)
+						return copy
+					}
 				}
 			}
 		}

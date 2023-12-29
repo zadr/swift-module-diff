@@ -4,7 +4,7 @@ import SwiftSyntax
 
 protocol DeclParser {
 	var value: Bool { get }
-	init(keyword: Keyword)
+	init(keyword: Keyword, detailKeyword: String?)
 }
 
 extension DeclParser where Self: SyntaxVisitor {}
@@ -16,9 +16,9 @@ struct ParseDecl<T: SyntaxVisitor & DeclParser> {
 		self.node = node
 	}
 
-	func run(keyword: Keyword) -> Bool {
+	func run(keyword: Keyword, detailKeyword: String? = nil) -> Bool {
 		autoreleasepool {
-			let tracker = T(keyword: keyword)
+			let tracker = T(keyword: keyword, detailKeyword: detailKeyword)
 			tracker.walk(node)
 
 			return tracker.value
@@ -29,16 +29,29 @@ struct ParseDecl<T: SyntaxVisitor & DeclParser> {
 class DeclTracker: SyntaxVisitor, DeclParser {
 	var value = false
 	let keyword: Keyword
+	let detailKeyword: String?
 
-	required init(keyword: Keyword) {
+	required init(keyword: Keyword, detailKeyword: String? = nil) {
 		self.keyword = keyword
+		self.detailKeyword = detailKeyword
 		super.init(viewMode: .sourceAccurate)
 	}
 
 	override func visit(_ node: DeclModifierSyntax) -> SyntaxVisitorContinueKind {
+		var matchedValue = false
 		if node.name.tokenKind == .keyword(keyword) {
-			value = true
+			matchedValue = true
 		}
+
+		var matchedDetail = false
+		if let detailKeyword, let detailNode = node.detail {
+			matchedDetail = detailNode.detail.tokenKind == .identifier(detailKeyword)
+		} else if detailKeyword == nil {
+			matchedDetail = true
+		}
+
+		value = matchedValue && matchedDetail
+
 		return super.visit(node)
 	}
 }
