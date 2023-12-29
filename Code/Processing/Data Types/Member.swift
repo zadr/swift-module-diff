@@ -16,6 +16,8 @@ struct Member {
 		case `set`
 		case `mutating`
 		case `nonmutating`
+		case `async`
+		case `throws`
 	}
 
 	enum Decorator: String, Codable, Equatable, Hashable, Sendable {

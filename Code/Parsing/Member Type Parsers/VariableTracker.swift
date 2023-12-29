@@ -73,6 +73,13 @@ class VariableTracker: SyntaxVisitor, AnyTypeCollectionParser {
 						copy.accessors.append(.set)
 					case .keyword(.get):
 						copy.accessors.append(.get)
+
+						if case .keyword(.async) = accessor.effectSpecifiers?.asyncSpecifier?.tokenKind {
+							copy.accessors.append(.async)
+						}
+						if case .keyword(.throws) = accessor.effectSpecifiers?.throwsSpecifier?.tokenKind {
+							copy.accessors.append(.throws)
+						}
 					default: break
 					}
 				}
