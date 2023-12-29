@@ -57,8 +57,8 @@ struct SwiftmoduleDiff: ParsableCommand {
 			print("Start: \(Date())")
 		}
 
-		let oldFrameworks = Summary.createSummary(for: old, trace: trace)
-		let newFrameworks = Summary.createSummary(for: new, trace: trace)
+		let oldFrameworks = Summary.createSummary(for: old, progress: progress)
+		let newFrameworks = Summary.createSummary(for: new, progress: progress)
 
 		let fromVersion = ChangedTree.Version(appPath: old)!
 		let toVersion = ChangedTree.Version(appPath: new)!
