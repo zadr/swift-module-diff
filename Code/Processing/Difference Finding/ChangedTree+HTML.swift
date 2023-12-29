@@ -7,6 +7,42 @@ extension ChangedTree {
 				let title = "Xcode \(fromVersion.name) to Xcode \(toVersion.name) Diff"
 				let description = "API changes between Xcode \(fromVersion.name) and Xcode \(toVersion.name)"
 
+				let css = """
+a {
+	color: black;
+}
+
+ul {
+	list-style: none;
+}
+
+li.added:before {
+	content: "➕";
+	padding-right: 5px;
+}
+
+li.modified:before {
+	content: "〰️";
+	padding-right: 5px;
+}
+
+li.removed:before {
+	content: "➖";
+	padding-right: 5px;
+}
+
+details {
+	border: 1px solid #aaa;
+	border-radius: 4px;
+	padding: 0.5em;
+}
+
+summary {
+	font-weight: bold;
+	padding: 0.5em;
+}
+"""
+
 				var html = """
 <!DOCTYPE html>
 <head>
@@ -17,44 +53,12 @@ extension ChangedTree {
 	<meta property="og:locale" content="en_US">
 	<meta name="description" content="\(description)">
 	<meta property="og:description" content="\(description)™">
-	<link rel="canonical" href="https://example.com/">
 	<meta property="og:url" content="https://example.com/">
 	<meta property="og:site_name" content="example.com">
 	<meta property="og:type" content="website">
+    <link rel="canonical" href="https://example.com/">
+	<link rel="stylesheet" type="text/css" href="base.css"">
 	<style>
-		a {
-			color: black;
-		}
-
-		ul {
-			list-style: none;
-		}
-
-		li.added:before {
-			content: "➕";
-			padding-right: 5px;
-		}
-
-		li.modified:before {
-			content: "〰️";
-			padding-right: 5px;
-		}
-
-		li.removed:before {
-			content: "➖";
-			padding-right: 5px;
-		}
-
-		details {
-			border: 1px solid #aaa;
-			border-radius: 4px;
-			padding: 0.5em;
-		}
-
-		summary {
-			font-weight: bold;
-			padding: 0.5em;
-		}
 	</style>
 </head>
 
@@ -146,8 +150,11 @@ extension ChangedTree {
 					html += "\t</details>\n"
 				}
 				html += "</html>\n"
-				let path = ("\(root)/swiftmodule-diff-\(fromVersion.name)-to-\(toVersion.name).html" as NSString).expandingTildeInPath
-				try! html.write(to: URL(fileURLWithPath: path), atomically: true, encoding: .utf8)
+				let htmlPath = ("\(root)/swiftmodule-diff-\(fromVersion.name)-to-\(toVersion.name).html" as NSString).expandingTildeInPath
+				try! html.write(to: URL(fileURLWithPath: htmlPath), atomically: true, encoding: .utf8)
+
+				let cssPath = ("\(root)/base.css" as NSString).expandingTildeInPath
+				try! css.write(to: URL(fileURLWithPath: cssPath), atomically: true, encoding: .utf8)
 			}
 		)
 	}
