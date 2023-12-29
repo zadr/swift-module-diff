@@ -146,6 +146,19 @@ extension ChangedTree {
 		}
 	}
 
+	fileprivate func enumeratePrecedenceGroupDifferences(for platform: SwiftmoduleFinder.Platform, architecture: SwiftmoduleFinder.Architecture, framework: Framework, visitor: ChangeVisitor) {
+		let oldPrecedenceGroups = (old[platform]?[architecture] ?? .init()).first { $0.name == framework.name }?.precedenceGroups ?? []
+		let newPrecedenceGroups = (new[platform]?[architecture] ?? .init()).first { $0.name == framework.name }?.precedenceGroups ?? []
+
+		for precedenceGroupChange in Change<PrecedenceGroup>.differences(from: oldPrecedenceGroups, to: newPrecedenceGroups) {
+			guard visitor.shouldVisitPrecedenceGroup(precedenceGroupChange) else { continue }
+
+			visitor.willVisitPrecedenceGroup?(precedenceGroupChange)
+			// nothing to do; precedence groups are leaf nodes
+			visitor.didVisitPrecedenceGroup?(precedenceGroupChange)
+		}
+	}
+
 	fileprivate func enumerateMemberDifferences(for platform: SwiftmoduleFinder.Platform, architecture: SwiftmoduleFinder.Architecture, framework: Framework, visitor: ChangeVisitor) {
 		let oldMembers = (old[platform]?[architecture] ?? .init()).first { $0.name == framework.name }?.members ?? []
 		let newMembers = (new[platform]?[architecture] ?? .init()).first { $0.name == framework.name }?.members ?? []

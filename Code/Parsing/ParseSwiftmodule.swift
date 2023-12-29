@@ -132,6 +132,12 @@ private class SwiftmoduleTracker: SyntaxVisitor {
 		return super.visit(node)
 	}
 
+	override func visit(_ node: PrecedenceGroupDeclSyntax) -> SyntaxVisitorContinueKind {
+		let p = ParseAnyType<PrecedenceGroupTracker>(node: node).run()
+		framework.precedenceGroups.append(p)
+		return super.visit(node)
+	}
+
 	override func visit(_ node: TypeAliasDeclSyntax) -> SyntaxVisitorContinueKind {
 		let t = ParseAnyType<TypeAliasTracker>(node: node).run()
 		if nestingCount == 0 {

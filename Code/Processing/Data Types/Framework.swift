@@ -5,18 +5,21 @@ struct Framework {
 	var dependencies = [Dependency]()
 	var namedTypes = [NamedType]()
 	var members = [Member]()
+	var precedenceGroups = [PrecedenceGroup]()
 	var name = ""
 
 	var description: String {
 """
 ------
-    | -- name: \(name) |
+    | name: \(name) |
     | attributes: \(attributes)
     | dependencies: \(dependencies.count): \(dependencies) |
     | types: \(namedTypes.count):
 \(namedTypes) |
 	| members: \(members.count):
 \(members) |
+	| precedenceGroups: \(precedenceGroups.count):
+\(precedenceGroups)
 ------
 """
 	}

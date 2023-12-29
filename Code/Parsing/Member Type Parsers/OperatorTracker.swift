@@ -19,6 +19,8 @@ class OperatorTracker: SyntaxVisitor, AnyTypeParser {
 		default: break
 		}
 
+		value.conformances = [node.operatorPrecedenceAndTypes?.precedenceGroup.text].compactMap { $0 }
+
 		return super.visit(node)
 	}
 }

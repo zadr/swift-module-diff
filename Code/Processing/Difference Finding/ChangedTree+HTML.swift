@@ -108,8 +108,9 @@ extension ChangedTree {
 							let dependencies = framework.dependencies.filter { $0.isNotUnchanged }
 							let members = framework.members.filter { $0.isNotUnchanged }
 							let namedTypes = framework.namedTypes.filter { $0.isInteresting }
+							let precedenceGroups = framework.precedenceGroups.filter { $0.isNotUnchanged }
 
-							if dependencies.isEmpty && members.isEmpty && namedTypes.isEmpty { continue }
+							if dependencies.isEmpty && members.isEmpty && namedTypes.isEmpty && precedenceGroups.isEmpty { continue }
 
 							html += "\t\t\t<details id=\"Platform: \(platform.value.any) Architecture: \(architecture.value.any) Framework: \(framework.value.any)\">\n"
 							html += "\t\t\t<summary>\(framework.value.emoji) <a href=\"https://developer.apple.com/documentation/\(framework.value.any)\">\(framework.value.any)</a></summary>\n"
@@ -120,6 +121,17 @@ extension ChangedTree {
 								html += "\t\t\t\t\t\t<ul>\n"
 								for dependency in dependencies.sorted() {
 									html += "\t\t\t\t\t\t<li class=\"\(dependency.kind)\">\(dependency.any)</li>\n"
+								}
+								html += "\t\t\t\t\t\t</ul>\n"
+								html += "\t\t\t\t</details>\n"
+							}
+
+							if !precedenceGroups.isEmpty {
+								html += "\t\t\t\t<details id=\"Platform: \(platform.value.any) Architecture: \(architecture.value.any) Framework: \(framework.value.any) precedenceGroups\">\n"
+								html += "\t\t\t\t\t<summary>Precedence Groups</summary>\n"
+								html += "\t\t\t\t\t\t<ul>\n"
+								for precedenceGroup in precedenceGroups.sorted() {
+									html += "\t\t\t\t\t\t<li class=\"precedenceGroup\">\(precedenceGroup.any.name)</li>\n"
 								}
 								html += "\t\t\t\t\t\t</ul>\n"
 								html += "\t\t\t\t</details>\n"

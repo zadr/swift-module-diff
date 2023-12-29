@@ -43,6 +43,7 @@ struct ChangedTree {
 				var dependencies = [Change<String>]()
 				var members = [Change<String>]()
 				var namedTypes = [ChangedTree.Platform.Architecture.Framework.NamedType]()
+				var precedenceGroups = [Change<String>]()
 
 				init(value: Change<String>) {
 					self.value = value
@@ -131,6 +132,10 @@ struct ChangedTree {
 		var shouldVisitMember: ((Change<Member>) -> Bool) = { _ in true }
 		var willVisitMember: ((Change<Member>) -> Void)? = nil
 		var didVisitMember: ((Change<Member>) -> Void)? = nil
+
+		var shouldVisitPrecedenceGroup: ((Change<PrecedenceGroup>) -> Bool) = { _ in true }
+		var willVisitPrecedenceGroup: ((Change<PrecedenceGroup>) -> Void)? = nil
+		var didVisitPrecedenceGroup: ((Change<PrecedenceGroup>) -> Void)? = nil
 	}
 
 	let old: Summary
@@ -191,15 +196,15 @@ extension Array where Element == ChangedTree.Platform {
 					let dependencies = framework.dependencies.filter { $0.isNotUnchanged }
 					let members = framework.members.filter { $0.isNotUnchanged }
 					let namedTypes = framework.namedTypes.filter { $0.isInteresting }
+					let precedenceGroups = framework.precedenceGroups.filter { $0.isNotUnchanged }
 
-					if dependencies.isEmpty && members.isEmpty && namedTypes.isEmpty {
+					if dependencies.isEmpty && members.isEmpty && namedTypes.isEmpty && precedenceGroups.isEmpty {
 						continue
 					}
 
 					let frameworkAsFramework = ChangedTree.Platform.Architecture.Framework(value: framework.value)
-					if !dependencies.isEmpty {
-						frameworkAsFramework.dependencies += dependencies
-					}
+					frameworkAsFramework.dependencies += dependencies
+					frameworkAsFramework.precedenceGroups += precedenceGroups
 
 					var frameworkAsNested: Nested = frameworkAsFramework
 
