@@ -26,7 +26,6 @@ Swift is a big and evolving language, so it is likely that edge-cases or lesser-
 - [ ] `lazy` modifier on vars
 - [ ] `optional` modifier on protocol functions
 - [ ] `unowned(safe)` and `unowned(unsafe)` on member storage
-- [ ] `class` and `static` on member storage
 
 #### But Why?
 Having everything that changed one one page can be nice
