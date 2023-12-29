@@ -10,13 +10,14 @@ Given a pair of Xcode apps (such as Xcode.app and Xcode-beta.app):
 7. Be able to click into a framework to see all modifications to types, and members (additions, deprecations, etc)
 
 #### Things Left To Do
-Swift is a big and evolving language, so it is likely that edge-cases or lesser-used features are missing. Some known gaps are:
+Swift is a big and evolving language, so it is likely that edge-cases are broken, or lesser-used features are missing. This tool is still under development, and some known gaps are:
 
 - [ ] Dictionary literal support in type names
 - [ ] Array literal support in type names
 - [ ] `some`/`any` keyword in return types
-- [ ] default values in function parameters
 - [ ] optionals in return types
+- [ ] correctly handling composite types with generics, such as `A.B<C, D>.E` in func callMe<Maybe>(_ maybe: A.B<C, D>.E) -> Maybe {}
+- [ ] default values in function parameters
 - [ ] tracking headerdoc changes
 
 And there are some other features that could be nice to have, such as:
