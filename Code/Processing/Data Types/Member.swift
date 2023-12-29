@@ -32,6 +32,7 @@ struct Member {
 		case `nonmutating`
 		case `optional`
 		case `lazy`
+		case `dynamic`
 	}
 
 	var accessors: [Accessor] = []

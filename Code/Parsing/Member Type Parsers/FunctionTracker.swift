@@ -18,7 +18,8 @@ class FunctionTracker: SyntaxVisitor, AnyTypeParser {
 			.final: .final,
 			.mutating: .mutating,
 			.nonmutating: .nonmutating,
-			.optional: .optional
+			.optional: .optional,
+			.dynamic: .dynamic
 		]
 
 		for (keyword, decorator) in pairs {

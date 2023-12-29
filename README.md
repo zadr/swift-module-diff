@@ -22,7 +22,6 @@ Swift is a big and evolving language, so it is likely that edge-cases or lesser-
 - [ ] `rethrows` keyword
 - [ ] `indirect` on `enum` case
 - [ ] `convenience` and `required` on init
-- [ ] `dynamic` modifier on class members
 - [ ] `unowned(safe)` and `unowned(unsafe)` on member storage
 
 #### But Why?
