@@ -10,6 +10,14 @@ class EnumCaseTracker: SyntaxVisitor, AnyTypeCollectionParser {
 		super.init(viewMode: .sourceAccurate)
 	}
 
+	override func visit(_ node: DeclModifierSyntax) -> SyntaxVisitorContinueKind {
+		if ParseDecl<DeclTracker>(node: node).run(keyword: .indirect) {
+			value.decorators.insert(.indirect)
+		}
+
+		return super.visit(node)
+	}
+
 	override func visit(_ node: EnumCaseDeclSyntax) -> SyntaxVisitorContinueKind {
 		value.kind = .case
 
