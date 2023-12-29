@@ -24,8 +24,6 @@ struct Member {
 		case `final`
 		case `open`
 		case `static`
-		case `throwing`
-		case `async`
 		case `weak`
 		case `unsafe`
 		case `unowned`
@@ -40,10 +38,17 @@ struct Member {
 		case `convenience`
 	}
 
+	enum Effect: String, Codable, Equatable, Hashable, Sendable {
+		case `async`
+		case `throws`
+		case `rethrows`
+	}
+
 	var accessors: [Accessor] = []
 	var attributes: [Attribute] = []
 	var kind: Kind = .unknown
 	var decorators: Set<Decorator> = .init()
+	var effects: [Effect] = []
 	var generics: [String] = []
 	var genericConstraints: [Parameter] = []
 	var name: String = ""
@@ -57,6 +62,7 @@ struct Member {
 	   kind: \(kind)
  decorators: \(decorators)
        name: \(name)
+    effects: \(effects)
  returnType: \(returnType)
  parameters: \(parameters)
    generics: \(generics) constraints \(genericConstraints)
@@ -70,6 +76,8 @@ extension Member: Codable, CustomStringConvertible, Hashable, Sendable {
 	func hash(into hasher: inout Hasher) {
 		hasher.combine(kind)
 		hasher.combine(name)
+		hasher.combine(decorators)
+		hasher.combine(effects)
 		hasher.combine(parameters)
 		hasher.combine(generics)
 		hasher.combine(genericConstraints)
@@ -79,6 +87,8 @@ extension Member: Codable, CustomStringConvertible, Hashable, Sendable {
 	static func ==(lhs: Member, rhs: Member) -> Bool {
 		lhs.kind == rhs.kind &&
 			lhs.name == rhs.name &&
+			lhs.decorators == rhs.decorators &&
+			lhs.effects == rhs.effects &&
 			lhs.parameters == rhs.parameters &&
 			lhs.generics == rhs.generics &&
 			lhs.genericConstraints == rhs.genericConstraints &&
@@ -94,6 +104,10 @@ extension Member: Attributed, Decorated, Named, Displayable {
 
 		var decorators = decorators.map { $0.rawValue }.joined(separator: " ")
 		if !decorators.isEmpty { decorators += " " }
+
+		var effects = effects.map { $0.rawValue }.joined(separator: " ")
+		if !effects.isEmpty { effects = " \(effects) "}
+
 		switch kind {
 		case .unknown:
 			return "<<MEMBER UNKNOWN>>"
@@ -111,7 +125,7 @@ extension Member: Attributed, Decorated, Named, Displayable {
 		case .func:
 			let parameters = parameters.map { $0.developerFacingValue }.joined(separator: ", ")
 			let returnType = returnType.isEmpty ? "" : " -> \(returnType)"
-			return "\(attributes) \(decorators)func \(name)(\(parameters))\(returnType)".trimmingCharacters(in: .whitespaces)
+			return "\(attributes) \(decorators)func \(name)(\(parameters))\(effects)\(returnType)".trimmingCharacters(in: .whitespaces)
 
 		case .case:
 			var parameters = parameters.map { $0.developerFacingValue }.joined(separator: ", ")

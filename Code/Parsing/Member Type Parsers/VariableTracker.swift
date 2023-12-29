@@ -12,9 +12,7 @@ class VariableTracker: SyntaxVisitor, AnyTypeCollectionParser {
 
 	override func visit(_ node: DeclModifierSyntax) -> SyntaxVisitorContinueKind {
 		let pairs: [Keyword: Member.Decorator] = [
-			.async: .async,
 			.static: .static,
-			.throws: .throwing,
 			.open: .open,
 			.final: .final,
 			.weak: .weak,
@@ -75,10 +73,10 @@ class VariableTracker: SyntaxVisitor, AnyTypeCollectionParser {
 						copy.accessors.append(.get)
 
 						if case .keyword(.async) = accessor.effectSpecifiers?.asyncSpecifier?.tokenKind {
-							copy.accessors.append(.async)
+							copy.effects.append(.async)
 						}
 						if case .keyword(.throws) = accessor.effectSpecifiers?.throwsSpecifier?.tokenKind {
-							copy.accessors.append(.throws)
+							copy.effects.append(.throws)
 						}
 					default: break
 					}

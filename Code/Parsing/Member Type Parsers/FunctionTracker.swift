@@ -11,9 +11,7 @@ class FunctionTracker: SyntaxVisitor, AnyTypeParser {
 
 	override func visit(_ node: DeclModifierSyntax) -> SyntaxVisitorContinueKind {
 		let pairs: [Keyword: Member.Decorator] = [
-			.async: .async,
 			.static: .static,
-			.throws: .throwing,
 			.open: .open,
 			.final: .final,
 			.mutating: .mutating,
@@ -44,6 +42,16 @@ class FunctionTracker: SyntaxVisitor, AnyTypeParser {
 		value.genericConstraints += generics.constraints
 
 		value.attributes += node.attributes.map { ParseAnyType<AttributeTracker>(node: $0).run() }
+
+		if case .keyword(.async) = node.signature.effectSpecifiers?.asyncSpecifier?.tokenKind {
+			value.effects.append(.async)
+		}
+		if case .keyword(.rethrows) = node.signature.effectSpecifiers?.throwsSpecifier?.tokenKind {
+			value.effects.append(.rethrows)
+		}
+		if case .keyword(.throws) = node.signature.effectSpecifiers?.throwsSpecifier?.tokenKind {
+			value.effects.append(.throws)
+		}
 
 		return super.visit(node)
 	}
