@@ -11,7 +11,6 @@ class VariableTracker: SyntaxVisitor, AnyTypeCollectionParser {
 	}
 
 	override func visit(_ node: DeclModifierSyntax) -> SyntaxVisitorContinueKind {
-		print("\(#function) \(type(of: node))")
 		let pairs: [Keyword: Member.Decorator] = [
 			.async: .async,
 			.static: .static,
@@ -22,7 +21,8 @@ class VariableTracker: SyntaxVisitor, AnyTypeCollectionParser {
 			.unsafe: .unsafe,
 			.unowned: .unowned,
 			.nonisolated: .nonisolated,
-			.optional: .optional
+			.optional: .optional,
+			.lazy: .lazy
 		]
 
 		for (keyword, decorator) in pairs {
@@ -39,7 +39,6 @@ class VariableTracker: SyntaxVisitor, AnyTypeCollectionParser {
 	}
 
 	override func visit(_ node: VariableDeclSyntax) -> SyntaxVisitorContinueKind {
-		print("\(#function) \(type(of: node))")
 		if node.bindingSpecifier.tokenKind == .keyword(.let) {
 			value.kind = .let
 		}

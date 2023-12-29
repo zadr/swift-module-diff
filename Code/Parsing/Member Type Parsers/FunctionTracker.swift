@@ -74,7 +74,6 @@ class FunctionTracker: SyntaxVisitor, AnyTypeParser {
 			parameter.suffix = "..."
 		}
 
-		print(node.debugDescription)
 		value.parameters.append(parameter)
 		return super.visit(node)
 	}
