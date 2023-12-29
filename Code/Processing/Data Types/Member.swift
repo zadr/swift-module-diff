@@ -9,6 +9,7 @@ struct Member {
 		case `case`
 		case `associatedtype`
 		case `typealias`
+		case `subscript`
 	}
 
 	enum Accessor: String, Codable, Hashable, Sendable {
@@ -120,7 +121,7 @@ extension Member: Attributed, Decorated, Named, Displayable {
 			if !accessors.isEmpty {
 				accessors = " { \(accessors) }"
 			}
-			return "\(attributes) \(decorators)var \(name): \(returnType)\(accessors)".trimmingCharacters(in: .whitespaces)
+			return "\(attributes) \(decorators)var \(name): \(returnType)\(accessors) \(effects)".trimmingCharacters(in: .whitespaces)
 
 		case .func:
 			let parameters = parameters.map { $0.developerFacingValue }.joined(separator: ", ")
@@ -139,6 +140,12 @@ extension Member: Attributed, Decorated, Named, Displayable {
 
 		case .typealias:
 			return "typealias \(name) = \(returnType)"
+
+		case .subscript:
+			let parameters = parameters.map { $0.developerFacingValue }.joined(separator: ", ")
+			let returnType = returnType.isEmpty ? "" : " -> \(returnType)"
+			let accessors = accessors.isEmpty ? "" : " { \(accessors.map { $0 .rawValue }.joined(separator: " ")) \(effects) }".trimmingCharacters(in: .whitespaces)
+			return "subscript (\(parameters))\(returnType)\(accessors)"
 		}
 	}
 }

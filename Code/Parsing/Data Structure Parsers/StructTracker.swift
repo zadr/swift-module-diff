@@ -45,6 +45,12 @@ class StructTracker: SyntaxVisitor, AnyTypeParser {
 		return super.visit(node)
 	}
 
+	override func visit(_ node: SubscriptDeclSyntax) -> SyntaxVisitorContinueKind {
+		let member = ParseAnyType<SubscriptTracker>(node: node).run()
+		value.members.append(member)
+		return super.visit(node)
+	}
+
 	override func visit(_ node: FunctionDeclSyntax) -> SyntaxVisitorContinueKind {
 		let member = ParseAnyType<FunctionTracker>(node: node).run()
 		value.members.append(member)

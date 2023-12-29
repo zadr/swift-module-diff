@@ -12,7 +12,6 @@ Given a pair of Xcode apps (such as Xcode.app and Xcode-beta.app):
 #### Things Left To Do
 Swift is a big and evolving language, so it is likely that edge-cases or lesser-used features are missing. Some known gaps are:
 
-- [ ] subscript support
 - [ ] operator precedencegroup support
 - [ ] Dictionary literal support in type names
 - [ ] Array literal support in type names

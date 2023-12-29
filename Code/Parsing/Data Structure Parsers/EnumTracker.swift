@@ -45,6 +45,12 @@ class EnumTracker: SyntaxVisitor, AnyTypeParser {
 		return super.visit(node)
 	}
 
+	override func visit(_ node: SubscriptDeclSyntax) -> SyntaxVisitorContinueKind {
+		let member = ParseAnyType<SubscriptTracker>(node: node).run()
+		value.members.append(member)
+		return super.visit(node)
+	}
+
 	override func visit(_ node: EnumCaseDeclSyntax) -> SyntaxVisitorContinueKind {
 		let members = ParseAnyTypeCollection<EnumCaseTracker>(node: node).run()
 		value.members += members
