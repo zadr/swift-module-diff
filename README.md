@@ -18,7 +18,6 @@ Swift is a big and evolving language, so it is likely that edge-cases or lesser-
 - [ ] Array literal support in type names
 - [ ] `some`/`any` keyword in return types
 - [ ] default values in function parameters
-- [ ] mutating keyword on function declarations
 - [ ] `rethrows` keyword
 - [ ] `indirect` on `enum` case
 - [ ] `convenience` and `required` on init
