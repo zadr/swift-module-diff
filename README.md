@@ -1,7 +1,7 @@
 ### swift-module-diff
 #### What should this do
 Given a pair of Xcode apps (such as Xcode.app and Xcode-beta.app):
-1. Scan through known SDKs (iOS, macOS, watchOS, tvOS)
+1. Scan through known SDKs (iOS, macOS, watchOS, tvOS, visionOS)
 2. Compile a list of supported architectures and `swiftinterface` files for each architecture
 3. For each `swiftinterface` file, parse it with [SwiftSyntax](https://github.com/apple/swift-syntax)
 4. Repeat for the other copy of Xcode
