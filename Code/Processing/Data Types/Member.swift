@@ -30,6 +30,7 @@ struct Member {
 		case `nonisolated`
 		case `mutating`
 		case `nonmutating`
+		case `optional`
 	}
 
 	var accessors: [Accessor] = []

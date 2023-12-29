@@ -24,7 +24,6 @@ Swift is a big and evolving language, so it is likely that edge-cases or lesser-
 - [ ] `convenience` and `required` on init
 - [ ] `dynamic` modifier on class members
 - [ ] `lazy` modifier on vars
-- [ ] `optional` modifier on protocol functions
 - [ ] `unowned(safe)` and `unowned(unsafe)` on member storage
 
 #### But Why?

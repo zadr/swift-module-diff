@@ -21,7 +21,8 @@ class VariableTracker: SyntaxVisitor, AnyTypeCollectionParser {
 			.weak: .weak,
 			.unsafe: .unsafe,
 			.unowned: .unowned,
-			.nonisolated: .nonisolated
+			.nonisolated: .nonisolated,
+			.optional: .optional
 		]
 
 		for (keyword, decorator) in pairs {
