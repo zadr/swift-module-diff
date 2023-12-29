@@ -5,11 +5,6 @@ struct NamedType {
 		case `final`
 		case `open`
 		case `static`
-		case `throwing`
-		case `async`
-		case `weak`
-		case `unsafe`
-		case `unowned`
 		case `indirect`
 		case `prefix`
 		case `postfix`
