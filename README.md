@@ -25,7 +25,6 @@ And there are some other features that could be nice to have, such as:
 - [ ] Using a DSL to generate HTML
 - [ ] Making HTML output more readable, such as by selectively hiding attributes, or parameters (i.e. macOS @availability parameter isn't helpful on iOS API diff)
 - [ ] Making HTML interactable, such as by linking to more docs, or adding an option to expand all details with one click
-- [ ] Making HTML configurable, such as by passing references to CSS to copy over
 - [ ] Filtering output by platform, architecture, or framework
 - [ ] Extending CLI to expose diffing swiftmodule directories outside of Xcode.app bundles
 

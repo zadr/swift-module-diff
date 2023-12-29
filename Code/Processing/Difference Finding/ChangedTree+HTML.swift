@@ -1,7 +1,7 @@
 import Foundation
 
 extension ChangedTree {
-	static func htmlVisitor(from fromVersion: Version, to toVersion: Version, root: String) -> ChangeVisitor {
+	static func htmlVisitor(from fromVersion: Version, to toVersion: Version, root: String, extraCSS: String?) -> ChangeVisitor {
 		ChangeVisitor(
 			didEnd: { tree in
 				let title = "Xcode \(fromVersion.name) to Xcode \(toVersion.name) Diff"
@@ -43,6 +43,13 @@ summary {
 }
 """
 
+				let extraCSSLink: String
+				if let extraCSS {
+					extraCSSLink = "\n\t<link rel=\"stylesheet\" type=\"text/css\" href=\"\((extraCSS as NSString).lastPathComponent).css\">\n"
+				} else {
+					extraCSSLink = ""
+				}
+
 				var html = """
 <!DOCTYPE html>
 <head>
@@ -57,9 +64,7 @@ summary {
 	<meta property="og:site_name" content="example.com">
 	<meta property="og:type" content="website">
     <link rel="canonical" href="https://example.com/">
-	<link rel="stylesheet" type="text/css" href="base.css"">
-	<style>
-	</style>
+	<link rel="stylesheet" type="text/css" href="base.css">\(extraCSSLink)
 </head>
 
 <html lang="en-US">
@@ -155,6 +160,11 @@ summary {
 
 				let cssPath = ("\(root)/base.css" as NSString).expandingTildeInPath
 				try! css.write(to: URL(fileURLWithPath: cssPath), atomically: true, encoding: .utf8)
+
+				if let extraCSS {
+					let extraCSSPath = ("\(root)/\((extraCSS as NSString).lastPathComponent)" as NSString).expandingTildeInPath
+					try! FileManager().copyItem(atPath: extraCSS, toPath: extraCSSPath)
+				}
 			}
 		)
 	}

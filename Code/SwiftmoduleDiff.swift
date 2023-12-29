@@ -23,6 +23,9 @@ struct SwiftmoduleDiff: ParsableCommand {
 	@Option(name: .shortAndLong, help: "Write html to output directory. May be combined with --json or --console. Default: false.")
 	var html: Bool = false
 
+	@Option(name: .shortAndLong, help: "Path to extra CSS to customize output. Will be copied into HTML ouptut dir if --html is passed.")
+	var extraCSS: String? = nil
+
 	@Option(name: .shortAndLong, help: "Write json to output directory. May be combined with --html or --console. Default: false")
 	var json: Bool = false
 
@@ -33,46 +36,42 @@ struct SwiftmoduleDiff: ParsableCommand {
 	var singleFile: String? = nil
 
 	mutating func run() throws {
+		if trace { print("Start: \(Date())") }
+
 		if let singleFile {
+			if trace { print("Single File: \(singleFile)") }
+
+			print(ParseSwiftmodule(path: singleFile).run())
+		} else {
 			if trace {
-				print("Single File: \(singleFile)")
+				print("Old Xcode: \(old)")
+				print("New Xcode: \(new)")
+				print("Show Progress: \(progress)")
+				print("HTML: \(html), JSON: \(json)")
+				print("Extra CSS: \(extraCSS ?? "")")
+				if (html || json) {
+					print("Directory: \(output)")
+				}
 				print("Start: \(Date())")
 			}
 
-			print(ParseSwiftmodule(path: singleFile).run())
+			let oldFrameworks = Summary.createSummary(for: old, progress: progress)
+			let newFrameworks = Summary.createSummary(for: new, progress: progress)
 
-			if trace { print("End: \(Date())") }
+			let fromVersion = ChangedTree.Version(appPath: old)!
+			let toVersion = ChangedTree.Version(appPath: new)!
 
-			return
+			let progressVisitor = progress ? ChangedTree.progressVisitor() : nil
+			let htmlVisitor = html ? ChangedTree.htmlVisitor(from: fromVersion, to: toVersion, root: output, extraCSS: extraCSS) : nil
+			let jsonVisitor = json ? ChangedTree.jsonVisitor(from: fromVersion, to: toVersion, root: output) : nil
+			let signpostVisitor = trace ? ChangedTree.signpostVisitor(from: fromVersion, to: toVersion) : nil
+
+			ChangedTree(old: oldFrameworks, new: newFrameworks)
+				.walk(
+					visitors: progressVisitor, htmlVisitor, jsonVisitor, signpostVisitor,
+					trace: trace
+				)
 		}
-
-		if trace {
-			print("Old Xcode: \(old)")
-			print("New Xcode: \(new)")
-			print("Show Progress: \(progress)")
-			print("HTML: \(html), JSON: \(json)")
-			if (html || json) {
-				print("Directory: \(output)")
-			}
-			print("Start: \(Date())")
-		}
-
-		let oldFrameworks = Summary.createSummary(for: old, progress: progress)
-		let newFrameworks = Summary.createSummary(for: new, progress: progress)
-
-		let fromVersion = ChangedTree.Version(appPath: old)!
-		let toVersion = ChangedTree.Version(appPath: new)!
-
-		let progressVisitor = progress ? ChangedTree.progressVisitor() : nil
-		let htmlVisitor = html ? ChangedTree.htmlVisitor(from: fromVersion, to: toVersion, root: output) : nil
-		let jsonVisitor = json ? ChangedTree.jsonVisitor(from: fromVersion, to: toVersion, root: output) : nil
-		let signpostVisitor = trace ? ChangedTree.signpostVisitor(from: fromVersion, to: toVersion) : nil
-
-		ChangedTree(old: oldFrameworks, new: newFrameworks)
-			.walk(
-				visitors: progressVisitor, htmlVisitor, jsonVisitor, signpostVisitor,
-				trace: trace
-			)
 
 		if trace { print("End: \(Date())") }
 	}
