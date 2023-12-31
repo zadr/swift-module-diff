@@ -4,14 +4,16 @@ import SwiftSyntax
 
 struct ParseSwiftmodule {
 	let path: String
+	let typePrefixesToRemove: Set<String>
 
-	init(path: String) {
+	init(path: String, typePrefixesToRemove: Set<String>) {
 		self.path = path
+		self.typePrefixesToRemove = typePrefixesToRemove
 	}
 
 	func run() -> Framework {
 		autoreleasepool {
-			let tracker = SwiftmoduleTracker()
+			let tracker = SwiftmoduleTracker(typePrefixesToRemove: typePrefixesToRemove)
 			tracker.framework.name = (
 				(
 					(
@@ -30,11 +32,13 @@ struct ParseSwiftmodule {
 // MARK: -
 
 private class SwiftmoduleTracker: SyntaxVisitor {
-	var framework: Framework
 	var nestingCount = 0
+	let typePrefixesToRemove: Set<String>
 
-	public init() {
-		framework = Framework()
+	var framework = Framework()
+
+	public init(typePrefixesToRemove: Set<String>) {
+		self.typePrefixesToRemove = typePrefixesToRemove
 		super.init(viewMode: .sourceAccurate)
 	}
 
@@ -48,7 +52,9 @@ private class SwiftmoduleTracker: SyntaxVisitor {
 
 	override func visit(_ node: ProtocolDeclSyntax) -> SyntaxVisitorContinueKind {
 		nestingCount += 1
-		let p = ParseAnyType<ProtocolTracker>(node: node).run()
+		let p = ParseAnyType<ProtocolTracker>(node: node)
+			.run()
+			.dropAnySubstring(in: typePrefixesToRemove)
 		framework.namedTypes.append(p)
 		return super.visit(node)
 	}
@@ -60,7 +66,9 @@ private class SwiftmoduleTracker: SyntaxVisitor {
 
 	override func visit(_ node: EnumDeclSyntax) -> SyntaxVisitorContinueKind {
 		nestingCount += 1
-		let e = ParseAnyType<EnumTracker>(node: node).run()
+		let e = ParseAnyType<EnumTracker>(node: node)
+			.run()
+			.dropAnySubstring(in: typePrefixesToRemove)
 		framework.namedTypes.append(e)
 		return super.visit(node)
 	}
@@ -72,7 +80,9 @@ private class SwiftmoduleTracker: SyntaxVisitor {
 
 	override func visit(_ node: ActorDeclSyntax) -> SyntaxVisitorContinueKind {
 		nestingCount += 1
-		let a = ParseAnyType<ActorTracker>(node: node).run()
+		let a = ParseAnyType<ActorTracker>(node: node)
+			.run()
+			.dropAnySubstring(in: typePrefixesToRemove)
 		framework.namedTypes.append(a)
 		return super.visit(node)
 	}
@@ -84,7 +94,9 @@ private class SwiftmoduleTracker: SyntaxVisitor {
 
 	override func visit(_ node: StructDeclSyntax) -> SyntaxVisitorContinueKind {
 		nestingCount += 1
-		let s = ParseAnyType<StructTracker>(node: node).run()
+		let s = ParseAnyType<StructTracker>(node: node)
+			.run()
+			.dropAnySubstring(in: typePrefixesToRemove)
 		framework.namedTypes.append(s)
 		return super.visit(node)
 	}
@@ -96,7 +108,9 @@ private class SwiftmoduleTracker: SyntaxVisitor {
 
 	override func visit(_ node: ClassDeclSyntax) -> SyntaxVisitorContinueKind {
 		nestingCount += 1
-		let c = ParseAnyType<ClassTracker>(node: node).run()
+		let c = ParseAnyType<ClassTracker>(node: node)
+			.run()
+			.dropAnySubstring(in: typePrefixesToRemove)
 		framework.namedTypes.append(c)
 		return super.visit(node)
 	}
@@ -108,7 +122,9 @@ private class SwiftmoduleTracker: SyntaxVisitor {
 
 	override func visit(_ node: ExtensionDeclSyntax) -> SyntaxVisitorContinueKind {
 		nestingCount += 1
-		let e = ParseAnyType<ExtensionTracker>(node: node).run()
+		let e = ParseAnyType<ExtensionTracker>(node: node)
+			.run()
+			.dropAnySubstring(in: typePrefixesToRemove)
 		framework.namedTypes.append(e)
 		return super.visit(node)
 	}
@@ -127,7 +143,8 @@ private class SwiftmoduleTracker: SyntaxVisitor {
 	}
 
 	override func visit(_ node: OperatorDeclSyntax) -> SyntaxVisitorContinueKind {
-		let o = ParseAnyType<OperatorTracker>(node: node).run()
+		var o = ParseAnyType<OperatorTracker>(node: node).run()
+		o.name = o.name.dropAnySubstring(in: typePrefixesToRemove)
 		framework.namedTypes.append(o)
 		return super.visit(node)
 	}
@@ -139,7 +156,8 @@ private class SwiftmoduleTracker: SyntaxVisitor {
 	}
 
 	override func visit(_ node: TypeAliasDeclSyntax) -> SyntaxVisitorContinueKind {
-		let t = ParseAnyType<TypeAliasTracker>(node: node).run()
+		var t = ParseAnyType<TypeAliasTracker>(node: node).run()
+		t.name = t.name.dropAnySubstring(in: typePrefixesToRemove)
 		if nestingCount == 0 {
 			framework.members.append(t)
 		}
@@ -147,7 +165,9 @@ private class SwiftmoduleTracker: SyntaxVisitor {
 	}
 
 	override func visit(_ node: VariableDeclSyntax) -> SyntaxVisitorContinueKind {
-		let v = ParseAnyTypeCollection<VariableTracker>(node: node).run()
+		let v = ParseAnyTypeCollection<VariableTracker>(node: node)
+			.run()
+			.dropAnySubstring(in: typePrefixesToRemove)
 		if nestingCount == 0 {
 			framework.members += v
 		}
@@ -155,7 +175,9 @@ private class SwiftmoduleTracker: SyntaxVisitor {
 	}
 
 	override func visit(_ node: FunctionDeclSyntax) -> SyntaxVisitorContinueKind {
-		let f = ParseAnyType<FunctionTracker>(node: node).run()
+		let f = ParseAnyType<FunctionTracker>(node: node)
+			.run()
+			.dropAnySubstring(in: typePrefixesToRemove)
 		if nestingCount == 0 {
 			framework.members.append(f)
 		}

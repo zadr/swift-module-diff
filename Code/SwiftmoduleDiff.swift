@@ -32,6 +32,9 @@ struct SwiftmoduleDiff: ParsableCommand {
 	@Option(name: .shortAndLong, help: "Create signposts for performance debugging, and print extra data to console. Default: false")
 	var trace: Bool = false
 
+	@Option(name: .shortAndLong, help: "Attempt to remove framework prefixes from type names. Increases runtime, but dramatically reduces the diff size. For example `var isTrue: Swift.Bool` will become `var isTrue: Bool`, and `func with(_ parameter: UIKit.UIView) -> CoreGraphics.CGRect` will become `func with(_ parameter: UIView) -> CGRect`. Not applicable to --single-file. Default: false.")
+	var attemptFrameworkPrefixesRemovalFromTypeNames: Bool = true
+
 	@Option(name: .shortAndLong, help: "Parse a single file, for testing. Takes precedence over --old --new")
 	var singleFile: String? = nil
 
@@ -41,7 +44,7 @@ struct SwiftmoduleDiff: ParsableCommand {
 		if let singleFile {
 			if trace { print("Single File: \(singleFile)") }
 
-			print(ParseSwiftmodule(path: singleFile).run())
+			print(ParseSwiftmodule(path: singleFile, typePrefixesToRemove: []).run())
 		} else {
 			if trace {
 				print("Old Xcode: \(old)")
@@ -55,8 +58,14 @@ struct SwiftmoduleDiff: ParsableCommand {
 				print("Start: \(Date())")
 			}
 
-			let oldFrameworks = Summary.createSummary(for: old, progress: progress)
-			let newFrameworks = Summary.createSummary(for: new, progress: progress)
+			var frameworkNames = Set<String>()
+			if attemptFrameworkPrefixesRemovalFromTypeNames {
+				frameworkNames.formUnion(Summary.listFrameworks(for: old, progress: progress).filter { !$0.hasSuffix("_") }) // remove _-prefixed frameworks; these are typically Swift overlays that don't add new types
+				frameworkNames.formUnion(Summary.listFrameworks(for: new, progress: progress).filter { !$0.hasPrefix("_") }) // and the framework names list is used in O(N^2) logic
+			}
+
+			let oldFrameworks = Summary.createSummary(for: old, typePrefixesToRemove: frameworkNames, progress: progress)
+			let newFrameworks = Summary.createSummary(for: new, typePrefixesToRemove: frameworkNames, progress: progress)
 
 			let fromVersion = ChangedTree.Version(appPath: old)!
 			let toVersion = ChangedTree.Version(appPath: new)!
