@@ -1,4 +1,5 @@
 import Foundation
+import os
 
 typealias Summary = [SwiftmoduleFinder.Platform: [SwiftmoduleFinder.Architecture: Set<Framework>]]
 
@@ -32,7 +33,15 @@ extension Summary {
 
 	static func createSummary(for path: String, typePrefixesToRemove: Set<String>, progress: Bool) -> Summary {
 		var results = Summary()
-		for (platform, architectureToModules) in SwiftmoduleFinder(app: path).run() {
+		let all = SwiftmoduleFinder(app: path).run()
+		let keys = all.keys
+
+		let typePrefixesToRemoveWithQualifier = Set(typePrefixesToRemove.map { $0 + "." })
+
+		let lock = OSAllocatedUnfairLock()
+		DispatchQueue.concurrentPerform(iterations: keys.count) { i in
+			let platform = keys[all.keys.index(all.keys.startIndex, offsetBy: i)]
+			let architectureToModules = all[platform]!
 			if progress { print(platform) }
 
 			var platformSDKs = [SwiftmoduleFinder.Architecture: Set<Framework>]()
@@ -45,7 +54,7 @@ extension Summary {
 					if progress { print(module.absoluteString) }
 
 					let path = module.absoluteString.replacingOccurrences(of: "file://", with: "")
-					let framework = ParseSwiftmodule(path: path, typePrefixesToRemove: typePrefixesToRemove).run()
+					let framework = ParseSwiftmodule(path: path, typePrefixesToRemove: typePrefixesToRemoveWithQualifier).run()
 
 					architectureFrameworks.insert(framework)
 				}
@@ -56,7 +65,9 @@ extension Summary {
 			}
 
 			if !platformSDKs.isEmpty {
+				lock.lock()
 				results[platform] = platformSDKs
+				lock.unlock()
 			}
 		}
 
