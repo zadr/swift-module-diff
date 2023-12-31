@@ -156,8 +156,9 @@ private class SwiftmoduleTracker: SyntaxVisitor {
 	}
 
 	override func visit(_ node: TypeAliasDeclSyntax) -> SyntaxVisitorContinueKind {
-		var t = ParseAnyType<TypeAliasTracker>(node: node).run()
-		t.name = t.name.dropAnySubstring(in: typePrefixesToRemove)
+		let t = ParseAnyType<TypeAliasTracker>(node: node)
+			.run()
+			.dropAnySubstring(in: typePrefixesToRemove)
 		if nestingCount == 0 {
 			framework.members.append(t)
 		}
