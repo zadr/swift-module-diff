@@ -5,8 +5,6 @@ struct Parameter {
 		case `inout`
 		case `borrowing`
 		case `consuming`
-		case `any`
-		case `some`
 	}
 
 	enum Separator: String, Codable, Equatable, Hashable, Sendable {
