@@ -43,6 +43,14 @@ class TypeNameTracker: SyntaxVisitor, AnyTypeParser {
 		return .skipChildren
 	}
 
+	override func visitPost(_ node: TupleTypeElementSyntax) {
+		if node.ellipsis != nil {
+			value += "..."
+		}
+
+		super.visitPost(node)
+	}
+
 	override func visit(_ node: IdentifierTypeSyntax) -> SyntaxVisitorContinueKind {
 		value += node.name.text
 		let generics = node.genericArgumentClause?.arguments.map { ParseAnyType<TypeNameTracker>(node: $0).run() } ?? []

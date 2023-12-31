@@ -79,10 +79,6 @@ class FunctionTracker: SyntaxVisitor, AnyTypeParser {
 			parameter.attributes += attributes.map { ParseAnyType<AttributeTracker>(node: $0 ).run() }
 		}
 
-		if node.ellipsis != nil {
-			parameter.suffix = "..."
-		}
-
 		value.parameters.append(parameter)
 		return .skipChildren
 	}
