@@ -12,6 +12,13 @@ struct Parameter {
 	enum Separator: String, Codable, Equatable, Hashable, Sendable {
 		case colon = ":"
 		case doubleEqual = "=="
+
+		var developerFacingValue: String {
+			switch self {
+			case .colon: return ":"
+			case .doubleEqual: return " =="
+			}
+		}
 	}
 
 	var name: String = ""
@@ -70,7 +77,7 @@ extension Parameter: Attributed, Named, Displayable {
 		if !decorators.isEmpty {
 			decorators += " "
 		}
-		return "\(decorators)\(name)\(separator.rawValue) \(type)\(generics)\(suffix)"
+		return "\(decorators)\(name)\(separator.developerFacingValue) \(type)\(generics)\(suffix)"
 	}
 }
 

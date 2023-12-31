@@ -127,7 +127,9 @@ extension Member: Attributed, Decorated, Named, Displayable {
 		case .func:
 			let parameters = parameters.map { $0.developerFacingValue }.joined(separator: ", ")
 			let returnType = returnType.isEmpty ? "" : " -> \(returnType)"
-			return "\(attributes) \(decorators)func \(name)(\(parameters))\(effects)\(returnType)".trimmingCharacters(in: .whitespaces)
+			let generics = generics.isEmpty ? "" : "<\(generics.joined(separator: ", "))>"
+			let constraint = genericConstraints.isEmpty ? "" : " where \(genericConstraints.map { $0.developerFacingValue }.joined(separator: ", "))"
+			return "\(attributes) \(decorators)func \(name)\(generics)(\(parameters))\(effects)\(returnType)\(constraint)".trimmingCharacters(in: .whitespaces)
 
 		case .case:
 			var parameters = parameters.map { $0.developerFacingValue }.joined(separator: ", ")
