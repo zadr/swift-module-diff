@@ -8,11 +8,4 @@ class AttributedTypeTracker: DeclTracker {
 		}
 		return super.visit(node)
 	}
-
-	override func visit(_ node: SomeOrAnyTypeSyntax) -> SyntaxVisitorContinueKind {
-		if node.someOrAnySpecifier.tokenKind == .keyword(keyword) {
-			value = true
-		}
-		return super.visit(node)
-	}
 }
