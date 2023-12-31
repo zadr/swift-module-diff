@@ -18,7 +18,9 @@ Swift is a big and evolving language, so it is likely that edge-cases are broken
 And there are some other features that could be nice to have, such as:
 
 - [ ] Using a DSL to generate HTML
-- [ ] Making HTML output more readable, such as by selectively hiding attributes, or parameters (i.e. macOS @availability parameter isn't helpful on iOS API diff)
+- [ ] Making HTML output more readable, such as by:
+- Selectively hiding attributes, or parameters of attributes (i.e. macOS @availability parameter isn't helpful on iOS API diff)
+- Semoving framework prefix from type names (such as `UIKit.` or `Swift.` in `@available(swift) func UIDeviceOrientationIsLandscape(_ orientation: UIKit.UIDeviceOrientation) -> Swift.Bool)`
 - [ ] Making HTML interactable, such as by linking to more docs, or adding an option to expand all details with one click
 - [ ] Filtering output by platform, architecture, or framework
 - [ ] Extending CLI to expose diffing swiftmodule directories outside of Xcode.app bundles
