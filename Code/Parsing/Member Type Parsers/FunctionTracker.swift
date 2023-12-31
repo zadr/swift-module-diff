@@ -61,6 +61,10 @@ class FunctionTracker: SyntaxVisitor, AnyTypeParser {
 		parameter.name = node.firstName.text + (node.secondName != nil ? " " + node.secondName!.text : "")
 		parameter.type = ParseAnyType<TypeNameTracker>(node: node.type).run()
 
+		if node.ellipsis != nil {
+			parameter.type += "..."
+		}
+
 		let pairs: [Keyword: Parameter.Decorator] = [
 			.inout: .inout,
 			.borrowing: .borrowing,
