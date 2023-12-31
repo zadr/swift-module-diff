@@ -84,7 +84,7 @@ class FunctionTracker: SyntaxVisitor, AnyTypeParser {
 		}
 
 		value.parameters.append(parameter)
-		return super.visit(node)
+		return .skipChildren
 	}
 
 	override func visit(_ node: ReturnClauseSyntax) -> SyntaxVisitorContinueKind {

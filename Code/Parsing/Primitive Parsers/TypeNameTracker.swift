@@ -3,109 +3,85 @@ import SwiftSyntax
 
 class TypeNameTracker: SyntaxVisitor, AnyTypeParser {
 	var value = ""
-	var isInTuple = false
-	var isInFunction = false
-	var isInReturnType = false
-	var indexBeforeReturnStatementBegan: String.Index? = nil
 
 	required init() {
 		super.init(viewMode: .sourceAccurate)
 	}
 
 	override func visit(_ node: TupleTypeSyntax) -> SyntaxVisitorContinueKind {
-		value += " ("
-		return super.visit(node)
-	}
-
-	override func visitPost(_ node: TupleTypeSyntax) {
-		value += ")"
-		return super.visitPost(node)
-	}
-
-	override func visit(_ node: TupleTypeElementListSyntax) -> SyntaxVisitorContinueKind {
-		if isInTuple {
-			value = value + ParseAnyType<TypeNameTracker>(node: node).run()
-			return .skipChildren
-		} else {
-			isInTuple = true
+		let elements = node.elements.map { ParseAnyType<TypeNameTracker>(node: $0).run() }
+		var string = elements.joined(separator: ", ")
+		if !string.isEmpty {
+			string = "(\(string))"
 		}
-		return super.visit(node)
+		value += string
+		return .skipChildren
 	}
 
-	override func visit(_ node: FunctionTypeSyntax) -> SyntaxVisitorContinueKind {
-		isInFunction = true
-		value = value.isEmpty ? "(" : value + ", ("
-		return super.visit(node)
-	}
-
-	override func visitPost(_ node: FunctionTypeSyntax) {
-		isInFunction = false
-
-		if let indexBeforeReturnStatementBegan {
-			value.insert(")", at: indexBeforeReturnStatementBegan)
+	override func visit(_ node: SomeOrAnyTypeSyntax) -> SyntaxVisitorContinueKind {
+		switch node.someOrAnySpecifier.tokenKind {
+		case .keyword(.some):
+			value += "some"
+		case .keyword(.any):
+			value += "any"
+		default: break
 		}
-		return super.visitPost(node)
-	}
-
-	override func visit(_ node: AttributeSyntax) -> SyntaxVisitorContinueKind {
-		value += " " + node.atSign.text
-		return super.visit(node)
+		value += " " + ParseAnyType<TypeNameTracker>(node: node.constraint).run()
+		return .skipChildren
 	}
 
 	override func visit(_ node: MemberTypeSyntax) -> SyntaxVisitorContinueKind {
-		if value.isEmpty || value.hasSuffix(" -> ") || value.hasSuffix("(") {
-			value += node.name.text
-		} else {
-			if !isInTuple {
-				value = (node.name.text + joiner + value)
-			} else {
-				value += (joiner + node.name.text)
-			}
+		value += ParseAnyType<TypeNameTracker>(node: node.baseType).run()
+		value += "."
+		value += node.name.text
+		let generics = node.genericArgumentClause?.arguments.map { ParseAnyType<TypeNameTracker>(node: $0).run() } ?? []
+		var string = generics.joined(separator: ", ")
+		if !string.isEmpty {
+			string = "<\(string)>"
 		}
-		return super.visit(node)
-	}
-	
-	override func visit(_ node: CompositionTypeElementListSyntax) -> SyntaxVisitorContinueKind {
-		let name = node.compactMap { $0.type.as(IdentifierTypeSyntax.self ) }.map { ParseAnyType<TypeNameTracker>(node: $0).run() }.joined(separator: " & ")
-		if value.isEmpty || value.hasSuffix(" -> ") || value.hasSuffix("(") {
-			value += name
-		} else {
-			if !isInTuple {
-				value = (name + joiner + value)
-			} else {
-				value += (joiner + name)
-			}
-		}
-
+		value += string
 		return .skipChildren
 	}
 
 	override func visit(_ node: IdentifierTypeSyntax) -> SyntaxVisitorContinueKind {
-		if value.isEmpty || value.hasSuffix(" -> ") || value.hasSuffix("(") {
-			value += node.name.text
-		} else {
-			if !isInTuple {
-				value = (node.name.text + joiner + value)
-			} else {
-				value += (joiner + node.name.text)
-			}
+		value += node.name.text
+		let generics = node.genericArgumentClause?.arguments.map { ParseAnyType<TypeNameTracker>(node: $0).run() } ?? []
+		var string = generics.joined(separator: ", ")
+		if !string.isEmpty {
+			string = "<\(string)>"
 		}
-		return super.visit(node)
+		value += string
+		return .skipChildren
 	}
 
-	override func visit(_ node: ReturnClauseSyntax) -> SyntaxVisitorContinueKind {
-		if isInFunction {
-			indexBeforeReturnStatementBegan = value.endIndex
-			value = value + " -> "
-		}
-		isInReturnType = true
-		return super.visit(node)
+	override func visit(_ node: OptionalTypeSyntax) -> SyntaxVisitorContinueKind {
+		value += ParseAnyType<TypeNameTracker>(node: node.wrappedType).run()
+		value += "?"
+		return .skipChildren
 	}
-}
 
-extension TypeNameTracker {
-	var joiner: String {
-		if value.last == "@" { return "" }
-		return isInTuple ? ", " : "."
+	override func visit(_ node: DictionaryTypeSyntax) -> SyntaxVisitorContinueKind {
+		value += "["
+		value += ParseAnyType<TypeNameTracker>(node: node.key).run()
+		value += ": "
+		value += ParseAnyType<TypeNameTracker>(node: node.value).run()
+		value += "]"
+		return .skipChildren
+	}
+
+	override func visit(_ node: ArrayTypeSyntax) -> SyntaxVisitorContinueKind {
+		value += "["
+		value += ParseAnyType<TypeNameTracker>(node: node.element).run()
+		value += "]"
+		return .skipChildren
+	}
+
+	override func visit(_ node: FunctionTypeSyntax) -> SyntaxVisitorContinueKind {
+		value += "("
+		value += node.parameters.map { ParseAnyType<TypeNameTracker>(node: $0).run() }.joined(separator: ", ")
+		value += ")"
+		value += " -> " + ParseAnyType<TypeNameTracker>(node: node.returnClause.type).run()
+
+		return .skipChildren
 	}
 }

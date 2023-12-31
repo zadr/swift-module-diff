@@ -37,7 +37,6 @@ class SubscriptTracker: SyntaxVisitor, AnyTypeParser {
 	}
 
 	override func visit(_ node: SubscriptDeclSyntax) -> SyntaxVisitorContinueKind {
-		print(node.debugDescription)
 		let generics = GenericsTracker(parametersNode: node.genericParameterClause, requirementsNode: node.genericWhereClause).run()
 		value.generics += generics.parameters
 		value.genericConstraints += generics.constraints
