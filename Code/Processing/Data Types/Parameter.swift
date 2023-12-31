@@ -25,7 +25,7 @@ struct Parameter {
 	var type: String = ""
 	var decorators: Set<Decorator> = .init()
 	var attributes: [Attribute] = []
-	var generics: [String] = []
+	var generics: [Parameter] = []
 	var genericConstraints: [Parameter] = []
 	var separator: Separator = .colon
 	var suffix: String = ""
@@ -66,7 +66,7 @@ extension Parameter: Codable, CustomStringConvertible, Hashable, Sendable {
 
 extension Parameter: Attributed, Named, Displayable {
 	var developerFacingValue: String {
-		var generics = generics.joined(separator: ", ")
+		var generics = generics.map { $0.developerFacingValue }.joined(separator: ", ")
 		if !generics.isEmpty {
 			generics = "<\(generics)>"
 		}

@@ -51,7 +51,7 @@ struct Member {
 	var kind: Kind = .unknown
 	var decorators: Set<Decorator> = .init()
 	var effects: [Effect] = []
-	var generics: [String] = []
+	var generics: [Parameter] = []
 	var genericConstraints: [Parameter] = []
 	var name: String = ""
 	var returnType: String = ""
@@ -127,7 +127,7 @@ extension Member: Attributed, Decorated, Named, Displayable {
 		case .func:
 			let parameters = parameters.map { $0.developerFacingValue }.joined(separator: ", ")
 			let returnType = returnType.isEmpty ? "" : " -> \(returnType)"
-			let generics = generics.isEmpty ? "" : "<\(generics.joined(separator: ", "))>"
+			let generics = generics.isEmpty ? "" : "<\(generics.map { $0.developerFacingValue }.joined(separator: ", "))>"
 			let constraint = genericConstraints.isEmpty ? "" : " where \(genericConstraints.map { $0.developerFacingValue }.joined(separator: ", "))"
 			return "\(attributes) \(decorators)func \(name)\(generics)(\(parameters))\(effects)\(returnType)\(constraint)".trimmingCharacters(in: .whitespaces)
 
@@ -142,7 +142,8 @@ extension Member: Attributed, Decorated, Named, Displayable {
 			return "associatedtype \(name)"
 
 		case .typealias:
-			return "typealias \(name) = \(returnType)"
+			let generics = generics.isEmpty ? "" : " <\(generics.map { $0.developerFacingValue }.joined(separator: ", "))>"
+			return "typealias \(name)\(generics) = \(returnType)"
 
 		case .subscript:
 			let parameters = parameters.map { $0.developerFacingValue }.joined(separator: ", ")

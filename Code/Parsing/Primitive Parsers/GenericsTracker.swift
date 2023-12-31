@@ -10,36 +10,33 @@ struct GenericsTracker {
 		self.requirementsNode = requirementsNode
 	}
 
-	func run() -> (parameters: [String], constraints: [Parameter]) {
-		var parameters = [String]()
+	func run() -> (parameters: [Parameter], constraints: [Parameter]) {
+		var parameters = [Parameter]()
 		var constraints = [Parameter]()
 
-		for parameter in parametersNode?.parameters ?? [] {
-			if case .identifier(let name) = parameter.name.tokenKind {
-				parameters.append(name)
+		for genericParameter in parametersNode?.parameters ?? [] {
+			var parameter = Parameter()
+			if case .identifier(let name) = genericParameter.name.tokenKind {
+				parameter.name = name
 			}
+			if let inherited = genericParameter.inheritedType {
+				parameter.type = ParseAnyType<TypeNameTracker>(node: inherited).run()
+			}
+			parameters.append(parameter)
 		}
 
 		for constraint in requirementsNode?.requirements ?? [] {
 			var parameter = Parameter()
 			if let sameType = constraint.requirement.as(SameTypeRequirementSyntax.self) {
-				if let left = sameType.leftType.as(IdentifierTypeSyntax.self)?.name {
-					if case .identifier(let name) = left.tokenKind {
-						parameter.name = name
-					}
-				}
+				parameter.name = ParseAnyType<TypeNameTracker>(node: sameType.leftType).run()
 
-				if case .binaryOperator(let text) = sameType.equal.tokenKind {
-					parameter.separator = .init(rawValue: text)!
+				if case .binaryOperator = sameType.equal.tokenKind {
+					parameter.separator = .doubleEqual
 				}
 
 				parameter.type = ParseAnyType<TypeNameTracker>(node: sameType.rightType).run()
 			} else if let conformance = constraint.requirement.as(ConformanceRequirementSyntax.self) {
-				if let left = conformance.leftType.as(IdentifierTypeSyntax.self)?.name {
-					if case .identifier(let name) = left.tokenKind {
-						parameter.name = name
-					}
-				}
+				parameter.name = ParseAnyType<TypeNameTracker>(node: conformance.leftType).run()
 
 				if case .colon = conformance.colon.tokenKind {
 					parameter.separator = .colon

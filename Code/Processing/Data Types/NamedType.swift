@@ -26,7 +26,7 @@ struct NamedType {
 
 	var attributes: [Attribute] = []
 	var decorators: Set<Decorator> = .init()
-	var generics: [String] = []
+	var generics: [Parameter] = []
 	var genericConstraints: [Parameter] = []
 	var kind: Kind = .unknown
 	var name: String = ""
@@ -84,7 +84,7 @@ extension NamedType: Attributed, Decorated, Displayable, Named {
 		if !conformances.isEmpty {
 			conformances = ": \(conformances)"
 		}
-		var generics = generics.joined(separator: ", ")
+		var generics = generics.map { $0.developerFacingValue }.joined(separator: ", ")
 		if !generics.isEmpty {
 			generics = "<\(generics)>"
 		}
