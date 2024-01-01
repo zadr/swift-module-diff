@@ -1,7 +1,18 @@
 import Foundation
+import os
+
+var __dropAnySubstringCacheLock__ = OSAllocatedUnfairLock()
+var __dropAnySubstringCache__ = [String: String]()
 
 extension String {
 	func dropAnySubstring(in set: [String]) -> String {
+		__dropAnySubstringCacheLock__.lock()
+		defer { __dropAnySubstringCacheLock__.unlock() }
+
+		if let result = __dropAnySubstringCache__[self] {
+			return result
+		}
+
 		var copy = self
 		for substring in set {
 			let ranges = copy.ranges(of: substring).reversed()
@@ -9,6 +20,8 @@ extension String {
 				copy = copy.replacingCharacters(in: range, with: "")
 			}
 		}
+
+		__dropAnySubstringCache__[self] = copy
 		return copy
 	}
 }
