@@ -33,7 +33,7 @@ struct SwiftmoduleDiff: ParsableCommand {
 	var trace: Bool = false
 
 	@Option(name: .shortAndLong, help: "Attempt to remove framework prefixes from type names. Increases runtime, but dramatically reduces the diff size. For example `var isTrue: Swift.Bool` will become `var isTrue: Bool`, and `func with(_ parameter: UIKit.UIView) -> CoreGraphics.CGRect` will become `func with(_ parameter: UIView) -> CGRect`. Not applicable to --single-file. Default: false.")
-	var attemptFrameworkPrefixesRemovalFromTypeNames: Bool = true
+	var refineTypeNames: Bool = false
 
 	@Option(name: .shortAndLong, help: "Parse a single file, for testing. Takes precedence over --old --new")
 	var singleFile: String? = nil
@@ -59,7 +59,7 @@ struct SwiftmoduleDiff: ParsableCommand {
 			}
 
 			var frameworkNames = [String]()
-			if attemptFrameworkPrefixesRemovalFromTypeNames {
+			if refineTypeNames {
 				var frameworkNameSet = Set<String>()
 				frameworkNameSet.formUnion(Summary.listFrameworks(for: old, progress: progress).filter { !$0.hasSuffix("_") }) // remove _-prefixed frameworks; these are typically Swift overlays that don't add new types
 				frameworkNameSet.formUnion(Summary.listFrameworks(for: new, progress: progress).filter { !$0.hasPrefix("_") }) // and the framework names list is used in O(N^2) logic
