@@ -11,13 +11,13 @@ extension ChangedTree {
 			willBegin: { visitors.forEach { v in v.willBegin() } },
 			didEnd: { tree in visitors.forEach { v in v.didEnd(tree) } },
 			willVisitPlatform: { platform in
-				tree.append(.init(value: platform.change(keyPath: \.name)))
+				tree.append(.init(value: platform.change(keyPath: \.rawValue)))
 
 				visitors.forEach { v in if v.shouldVisitPlatform(platform) { v.willVisitPlatform?(platform) } }
 			}, didVisitPlatform: { platform in
 				visitors.forEach { v in if v.shouldVisitPlatform(platform) { v.didVisitPlatform?(platform) } }
 			}, willVisitArchitecture: { architecture in
-				tree.last!.architectures.append(.init(value: architecture.change(keyPath: \.name)))
+				tree.last!.architectures.append(.init(value: architecture.change(keyPath: \.self)))
 
 				visitors.forEach { v in if v.shouldVisitArchitecture(architecture) { v.willVisitArchitecture?(architecture) } }
 			}, didVisitArchitecture: { architecture in

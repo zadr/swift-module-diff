@@ -19,4 +19,3 @@ extension PrecedenceGroup: Codable, Comparable, Hashable, Sendable {
 	}
 }
 extension PrecedenceGroup.Associativity: Codable, Hashable, Sendable {}
-extension PrecedenceGroup: Named {}

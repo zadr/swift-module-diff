@@ -43,6 +43,23 @@ struct Parameter {
 	}
 }
 
+extension Parameter {
+	var developerFacingValue: String {
+		var generics = generics.map { $0.developerFacingValue }.joined(separator: ", ")
+		if !generics.isEmpty {
+			generics = "<\(generics)>"
+		}
+		if type.isEmpty {
+			return name
+		}
+		var decorators = decorators.map { $0.rawValue }.sorted().joined(separator: " ")
+		if !decorators.isEmpty {
+			decorators += " "
+		}
+		return "\(decorators)\(name)\(separator.developerFacingValue) \(type)\(generics)\(suffix)"
+	}
+}
+
 // MARK: - Swift Protocol Conformances
 
 extension Parameter: Codable, CustomStringConvertible, Hashable, Sendable {
@@ -57,25 +74,6 @@ extension Parameter: Codable, CustomStringConvertible, Hashable, Sendable {
 
 	static func ==(lhs: Parameter, rhs: Parameter) -> Bool {
 		lhs.name == rhs.name && lhs.decorators == rhs.decorators && lhs.type == rhs.type && lhs.generics == rhs.generics && lhs.genericConstraints == rhs.genericConstraints && lhs.suffix == rhs.suffix
-	}
-}
-
-// MARK: - Custom Protocol Conformances
-
-extension Parameter: Attributed, Named, Displayable {
-	var developerFacingValue: String {
-		var generics = generics.map { $0.developerFacingValue }.joined(separator: ", ")
-		if !generics.isEmpty {
-			generics = "<\(generics)>"
-		}
-		if type.isEmpty {
-			return name
-		}
-		var decorators = decorators.map { $0.rawValue }.sorted().joined(separator: " ")
-		if !decorators.isEmpty {
-			decorators += " "
-		}
-		return "\(decorators)\(name)\(separator.developerFacingValue) \(type)\(generics)\(suffix)"
 	}
 }
 

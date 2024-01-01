@@ -72,35 +72,7 @@ struct Member {
 	}
 }
 
-// MARK: - Swift Protocol Conformances
-
-extension Member: Codable, CustomStringConvertible, Hashable, Sendable {
-	func hash(into hasher: inout Hasher) {
-		hasher.combine(kind)
-		hasher.combine(name)
-		hasher.combine(decorators)
-		hasher.combine(effects)
-		hasher.combine(parameters)
-		hasher.combine(generics)
-		hasher.combine(genericConstraints)
-		hasher.combine(returnType)
-	}
-
-	static func ==(lhs: Member, rhs: Member) -> Bool {
-		lhs.kind == rhs.kind &&
-			lhs.name == rhs.name &&
-			lhs.decorators == rhs.decorators &&
-			lhs.effects == rhs.effects &&
-			lhs.parameters == rhs.parameters &&
-			lhs.generics == rhs.generics &&
-			lhs.genericConstraints == rhs.genericConstraints &&
-			lhs.returnType == rhs.returnType
-	}
-}
-
-// MARK: - Custom Protocol Conformances
-
-extension Member: Attributed, Decorated, Named, Displayable {
+extension Member {
 	var developerFacingValue: String {
 		let attributes = attributes.map { $0.developerFacingValue }.joined(separator: " ")
 
@@ -151,5 +123,31 @@ extension Member: Attributed, Decorated, Named, Displayable {
 			let accessors = accessors.isEmpty ? "" : " { \(accessors.map { $0 .rawValue }.joined(separator: " ")) \(effects) }".trimmingCharacters(in: .whitespaces)
 			return "subscript (\(parameters))\(returnType)\(accessors)"
 		}
+	}
+}
+
+// MARK: - Swift Protocol Conformances
+
+extension Member: Codable, CustomStringConvertible, Hashable, Sendable {
+	func hash(into hasher: inout Hasher) {
+		hasher.combine(kind)
+		hasher.combine(name)
+		hasher.combine(decorators)
+		hasher.combine(effects)
+		hasher.combine(parameters)
+		hasher.combine(generics)
+		hasher.combine(genericConstraints)
+		hasher.combine(returnType)
+	}
+
+	static func ==(lhs: Member, rhs: Member) -> Bool {
+		lhs.kind == rhs.kind &&
+			lhs.name == rhs.name &&
+			lhs.decorators == rhs.decorators &&
+			lhs.effects == rhs.effects &&
+			lhs.parameters == rhs.parameters &&
+			lhs.generics == rhs.generics &&
+			lhs.genericConstraints == rhs.genericConstraints &&
+			lhs.returnType == rhs.returnType
 	}
 }

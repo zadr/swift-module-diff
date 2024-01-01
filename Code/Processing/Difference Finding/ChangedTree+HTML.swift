@@ -142,7 +142,7 @@ summary {
 								html += "\t\t\t\t\t<summary>Precedence Groups</summary>\n"
 								html += "\t\t\t\t\t\t<ul>\n"
 								for precedenceGroup in precedenceGroups.sorted() {
-									html += "\t\t\t\t\t\t<li class=\"precedenceGroup\">\(precedenceGroup.any.name)</li>\n"
+									html += "\t\t\t\t\t\t<li class=\"precedenceGroup\">\(precedenceGroup.any)</li>\n"
 								}
 								html += "\t\t\t\t\t\t</ul>\n"
 								html += "\t\t\t\t</details>\n"

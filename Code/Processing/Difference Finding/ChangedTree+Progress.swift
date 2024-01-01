@@ -4,15 +4,15 @@ extension ChangedTree {
 	static func progressVisitor() -> ChangeVisitor {
 		ChangeVisitor(willVisitPlatform: { change in
 			if change.isNotUnchanged {
-				print("\t\tPlatform: \(change.kind) > \(change.any.name)")
+				print("\t\tPlatform: \(change.kind) > \(change.any)")
 			} else {
-				print("\t\tPlatform: \(change.any.name)")
+				print("\t\tPlatform: \(change.any)")
 			}
 		}, willVisitArchitecture: { change in
 			if change.isNotUnchanged {
-				print("\t\tArchitecture: \(change.kind) > \(change.any.name)")
+				print("\t\tArchitecture: \(change.kind) > \(change.any)")
 			} else {
-				print("\t\tArchitecture: \(change.any.name)")
+				print("\t\tArchitecture: \(change.any)")
 			}
 		}, willVisitFramework: { change in
 			if change.isNotUnchanged {

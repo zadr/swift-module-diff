@@ -1,6 +1,6 @@
 import Foundation
 
-enum Change<T: Named> {
+enum Change<T> {
 	case removed(_ old: T, _ new: T)
 	case modified(_ old: T, _ new: T)
 	case unchanged(_ old: T, _ new: T)

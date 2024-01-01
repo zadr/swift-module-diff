@@ -9,7 +9,7 @@ struct ChangedTree {
 	class Platform: Equatable, Hashable, Comparable, Encodable {
 		class Architecture: Equatable, Hashable, Comparable, Encodable {
 			class Framework: Equatable, Hashable, Comparable, Encodable, Nested {
-				class NamedType: Equatable, Hashable, Comparable, Encodable, Named, Nested {
+				class NamedType: Equatable, Hashable, Comparable, Encodable, Nested {
 					let value: Change<String>
 
 					var name: String { value.any }

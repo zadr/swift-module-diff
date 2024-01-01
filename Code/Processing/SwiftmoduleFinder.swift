@@ -97,11 +97,3 @@ struct SwiftmoduleFinder {
 		}
 	}
 }
-
-extension SwiftmoduleFinder.Architecture: Named {
-	var name: String { self }
-}
-
-extension SwiftmoduleFinder.Platform: Named {
-	var name: String { rawValue }
-}

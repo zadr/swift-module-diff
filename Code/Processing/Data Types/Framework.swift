@@ -36,7 +36,3 @@ extension Framework: Codable, CustomStringConvertible, Equatable, Hashable, Send
 		lhs.name == rhs.name
 	}
 }
-
-// MARK: - Custom Protocol Conformances
-
-extension Framework: Attributed, Named {}

@@ -14,6 +14,14 @@ struct Attribute {
 	}
 }
 
+extension Attribute {
+	var developerFacingValue: String {
+		let start = "@\(name)"
+		let end = parameters.map { $0.developerFacingValue }.joined(separator: ", ")
+		return end.isEmpty ? start : start + "(\(end))"
+	}
+}
+
 // MARK: - Swift Protocol Conformances
 
 extension Attribute: Codable, CustomStringConvertible, Equatable, Hashable, Sendable {
@@ -23,15 +31,5 @@ extension Attribute: Codable, CustomStringConvertible, Equatable, Hashable, Send
 
 	static func ==(lhs: Attribute, rhs: Attribute) -> Bool {
 		lhs.name == rhs.name
-	}
-}
-
-// MARK: - Custom Protocol Conformances
-
-extension Attribute: Named, Displayable {
-	var developerFacingValue: String {
-		let start = "@\(name)"
-		let end = parameters.map { $0.developerFacingValue }.joined(separator: ", ")
-		return end.isEmpty ? start : start + "(\(end))"
 	}
 }

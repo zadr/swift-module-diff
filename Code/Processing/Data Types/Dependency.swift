@@ -14,6 +14,12 @@ struct Dependency {
 	}
 }
 
+extension Dependency {
+	var developerFacingValue: String {
+		attributes.map { $0.developerFacingValue }.joined(separator: " ") + " import \(name)"
+	}
+}
+
 // MARK: - Swift Protocol Conformances
 
 extension Dependency: Codable, CustomStringConvertible, Hashable, Sendable {
@@ -26,10 +32,3 @@ extension Dependency: Codable, CustomStringConvertible, Hashable, Sendable {
 	}
 }
 
-// MARK: - Custom Protocol Conformances
-
-extension Dependency: Attributed, Named, Displayable {
-	var developerFacingValue: String {
-		attributes.map { $0.developerFacingValue }.joined(separator: " ") + " import \(name)"
-	}
-}

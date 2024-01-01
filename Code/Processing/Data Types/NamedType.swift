@@ -54,29 +54,7 @@ struct NamedType {
 	}
 }
 
-// MARK: - Swift Protocol Conformances
-
-extension NamedType: Codable, CustomStringConvertible, Hashable, Sendable {
-	func hash(into hasher: inout Hasher) {
-		hasher.combine(kind)
-		hasher.combine(name)
-		hasher.combine(conformances)
-		hasher.combine(generics)
-		hasher.combine(genericConstraints)
-	}
-
-	static func ==(lhs: NamedType, rhs: NamedType) -> Bool {
-		lhs.kind == rhs.kind &&
-			lhs.name == rhs.name &&
-			lhs.conformances == rhs.conformances &&
-			lhs.generics == rhs.generics &&
-			lhs.genericConstraints == rhs.genericConstraints
-	}
-}
-
-// MARK: - Custom Protocol Conformances
-
-extension NamedType: Attributed, Decorated, Displayable, Named {
+extension NamedType {
 	var developerFacingValue: String {
 		var attributes = attributes.sorted { $0.name > $1.name }.map { $0.developerFacingValue }.joined(separator: " ")
 		if !attributes.isEmpty {
@@ -101,5 +79,25 @@ extension NamedType: Attributed, Decorated, Displayable, Named {
 			decorators = " \(decorators) "
 		}
 		return "\(attributes)\(decorators)\(kind.rawValue) \(name)\(generics)\(conformances)\(genericConstraints)".trimmingCharacters(in: .whitespaces)
+	}
+}
+
+// MARK: - Swift Protocol Conformances
+
+extension NamedType: Codable, CustomStringConvertible, Hashable, Sendable {
+	func hash(into hasher: inout Hasher) {
+		hasher.combine(kind)
+		hasher.combine(name)
+		hasher.combine(conformances)
+		hasher.combine(generics)
+		hasher.combine(genericConstraints)
+	}
+
+	static func ==(lhs: NamedType, rhs: NamedType) -> Bool {
+		lhs.kind == rhs.kind &&
+			lhs.name == rhs.name &&
+			lhs.conformances == rhs.conformances &&
+			lhs.generics == rhs.generics &&
+			lhs.genericConstraints == rhs.genericConstraints
 	}
 }
