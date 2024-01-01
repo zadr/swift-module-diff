@@ -31,9 +31,9 @@ extension Summary {
 		return results
 	}
 
-	static func createSummary(for path: String, typePrefixesToRemove: Set<String>, progress: Bool) -> Summary {
+	static func createSummary(for path: String, typePrefixesToRemove: [String], progress: Bool) -> Summary {
 		var results = Summary()
-		let qualifiedTypePrefixesToRemove = Set(typePrefixesToRemove.map { $0 + "." })
+		let qualifiedTypePrefixesToRemove = typePrefixesToRemove.map { $0 + "." }
 		for (platform, architectureToModules) in SwiftmoduleFinder(app: path).run() {
 			if progress { print(platform) }
 

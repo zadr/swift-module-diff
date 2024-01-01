@@ -4,9 +4,9 @@ import SwiftSyntax
 
 struct ParseSwiftmodule {
 	let path: String
-	let typePrefixesToRemove: Set<String>
+	let typePrefixesToRemove: [String]
 
-	init(path: String, typePrefixesToRemove: Set<String>) {
+	init(path: String, typePrefixesToRemove: [String]) {
 		self.path = path
 		self.typePrefixesToRemove = typePrefixesToRemove
 	}
@@ -33,11 +33,11 @@ struct ParseSwiftmodule {
 
 private class SwiftmoduleTracker: SyntaxVisitor {
 	var nestingCount = 0
-	let typePrefixesToRemove: Set<String>
+	let typePrefixesToRemove: [String]
 
 	var framework = Framework()
 
-	public init(typePrefixesToRemove: Set<String>) {
+	public init(typePrefixesToRemove: [String]) {
 		self.typePrefixesToRemove = typePrefixesToRemove
 		super.init(viewMode: .sourceAccurate)
 	}

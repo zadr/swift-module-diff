@@ -58,10 +58,16 @@ struct SwiftmoduleDiff: ParsableCommand {
 				print("Start: \(Date())")
 			}
 
-			var frameworkNames = Set<String>()
+			var frameworkNames = [String]()
 			if attemptFrameworkPrefixesRemovalFromTypeNames {
-				frameworkNames.formUnion(Summary.listFrameworks(for: old, progress: progress).filter { !$0.hasSuffix("_") }) // remove _-prefixed frameworks; these are typically Swift overlays that don't add new types
-				frameworkNames.formUnion(Summary.listFrameworks(for: new, progress: progress).filter { !$0.hasPrefix("_") }) // and the framework names list is used in O(N^2) logic
+				var frameworkNameSet = Set<String>()
+				frameworkNameSet.formUnion(Summary.listFrameworks(for: old, progress: progress).filter { !$0.hasSuffix("_") }) // remove _-prefixed frameworks; these are typically Swift overlays that don't add new types
+				frameworkNameSet.formUnion(Summary.listFrameworks(for: new, progress: progress).filter { !$0.hasPrefix("_") }) // and the framework names list is used in O(N^2) logic
+
+				// Put 'Foundation' at the end to avoid substring matches (e.g. check for `AVFoundation` before `Foundation`)
+				frameworkNameSet.remove("Foundation")
+				frameworkNames = frameworkNameSet.sorted()
+				frameworkNames.append("Foundation")
 			}
 
 			let oldFrameworks = Summary.createSummary(for: old, typePrefixesToRemove: frameworkNames, progress: progress)

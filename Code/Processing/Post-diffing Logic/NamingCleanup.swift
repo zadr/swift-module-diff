@@ -1,7 +1,7 @@
 import Foundation
 
 extension String {
-	func dropAnySubstring(in set: Set<String>) -> String {
+	func dropAnySubstring(in set: [String]) -> String {
 		var copy = self
 		for substring in set {
 			let ranges = copy.ranges(of: substring).reversed()
@@ -14,7 +14,7 @@ extension String {
 }
 
 extension NamedType {
-	func dropAnySubstring(in set: Set<String>) -> NamedType {
+	func dropAnySubstring(in set: [String]) -> NamedType {
 		var copy = self
 		copy.name = copy.name.dropAnySubstring(in: set)
 		copy.generics = copy.generics.dropAnySubstring(in: set)
@@ -26,13 +26,13 @@ extension NamedType {
 }
 
 extension Array where Element == NamedType {
-	func dropAnySubstring(in set: Set<String>) -> [Element] {
+	func dropAnySubstring(in set: [String]) -> [Element] {
 		map { $0.dropAnySubstring(in: set) }
 	}
 }
 
 extension Member {
-	func dropAnySubstring(in set: Set<String>) -> Member {
+	func dropAnySubstring(in set: [String]) -> Member {
 		var copy = self
 		copy.name = copy.name.dropAnySubstring(in: set)
 		copy.parameters = copy.parameters.dropAnySubstring(in: set)
@@ -44,13 +44,13 @@ extension Member {
 }
 
 extension Array where Element == Member {
-	func dropAnySubstring(in set: Set<String>) -> [Element] {
+	func dropAnySubstring(in set: [String]) -> [Element] {
 		map { $0.dropAnySubstring(in: set) }
 	}
 }
 
 extension Parameter {
-	func dropAnySubstring(in set: Set<String>) -> Parameter {
+	func dropAnySubstring(in set: [String]) -> Parameter {
 		var copy = self
 		copy.type = copy.type.dropAnySubstring(in: set)
 		copy.generics = copy.generics.dropAnySubstring(in: set)
@@ -60,7 +60,7 @@ extension Parameter {
 }
 
 extension Array where Element == Parameter {
-	func dropAnySubstring(in set: Set<String>) -> [Element] {
+	func dropAnySubstring(in set: [String]) -> [Element] {
 		map { $0.dropAnySubstring(in: set) }
 	}
 }
