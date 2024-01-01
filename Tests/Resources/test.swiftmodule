@@ -1,0 +1,65 @@
+actor Actor { var v: A? = nil }
+actor ActorA<AA> { var v: AA? = nil }
+actor ActorB<AB> where AB: Hashable { var v: AB? = nil }
+actor ActorC<AC> where AC == String { var v: AC? = nil }
+actor ActorD<ADA, ADB> where ADA: Hashable, ADB == Int { var v: ADA? = nil; var u: ADB? = nil }
+actor ActorE<ADA, ADB> where ADA: Hashable & Equatable, ADA: Codable, ADB == Int { var v: ADA? = nil; var u: ADB? = nil }
+actor ActorF { nonisolated var v: A? = nil }
+
+class Class { var v: C? = nil }
+class ClassA<CA> { var v: CA? = nil }
+class ClassB<CB> where CB: Hashable { var v: CB? = nil }
+class ClassC<CC> where CC == String { var v: CC? = nil }
+class ClassD<CDA, CDB> where CDA: Hashable, CDB == Int { var v: CDA? = nil; var u: CDB? = nil }
+
+enum Enum { case e: E }
+enum EnumA<EA> { case a: EA }
+enum EnumB<EB> where EB: Hashable { case b: EB }
+enum EnumC<EC> where EC == String { case c: EC }
+enum EnumD<EDA, EDB> where EDA: Hashable, EDB == Int { case da: EDA, case db: EDB }
+
+extension Int {}
+extension Array where Element == Int {}
+extension Collection where Iterator.Element: Equatable {}
+
+func function() {}
+func functionA<FA>(_ t: FA) {}
+func functionB<FB>(_ t: FB) where FB: Hashable {}
+func functionC<FC>(_ t: FC) where FC == String {}
+func functionD<FDA, FDB>(_ t: FDA, _ u: FDB) where FDA: Hashable, FDB == Int {}
+func functionE(e: Int...) {}
+func functionF(f: [Int: String]) {}
+func functionG(g: [Int: String]?) {}
+func functionH(h: (any Foundation.NSCopying)?) {}
+func functionI<T>(_ transform: (Int) throws -> T) rethrows -> [T]
+func functionJ(a: A.B<V, W>.C.D.E.F<X, Y, Z>.G.H.I.J.K.L) {}
+func functionK<T, U, V>(a: A, b: A<B>, _ c: A, d: A.B.C, e: A.B<C, D>.E, f: [A: B], g: [A], h: some A<T, U>, i: any V, j: A?, k: (A, B), l: (A<B, C>, D, E)) {} 
+func functionL(a: A, b: A<B>, _ c: A, d: A.B.C, e: A.B<C, D>.E, f: [A: B], g: [A], h: some A, i: any A, j: A?, k: (A, B), l: (A<B,C>, D, E)) {} 
+func functionM<FDA, FDB>(_ t: FDA, _ u: FDB) throws -> Bool where FDA: Hashable, FDB == Int  { true }
+func functionN(e: (Double...) -> Int) -> Bool {}
+
+protocol PA { var v: Int { get async throws } }
+protocol PB { subscript(index: Int) -> Int { get set } }
+protocol PC { subscript(index: Int) -> Int { get async } }
+protocol PD { subscript(index: Int) -> Int { mutating get } }
+
+struct Struct { var v: S? = nil }
+struct StructA<SA> { var v: SA? = nil }
+struct StructB<SB> where SB: Hashable { var v: SB? = nil }
+struct StructC<SC> where SC == String { var v: SC? = nil }
+struct StructD<SDA, SDB> where SDA: Hashable, SDB == Int { var v: SDA? = nil; var u: SDB? = nil }
+
+struct Subscript<Key, Value> {
+	subscript(key: Key) -> Value? { nil }
+	subscript(key: Key, default defaultValue: @autoclosure () -> Value) -> Value { defaultValue() }
+
+	subscript<R>(r: R) -> ArraySlice<Value> where R : RangeExpression, Int == R.Bound { ArraySlice() }
+	subscript(x: (UnboundedRange_) -> ()) -> ArraySlice<Value> { ArraySlice() }
+}
+
+typealias T = Int
+typealias TA = Array
+typealias TB<TBBB> = Array<TA<String>>
+typealias TC<TCCC: Comparable> = Array<String>
+typealias TD<TADDD, TBDDD> = Dictionary<String, Any>
+typealias TE<TAEEE: Hashable, TBEEE> = Dictionary<String, Any>
