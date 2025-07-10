@@ -46,10 +46,10 @@ class FunctionTracker: SyntaxVisitor, AnyTypeParser {
 		if case .keyword(.async) = node.signature.effectSpecifiers?.asyncSpecifier?.tokenKind {
 			value.effects.append(.async)
 		}
-		if case .keyword(.rethrows) = node.signature.effectSpecifiers?.throwsSpecifier?.tokenKind {
+		if case .keyword(.rethrows) = node.signature.effectSpecifiers?.throwsClause?.throwsSpecifier.tokenKind {
 			value.effects.append(.rethrows)
 		}
-		if case .keyword(.throws) = node.signature.effectSpecifiers?.throwsSpecifier?.tokenKind {
+		if case .keyword(.throws) = node.signature.effectSpecifiers?.throwsClause?.throwsSpecifier.tokenKind {
 			value.effects.append(.throws)
 		}
 
