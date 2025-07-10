@@ -107,9 +107,15 @@ summary {
 					}
 				}
 
+				let platformLines = tree.sorted().map { "<input type=\"checkbox\" id=\"\($0.value.any)\" name=\"\($0.value.any)\" checked /><label for=\"\($0.value.any)\">\($0.value.any)</label>" }
+				html += "\t<div><fieldset>\(platformLines.joined(separator: ""))</fieldset></div>\n"
+
 				for platform in tree.sorted() {
 					html += "\t<details id=\"Platform:_\(platform.value.any)\">\n"
 					html += "\t<summary>\(platform.value.any)</summary>\n"
+
+					let architectureLines = platform.architectures.sorted().map { "<input type=\"checkbox\" id=\"\($0.value.any)\" name=\"\($0.value.any)\" checked /><label for=\"\($0.value.any)\">\($0.value.any)</label>" }
+					html += "\t<div><fieldset>\(architectureLines.joined(separator: ""))</fieldset></div>\n"
 
 					for architecture in platform.architectures.sorted() {
 						html += "\t\t<details id=\"Platform_\(platform.value.any)_Architecture_\(architecture.value.any)\">\n"
