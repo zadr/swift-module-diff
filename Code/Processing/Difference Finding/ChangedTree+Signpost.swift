@@ -1,26 +1,18 @@
 import Foundation
 import os
 
-extension StaticString: Hashable, Equatable {
+extension StaticString: Hashable {
 	public static func ==(lhs: StaticString, rhs: StaticString) -> Bool {
-		var isEqual = false
-		lhs.withUTF8Buffer { lhsBytes in
-			rhs.withUTF8Buffer { rhsBytes in
-				if lhsBytes.count != rhsBytes.count {
-					return
-				}
-
-				isEqual = (0..<lhsBytes.count).reduce(true) { $0 && lhsBytes[$1] == lhsBytes[$1] }
+		lhs.withUTF8Buffer { lhsBuffer in
+			rhs.withUTF8Buffer { rhsBuffer in
+				return lhsBuffer.elementsEqual(rhsBuffer)
 			}
 		}
-		return isEqual
 	}
 
 	public func hash(into hasher: inout Hasher) {
-		withUTF8Buffer { bytes in
-			bytes.withUnsafeBytes { unsafeBytes in
-				hasher.combine(bytes: unsafeBytes)
-			}
+		withUTF8Buffer { buffer in
+			hasher.combine(bytes: UnsafeRawBufferPointer(buffer))
 		}
 	}
 }
