@@ -13,6 +13,7 @@ class FunctionTracker: SyntaxVisitor, AnyTypeParser {
 		let pairs: [Keyword: Member.Decorator] = [
 			.static: .static,
 			.open: .open,
+			.package: .package,
 			.final: .final,
 			.mutating: .mutating,
 			.nonmutating: .nonmutating,

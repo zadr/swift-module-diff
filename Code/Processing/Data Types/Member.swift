@@ -24,6 +24,7 @@ struct Member {
 	enum Decorator: String, Codable, Equatable, Hashable, Sendable {
 		case `final`
 		case `open`
+		case `package`
 		case `static`
 		case `weak`
 		case `unsafe` = "unowned(unsafe)"
@@ -100,6 +101,9 @@ extension Member {
 		if decorators.contains(.open) {
 			accessLevel = "open "
 			otherDecorators.remove(.open)
+		} else if decorators.contains(.package) {
+			accessLevel = "package "
+			otherDecorators.remove(.package)
 		}
 
 		var decoratorsStr = otherDecorators.map { $0.rawValue }.joined(separator: " ")

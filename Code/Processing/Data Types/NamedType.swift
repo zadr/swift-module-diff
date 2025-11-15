@@ -4,6 +4,7 @@ struct NamedType {
 	enum Decorator: String, Equatable, Codable, Hashable, Sendable {
 		case `final`
 		case `open`
+		case `package`
 		case `static`
 		case `distributed`
 		case `indirect`
@@ -93,6 +94,9 @@ extension NamedType {
 		if decorators.contains(.open) {
 			accessLevel = "open "
 			otherDecorators.remove(.open)
+		} else if decorators.contains(.package) {
+			accessLevel = "package "
+			otherDecorators.remove(.package)
 		}
 
 		var decoratorsStr = Array(otherDecorators).map { $0.rawValue }.sorted().joined(separator: " ")

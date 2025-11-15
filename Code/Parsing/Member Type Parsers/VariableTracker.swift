@@ -14,6 +14,7 @@ class VariableTracker: SyntaxVisitor, AnyTypeCollectionParser {
 		let pairs: [Keyword: Member.Decorator] = [
 			.static: .static,
 			.open: .open,
+			.package: .package,
 			.final: .final,
 			.weak: .weak,
 			.unsafe: .unsafe,

@@ -28,6 +28,7 @@ class ActorTracker: SyntaxVisitor, AnyTypeParser {
 	override func visit(_ node: DeclModifierSyntax) -> SyntaxVisitorContinueKind {
 		let pairs: [Keyword: NamedType.Decorator] = [
 			.open: .open,
+			.package: .package,
 			.final: .final,
 			.distributed: .distributed,
 		]

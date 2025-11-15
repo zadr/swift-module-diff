@@ -58,6 +58,7 @@ class SubscriptTracker: SyntaxVisitor, AnyTypeParser {
 		let pairs: [Keyword: Member.Decorator] = [
 			.static: .static,
 			.open: .open,
+			.package: .package,
 			.final: .final,
 			.nonmutating: .nonmutating,
 			.optional: .optional,

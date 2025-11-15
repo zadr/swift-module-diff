@@ -9,6 +9,13 @@ class StructTracker: SyntaxVisitor, AnyTypeParser {
 		super.init(viewMode: .sourceAccurate)
 	}
 
+	override func visit(_ node: DeclModifierSyntax) -> SyntaxVisitorContinueKind {
+		if ParseDecl<DeclTracker>(node: node).run(keyword: .package) {
+			value.decorators.insert(.package)
+		}
+		return super.visit(node)
+	}
+
 	override func visit(_ node: StructDeclSyntax) -> SyntaxVisitorContinueKind {
 		value.name = node.name.text
 
