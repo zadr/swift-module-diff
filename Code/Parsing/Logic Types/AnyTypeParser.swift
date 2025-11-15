@@ -20,11 +20,8 @@ struct ParseAnyType<T: SyntaxVisitor & AnyTypeParser> {
 	}
 
 	func run() -> T.AnyType {
-		autoreleasepool {
-			let tracker = T()
-			tracker.walk(node)
-
-			return tracker.value
-		}
+		let tracker = T()
+		tracker.walk(node)
+		return tracker.value
 	}
 }

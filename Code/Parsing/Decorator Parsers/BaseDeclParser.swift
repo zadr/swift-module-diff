@@ -17,12 +17,9 @@ struct ParseDecl<T: SyntaxVisitor & DeclParser> {
 	}
 
 	func run(keyword: Keyword, detailKeyword: String? = nil) -> Bool {
-		autoreleasepool {
-			let tracker = T(keyword: keyword, detailKeyword: detailKeyword)
-			tracker.walk(node)
-
-			return tracker.value
-		}
+		let tracker = T(keyword: keyword, detailKeyword: detailKeyword)
+		tracker.walk(node)
+		return tracker.value
 	}
 }
 

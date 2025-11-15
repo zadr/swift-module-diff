@@ -20,11 +20,8 @@ struct ParseAnyTypeCollection<T: SyntaxVisitor & AnyTypeCollectionParser> {
 	}
 
 	func run() -> [T.AnyType] {
-		autoreleasepool {
-			let tracker = T()
-			tracker.walk(node)
-
-			return tracker.collection
-		}
+		let tracker = T()
+		tracker.walk(node)
+		return tracker.collection
 	}
 }
