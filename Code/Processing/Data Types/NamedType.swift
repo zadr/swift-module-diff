@@ -140,4 +140,13 @@ extension NamedType: Codable, CustomStringConvertible, Hashable, Sendable {
 			lhs.genericConstraints == rhs.genericConstraints &&
 			lhs.primaryAssociatedTypes == rhs.primaryAssociatedTypes
 	}
+
+	/// Check if two types are identical except for their conformances
+	func isSameExceptConformances(_ other: NamedType) -> Bool {
+		kind == other.kind &&
+			name == other.name &&
+			generics == other.generics &&
+			genericConstraints == other.genericConstraints &&
+			primaryAssociatedTypes == other.primaryAssociatedTypes
+	}
 }

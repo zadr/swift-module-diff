@@ -174,7 +174,61 @@ extension ChangedTree {
 	}
 
 	fileprivate func _enumerateNamedTypeDifferences(oldNamedTypes: [NamedType], newNamedTypes: [NamedType], visitor: ChangeVisitor) {
-		for namedTypeChange in Change<NamedType>.differences(from: oldNamedTypes, to: newNamedTypes) {
+		// First pass: find types that only differ in conformances
+		var remainingOld = oldNamedTypes
+		var remainingNew = newNamedTypes
+		var conformanceOnlyChanges: [(old: NamedType, new: NamedType)] = []
+
+		for oldType in oldNamedTypes {
+			if let newType = newNamedTypes.first(where: { $0.isSameExceptConformances(oldType) && $0 != oldType }) {
+				conformanceOnlyChanges.append((old: oldType, new: newType))
+				remainingOld.removeAll { $0 == oldType }
+				remainingNew.removeAll { $0 == newType }
+			}
+		}
+
+		// Handle conformance-only changes as modified types with conformance child changes
+		for (oldType, newType) in conformanceOnlyChanges {
+			let typeChange = Change<NamedType>.modified(oldType, newType)
+			guard visitor.shouldVisitNamedType(typeChange) else { continue }
+
+			visitor.willVisitNamedType?(typeChange)
+
+			// Add conformance changes as synthetic members
+			let addedConformances = Set(newType.conformances).subtracting(oldType.conformances)
+			let removedConformances = Set(oldType.conformances).subtracting(newType.conformances)
+
+			for conformance in removedConformances.sorted() {
+				let conformanceChange = Change<Member>.removed(
+					Member(kind: .unknown, name: "Conformance: \(conformance)"),
+					Member(kind: .unknown, name: "Conformance: \(conformance)")
+				)
+				if visitor.shouldVisitMember(conformanceChange) {
+					visitor.willVisitMember?(conformanceChange)
+					visitor.didVisitMember?(conformanceChange)
+				}
+			}
+
+			for conformance in addedConformances.sorted() {
+				let conformanceChange = Change<Member>.added(
+					Member(kind: .unknown, name: "Conformance: \(conformance)"),
+					Member(kind: .unknown, name: "Conformance: \(conformance)")
+				)
+				if visitor.shouldVisitMember(conformanceChange) {
+					visitor.willVisitMember?(conformanceChange)
+					visitor.didVisitMember?(conformanceChange)
+				}
+			}
+
+			// Process nested types and members normally
+			_enumerateNamedTypeDifferences(oldNamedTypes: oldType.nestedTypes, newNamedTypes: newType.nestedTypes, visitor: visitor)
+			_enumerateMemberDifferences(oldMembers: oldType.members, newMembers: newType.members, visitor: visitor)
+
+			visitor.didVisitNamedType?(typeChange)
+		}
+
+		// Second pass: handle regular changes for remaining types
+		for namedTypeChange in Change<NamedType>.differences(from: remainingOld, to: remainingNew) {
 			guard visitor.shouldVisitNamedType(namedTypeChange) else { continue }
 
 			visitor.willVisitNamedType?(namedTypeChange)
