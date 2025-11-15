@@ -45,6 +45,9 @@ struct NamedType {
 	// includes `enum`, `struct`, `class`, extension`, and `associatedtype`
 	var nestedTypes = [NamedType]()
 
+	// Cache for developerFacingValue to avoid repeated string construction
+	private var _cachedDeveloperFacingValue: String?
+
 	var description: String {
 """
 ------
@@ -62,6 +65,10 @@ struct NamedType {
 
 extension NamedType {
 	var developerFacingValue: String {
+		if let cached = _cachedDeveloperFacingValue {
+			return cached
+		}
+
 		var attributes = attributes.sorted { $0.name > $1.name }.map { $0.developerFacingValue }.joined(separator: " ")
 		if !attributes.isEmpty {
 			attributes += " "
@@ -104,7 +111,12 @@ extension NamedType {
 			decoratorsStr += " "
 		}
 
-		return "\(attributes)\(accessLevel)\(decoratorsStr)\(kind.rawValue) \(name)\(primaryTypes)\(generics)\(conformances)\(genericConstraints)".trimmingCharacters(in: .whitespaces)
+		let result = "\(attributes)\(accessLevel)\(decoratorsStr)\(kind.rawValue) \(name)\(primaryTypes)\(generics)\(conformances)\(genericConstraints)".trimmingCharacters(in: .whitespaces)
+		return result
+	}
+
+	mutating func cacheDeveloperFacingValue() {
+		_cachedDeveloperFacingValue = developerFacingValue
 	}
 }
 

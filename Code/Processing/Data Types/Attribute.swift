@@ -4,6 +4,9 @@ struct Attribute {
 	var name: String = ""
 	var parameters: [Parameter] = []
 
+	// Cache for developerFacingValue to avoid repeated string construction
+	private var _cachedDeveloperFacingValue: String?
+
 	var description: String {
 """
 ------
@@ -16,9 +19,18 @@ struct Attribute {
 
 extension Attribute {
 	var developerFacingValue: String {
+		if let cached = _cachedDeveloperFacingValue {
+			return cached
+		}
+
 		let start = "@\(name)"
 		let end = parameters.map { $0.developerFacingValue }.joined(separator: ", ")
-		return end.isEmpty ? start : start + "(\(end))"
+		let result = end.isEmpty ? start : start + "(\(end))"
+		return result
+	}
+
+	mutating func cacheDeveloperFacingValue() {
+		_cachedDeveloperFacingValue = developerFacingValue
 	}
 }
 

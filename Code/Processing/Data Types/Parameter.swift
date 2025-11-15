@@ -32,6 +32,9 @@ struct Parameter {
 	var suffix: String = ""
 	var defaultValue: String = ""
 
+	// Cache for developerFacingValue to avoid repeated string construction
+	private var _cachedDeveloperFacingValue: String?
+
 	var description: String {
 """
 ------
@@ -50,6 +53,10 @@ struct Parameter {
 
 extension Parameter {
 	var developerFacingValue: String {
+		if let cached = _cachedDeveloperFacingValue {
+			return cached
+		}
+
 		var generics = generics.map { $0.developerFacingValue }.joined(separator: ", ")
 		if !generics.isEmpty {
 			generics = "<\(generics)>"
@@ -65,7 +72,12 @@ extension Parameter {
 		if !defaultValue.isEmpty {
 			defaultVal = " = \(defaultValue)"
 		}
-		return "\(decorators)\(name)\(separator.developerFacingValue) \(type)\(generics)\(suffix)\(defaultVal)"
+		let result = "\(decorators)\(name)\(separator.developerFacingValue) \(type)\(generics)\(suffix)\(defaultVal)"
+		return result
+	}
+
+	mutating func cacheDeveloperFacingValue() {
+		_cachedDeveloperFacingValue = developerFacingValue
 	}
 }
 

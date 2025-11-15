@@ -76,6 +76,9 @@ struct Member {
 	var returnType: String = ""
 	var parameters: [Parameter] = []
 
+	// Cache for developerFacingValue to avoid repeated string construction
+	private var _cachedDeveloperFacingValue: String?
+
 	var description: String {
 """
   accessors: \(accessors)
@@ -93,6 +96,10 @@ struct Member {
 
 extension Member {
 	var developerFacingValue: String {
+		if let cached = _cachedDeveloperFacingValue {
+			return cached
+		}
+
 		let attributes = attributes.map { $0.developerFacingValue }.joined(separator: " ")
 
 		// Separate access level from other decorators
@@ -113,47 +120,54 @@ extension Member {
 		var effects = effects.map { $0.rawValue }.joined(separator: " ")
 		if !effects.isEmpty { effects = " \(effects) "}
 
+		let result: String
 		switch kind {
 		case .unknown:
-			return "<<MEMBER UNKNOWN>>"
+			result = "<<MEMBER UNKNOWN>>"
 
 		case .let:
-			return "\(attributes) \(accessLevel)\(decoratorsStr)let \(name): \(returnType)".trimmingCharacters(in: .whitespaces)
+			result = "\(attributes) \(accessLevel)\(decoratorsStr)let \(name): \(returnType)".trimmingCharacters(in: .whitespaces)
 
 		case .var:
 			var accessors = accessors.map { $0.rawValue }.joined(separator: " ")
 			if !accessors.isEmpty {
 				accessors = " { \(accessors)\(effects) }"
 			}
-			return "\(attributes) \(accessLevel)\(decoratorsStr)var \(name): \(returnType)\(accessors)".trimmingCharacters(in: .whitespaces)
+			result = "\(attributes) \(accessLevel)\(decoratorsStr)var \(name): \(returnType)\(accessors)".trimmingCharacters(in: .whitespaces)
 
 		case .func:
 			let parameters = parameters.map { $0.developerFacingValue }.joined(separator: ", ")
 			let returnType = returnType.isEmpty ? "" : " -> \(returnType)"
 			let generics = generics.isEmpty ? "" : "<\(generics.map { $0.developerFacingValue }.joined(separator: ", "))>"
 			let constraint = genericConstraints.isEmpty ? "" : " where \(genericConstraints.map { $0.developerFacingValue }.joined(separator: ", "))"
-			return "\(attributes) \(accessLevel)\(decoratorsStr)func \(name)\(generics)(\(parameters))\(effects)\(returnType)\(constraint)".trimmingCharacters(in: .whitespaces)
+			result = "\(attributes) \(accessLevel)\(decoratorsStr)func \(name)\(generics)(\(parameters))\(effects)\(returnType)\(constraint)".trimmingCharacters(in: .whitespaces)
 
 		case .case:
 			var parameters = parameters.map { $0.developerFacingValue }.joined(separator: ", ")
 			if !parameters.isEmpty {
 				parameters = "(\(parameters))"
 			}
-			return "\(attributes) \(accessLevel)\(decoratorsStr)case \(name)\(parameters)".trimmingCharacters(in: .whitespaces)
+			result = "\(attributes) \(accessLevel)\(decoratorsStr)case \(name)\(parameters)".trimmingCharacters(in: .whitespaces)
 
 		case .associatedtype:
-			return "associatedtype \(name)"
+			result = "associatedtype \(name)"
 
 		case .typealias:
 			let generics = generics.isEmpty ? "" : " <\(generics.map { $0.developerFacingValue }.joined(separator: ", "))>"
-			return "typealias \(name)\(generics) = \(returnType)"
+			result = "typealias \(name)\(generics) = \(returnType)"
 
 		case .subscript:
 			let parameters = parameters.map { $0.developerFacingValue }.joined(separator: ", ")
 			let returnType = returnType.isEmpty ? "" : " -> \(returnType)"
 			let accessors = accessors.isEmpty ? "" : " { \(accessors.map { $0 .rawValue }.joined(separator: " ")) \(effects) }".trimmingCharacters(in: .whitespaces)
-			return "subscript (\(parameters))\(returnType)\(accessors)"
+			result = "subscript (\(parameters))\(returnType)\(accessors)"
 		}
+
+		return result
+	}
+
+	mutating func cacheDeveloperFacingValue() {
+		_cachedDeveloperFacingValue = developerFacingValue
 	}
 }
 
