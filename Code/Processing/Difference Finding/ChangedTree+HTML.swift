@@ -1,6 +1,22 @@
 import Foundation
 import HTMLEntities
 
+func parseAttribute(_ str: String) -> (name: String, value: String) {
+    if str.hasPrefix("@") {
+        let cleanStr = str
+            .replacingOccurrences(of: "@", with: "")
+            .replacingOccurrences(of: "(", with: "")
+            .replacingOccurrences(of: ")", with: "")
+        
+        let components = cleanStr.split(separator: " ", maxSplits: 1)
+        if components.count > 1 {
+            return (String(components[0]), String(components[1]))
+        }
+        return (cleanStr, "")
+    }
+    return ("", "")
+}
+
 extension ChangedTree {
 	static func htmlVisitor(from fromVersion: Version, to toVersion: Version, root: String, extraCSS: String?) -> ChangeVisitor {
 		ChangeVisitor(
@@ -42,6 +58,44 @@ summary {
 	font-weight: bold;
 	padding: 0.5em;
 }
+
+
+.tabs {
+  position: relative;
+  min-height: 200px; /* This part sucks */
+  clear: both;
+  margin: 25px 0;
+}
+.tab {
+  float: left;
+}
+.tab label {
+  background: #eee;
+  padding: 10px;
+  border: 1px solid #ccc;
+  margin-left: -1px;
+  position: relative;
+  left: 1px;
+}
+.tab [type="radio"] {
+  opacity: 0;
+}
+[type="radio"]:focus ~ label {
+  ouline: 2px solid blue;
+}
+[type="radio"]:checked ~ label {
+  background: white;
+  border-bottom: 1px solid white;
+  z-index: 2;
+}
+[type="radio"]:checked ~ label ~ .content {
+  z-index: 1;
+}
+[type="radio"]:checked ~ label ~ .content > * {
+  opacity: 1;
+  transform: translateX(0);
+}
+
 """
 
 				let extraCSSLink: String
@@ -107,17 +161,13 @@ summary {
 					}
 				}
 
-				let platformLines = tree.sorted().map { "<input type=\"checkbox\" id=\"\($0.value.any)\" name=\"\($0.value.any)\" checked /><label for=\"\($0.value.any)\">\($0.value.any)</label>" }
-				html += "\t<div><fieldset>\(platformLines.joined(separator: ""))</fieldset></div>\n"
-
 				for platform in tree.sorted() {
+					html += "<div class=\"tabs\"><div class=\"tab\"><input type=\"radio\" id=\"\(platform.value.any)\" name=\"\(platform.value.any)\" checked /><label for=\"\(platform.value.any)\">\(platform.value.any)</label>"
 					html += "\t<details id=\"Platform:_\(platform.value.any)\">\n"
 					html += "\t<summary>\(platform.value.any)</summary>\n"
 
-					let architectureLines = platform.architectures.sorted().map { "<input type=\"checkbox\" id=\"\($0.value.any)\" name=\"\($0.value.any)\" checked /><label for=\"\($0.value.any)\">\($0.value.any)</label>" }
-					html += "\t<div><fieldset>\(architectureLines.joined(separator: ""))</fieldset></div>\n"
-
 					for architecture in platform.architectures.sorted() {
+						html += "<input type=\"checkbox\" id=\"\(architecture.value.any)\" name=\"\(architecture.value.any)\" checked /><label for=\"\(architecture.value.any)\">\(architecture.value.any)</label>"
 						html += "\t\t<details id=\"Platform_\(platform.value.any)_Architecture_\(architecture.value.any)\">\n"
 						html += "\t\t<summary>\(architecture.value.any)</summary>\n"
 
@@ -157,11 +207,13 @@ summary {
 							append(members: framework.members, namedTypes: framework.namedTypes, idStack: ["Platform:_\(platform.value.any)_Architecture:_\(architecture.value.any)_Framework:_\(framework.value.any)"])
 
 							html += "\t\t\t</details>\n"
-						}
+						} // end - framework
 						html += "\t\t</details>\n"
-					}
+						html += "</div></div></fieldset></div>\n"
+					} // end - architecture
 					html += "\t</details>\n"
-				}
+					html += "</div></div></fieldset></div>\n"
+				} // end - platform
 				html += "</body>\n"
 				let htmlPath = ("\(root)/swiftmodule-diff-\(fromVersion.name)-to-\(toVersion.name).html" as NSString).expandingTildeInPath
 				try! html.write(to: URL(fileURLWithPath: htmlPath), atomically: true, encoding: .utf8)
