@@ -10,7 +10,7 @@ class ProtocolTracker: SyntaxVisitor, AnyTypeParser {
 	}
 
 	override func visit(_ node: DeclModifierSyntax) -> SyntaxVisitorContinueKind {
-		if ParseDecl<DeclTracker>(node: node).run(keyword: .package) {
+		if case .keyword(.package) = node.name.tokenKind {
 			value.decorators.insert(.package)
 		}
 		return super.visit(node)

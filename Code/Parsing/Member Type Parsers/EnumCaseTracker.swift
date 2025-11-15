@@ -11,7 +11,7 @@ class EnumCaseTracker: SyntaxVisitor, AnyTypeCollectionParser {
 	}
 
 	override func visit(_ node: DeclModifierSyntax) -> SyntaxVisitorContinueKind {
-		if ParseDecl<DeclTracker>(node: node).run(keyword: .indirect) {
+		if case .keyword(.indirect) = node.name.tokenKind {
 			value.decorators.insert(.indirect)
 		}
 

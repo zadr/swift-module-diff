@@ -11,39 +11,39 @@ class VariableTracker: SyntaxVisitor, AnyTypeCollectionParser {
 	}
 
 	override func visit(_ node: DeclModifierSyntax) -> SyntaxVisitorContinueKind {
-		let pairs: [Keyword: Member.Decorator] = [
-			.static: .static,
-			.open: .open,
-			.package: .package,
-			.final: .final,
-			.weak: .weak,
-			.unsafe: .unsafe,
-			.unowned: .unowned,
-			.nonisolated: .nonisolated,
-			.optional: .optional,
-			.lazy: .lazy,
-			.dynamic: .dynamic
-		]
-		let details: [Keyword: [String?: Member.Decorator]] = [
-			.unowned: [
-				"unsafe": .unsafe,
-				"safe": .safe,
-				nil: .unowned,
-			]
-		]
+		var decorator: Member.Decorator?
 
-		for (keyword, primaryDecorator) in pairs {
-			let detailsToCheck = details[keyword] ?? [nil: primaryDecorator]
-			var found = false
-			for (detailKeyword, detailedDecorator) in detailsToCheck where !found {
-				if ParseDecl<DeclTracker>(node: node).run(keyword: keyword, detailKeyword: detailKeyword) {
-					found = true
-					collection = collection.map {
-						var copy = $0
-						copy.decorators.insert(detailedDecorator)
-						return copy
-					}
+		switch node.name.tokenKind {
+		case .keyword(.static): decorator = .static
+		case .keyword(.open): decorator = .open
+		case .keyword(.package): decorator = .package
+		case .keyword(.final): decorator = .final
+		case .keyword(.weak): decorator = .weak
+		case .keyword(.nonisolated): decorator = .nonisolated
+		case .keyword(.optional): decorator = .optional
+		case .keyword(.lazy): decorator = .lazy
+		case .keyword(.dynamic): decorator = .dynamic
+		case .keyword(.unowned):
+			// Check for unowned(safe) vs unowned(unsafe) vs unowned
+			if let detail = node.detail?.detail.tokenKind {
+				if case .identifier("unsafe") = detail {
+					decorator = .unsafe
+				} else if case .identifier("safe") = detail {
+					decorator = .safe
+				} else {
+					decorator = .unowned
 				}
+			} else {
+				decorator = .unowned
+			}
+		default: break
+		}
+
+		if let decorator {
+			collection = collection.map {
+				var copy = $0
+				copy.decorators.insert(decorator)
+				return copy
 			}
 		}
 

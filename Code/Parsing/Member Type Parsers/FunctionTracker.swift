@@ -10,25 +10,20 @@ class FunctionTracker: SyntaxVisitor, AnyTypeParser {
 	}
 
 	override func visit(_ node: DeclModifierSyntax) -> SyntaxVisitorContinueKind {
-		let pairs: [Keyword: Member.Decorator] = [
-			.static: .static,
-			.open: .open,
-			.package: .package,
-			.final: .final,
-			.mutating: .mutating,
-			.nonmutating: .nonmutating,
-			.optional: .optional,
-			.dynamic: .dynamic,
-			.nonisolated: .nonisolated,
-			.distributed: .distributed,
-			.consuming: .consuming,
-			.borrowing: .borrowing
-		]
-
-		for (keyword, decorator) in pairs {
-			if ParseDecl<DeclTracker>(node: node).run(keyword: keyword) {
-				value.decorators.insert(decorator)
-			}
+		switch node.name.tokenKind {
+		case .keyword(.static): value.decorators.insert(.static)
+		case .keyword(.open): value.decorators.insert(.open)
+		case .keyword(.package): value.decorators.insert(.package)
+		case .keyword(.final): value.decorators.insert(.final)
+		case .keyword(.mutating): value.decorators.insert(.mutating)
+		case .keyword(.nonmutating): value.decorators.insert(.nonmutating)
+		case .keyword(.optional): value.decorators.insert(.optional)
+		case .keyword(.dynamic): value.decorators.insert(.dynamic)
+		case .keyword(.nonisolated): value.decorators.insert(.nonisolated)
+		case .keyword(.distributed): value.decorators.insert(.distributed)
+		case .keyword(.consuming): value.decorators.insert(.consuming)
+		case .keyword(.borrowing): value.decorators.insert(.borrowing)
+		default: break
 		}
 
 		// Check for underscored __consuming modifier

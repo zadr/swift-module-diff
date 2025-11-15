@@ -3,15 +3,10 @@ import SwiftSyntax
 
 class InitializerTracker: FunctionTracker {
 	override func visit(_ node: DeclModifierSyntax) -> SyntaxVisitorContinueKind {
-		let pairs: [Keyword: Member.Decorator] = [
-			.required: .required,
-			.convenience: .convenience
-		]
-
-		for (keyword, decorator) in pairs {
-			if ParseDecl<DeclTracker>(node: node).run(keyword: keyword) {
-				value.decorators.insert(decorator)
-			}
+		switch node.name.tokenKind {
+		case .keyword(.required): value.decorators.insert(.required)
+		case .keyword(.convenience): value.decorators.insert(.convenience)
+		default: break
 		}
 		return super.visit(node)
 	}

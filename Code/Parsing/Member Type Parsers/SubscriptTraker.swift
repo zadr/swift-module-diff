@@ -55,26 +55,19 @@ class SubscriptTracker: SyntaxVisitor, AnyTypeParser {
 
 		value.attributes += node.attributes.map { ParseAnyType<AttributeTracker>(node: $0).run() }
 
-		let pairs: [Keyword: Member.Decorator] = [
-			.static: .static,
-			.open: .open,
-			.package: .package,
-			.final: .final,
-			.nonmutating: .nonmutating,
-			.optional: .optional,
-			.dynamic: .dynamic
-		]
-
-		for (keyword, decorator) in pairs {
-			for modifier in node.modifiers {
-				if ParseDecl<DeclTracker>(node: modifier).run(keyword: keyword) {
-					value.decorators.insert(decorator)
-				}
-			}
-		}
-
-		// Check for underscored __consuming modifier
 		for modifier in node.modifiers {
+			switch modifier.name.tokenKind {
+			case .keyword(.static): value.decorators.insert(.static)
+			case .keyword(.open): value.decorators.insert(.open)
+			case .keyword(.package): value.decorators.insert(.package)
+			case .keyword(.final): value.decorators.insert(.final)
+			case .keyword(.nonmutating): value.decorators.insert(.nonmutating)
+			case .keyword(.optional): value.decorators.insert(.optional)
+			case .keyword(.dynamic): value.decorators.insert(.dynamic)
+			default: break
+			}
+
+			// Check for underscored __consuming modifier
 			if modifier.name.text == "__consuming" {
 				value.decorators.insert(.__consuming)
 			}

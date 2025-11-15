@@ -26,17 +26,12 @@ class ActorTracker: SyntaxVisitor, AnyTypeParser {
 	}
 
 	override func visit(_ node: DeclModifierSyntax) -> SyntaxVisitorContinueKind {
-		let pairs: [Keyword: NamedType.Decorator] = [
-			.open: .open,
-			.package: .package,
-			.final: .final,
-			.distributed: .distributed,
-		]
-
-		for (keyword, decorator) in pairs {
-			if ParseDecl<DeclTracker>(node: node).run(keyword: keyword) {
-				value.decorators.insert(decorator)
-			}
+		switch node.name.tokenKind {
+		case .keyword(.open): value.decorators.insert(.open)
+		case .keyword(.package): value.decorators.insert(.package)
+		case .keyword(.final): value.decorators.insert(.final)
+		case .keyword(.distributed): value.decorators.insert(.distributed)
+		default: break
 		}
 		return super.visit(node)
 	}
