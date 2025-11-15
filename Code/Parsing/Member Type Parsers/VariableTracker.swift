@@ -91,7 +91,13 @@ class VariableTracker: SyntaxVisitor, AnyTypeCollectionParser {
 							copy.effects.append(.reasync)
 						}
 						if case .keyword(.throws) = accessor.effectSpecifiers?.throwsClause?.throwsSpecifier.tokenKind {
-							copy.effects.append(.throws)
+							let errorType: String? = {
+								guard let type = accessor.effectSpecifiers?.throwsClause?.type else {
+									return nil
+								}
+								return ParseAnyType<TypeNameTracker>(node: type).run()
+							}()
+							copy.effects.append(.throws(errorType: errorType))
 						}
 						if case .keyword(.rethrows) = accessor.effectSpecifiers?.throwsClause?.throwsSpecifier.tokenKind {
 							copy.effects.append(.rethrows)

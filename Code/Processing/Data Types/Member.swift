@@ -41,11 +41,24 @@ struct Member {
 		case `convenience`
 	}
 
-	enum Effect: String, Codable, Equatable, Hashable, Sendable {
+	enum Effect: Codable, Equatable, Hashable, Sendable {
 		case `async`
-		case `throws`
+		case `throws`(errorType: String?)
 		case `rethrows`
 		case `reasync`
+
+		var rawValue: String {
+			switch self {
+			case .async: return "async"
+			case .throws(let errorType):
+				if let errorType = errorType {
+					return "throws(\(errorType))"
+				}
+				return "throws"
+			case .rethrows: return "rethrows"
+			case .reasync: return "reasync"
+			}
+		}
 	}
 
 	var accessors: [Accessor] = []

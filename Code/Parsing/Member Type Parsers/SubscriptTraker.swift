@@ -31,7 +31,13 @@ class SubscriptTracker: SyntaxVisitor, AnyTypeParser {
 				value.effects.append(.reasync)
 			}
 			if case .keyword(.throws) = node.effectSpecifiers?.throwsClause?.throwsSpecifier.tokenKind {
-				value.effects.append(.throws)
+				let errorType: String? = {
+					guard let type = node.effectSpecifiers?.throwsClause?.type else {
+						return nil
+					}
+					return ParseAnyType<TypeNameTracker>(node: type).run()
+				}()
+				value.effects.append(.throws(errorType: errorType))
 			}
 			if case .keyword(.rethrows) = node.effectSpecifiers?.throwsClause?.throwsSpecifier.tokenKind {
 				value.effects.append(.rethrows)

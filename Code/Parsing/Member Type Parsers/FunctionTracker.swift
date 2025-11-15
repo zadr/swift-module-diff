@@ -55,7 +55,13 @@ class FunctionTracker: SyntaxVisitor, AnyTypeParser {
 			value.effects.append(.rethrows)
 		}
 		if case .keyword(.throws) = node.signature.effectSpecifiers?.throwsClause?.throwsSpecifier.tokenKind {
-			value.effects.append(.throws)
+			let errorType: String? = {
+				guard let type = node.signature.effectSpecifiers?.throwsClause?.type else {
+					return nil
+				}
+				return ParseAnyType<TypeNameTracker>(node: type).run()
+			}()
+			value.effects.append(.throws(errorType: errorType))
 		}
 
 		return super.visit(node)
