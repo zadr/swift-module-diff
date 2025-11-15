@@ -30,6 +30,12 @@ class FunctionTracker: SyntaxVisitor, AnyTypeParser {
 				value.decorators.insert(decorator)
 			}
 		}
+
+		// Check for underscored __consuming modifier
+		if node.name.text == "__consuming" {
+			value.decorators.insert(.__consuming)
+		}
+
 		return super.visit(node)
 	}
 
@@ -96,6 +102,19 @@ class FunctionTracker: SyntaxVisitor, AnyTypeParser {
 		for (keyword, decorator) in pairs {
 			if ParseDecl<AttributedTypeTracker>(node: node.type).run(keyword: keyword) {
 				parameter.decorators.insert(decorator)
+			}
+		}
+
+		// Check for underscored ownership modifiers which appear as identifiers
+		if let attributedType = node.type.as(AttributedTypeSyntax.self),
+		   let specifier = attributedType.specifier {
+			switch specifier.text {
+			case "__owned":
+				parameter.decorators.insert(.__owned)
+			case "__shared":
+				parameter.decorators.insert(.__shared)
+			default:
+				break
 			}
 		}
 

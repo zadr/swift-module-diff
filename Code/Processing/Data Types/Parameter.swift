@@ -6,6 +6,8 @@ struct Parameter {
 		case `borrowing`
 		case `consuming`
 		case `isolated`
+		case `__owned` = "__owned"
+		case `__shared` = "__shared"
 	}
 
 	enum Separator: String, Codable, Equatable, Hashable, Sendable {

@@ -42,6 +42,7 @@ struct Member {
 		case `convenience`
 		case `consuming`
 		case `borrowing`
+		case `__consuming` = "__consuming"
 	}
 
 	enum Effect: Codable, Equatable, Hashable, Sendable {

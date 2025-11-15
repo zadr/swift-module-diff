@@ -120,6 +120,12 @@ class TypeNameTracker: SyntaxVisitor, AnyTypeParser {
 			}
 		}
 
+		// Skip ownership specifiers (__owned, __shared) - they're extracted as parameter decorators
+		let ownershipSpecifiers = ["__owned", "__shared", "borrowing", "consuming", "inout"]
+		if let specifier = node.specifier, !ownershipSpecifiers.contains(specifier.text) {
+			value += specifier.text + " "
+		}
+
 		// Parse the base type
 		value += ParseAnyType<TypeNameTracker>(node: node.baseType).run()
 		return .skipChildren
