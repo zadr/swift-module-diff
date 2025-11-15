@@ -65,7 +65,15 @@ class SubscriptTracker: SyntaxVisitor, AnyTypeParser {
 
 	override func visit(_ node: FunctionParameterSyntax) -> SyntaxVisitorContinueKind {
 		var parameter = Parameter()
-		parameter.name = node.firstName.text + (node.secondName != nil ? " " + node.secondName!.text : "")
+
+		// Check if firstName is "isolated" - if so, it's a decorator, not part of the name
+		if node.firstName.text == "isolated", let secondName = node.secondName {
+			parameter.decorators.insert(.isolated)
+			parameter.name = secondName.text
+		} else {
+			parameter.name = node.firstName.text + (node.secondName != nil ? " " + node.secondName!.text : "")
+		}
+
 		parameter.type = ParseAnyType<TypeNameTracker>(node: node.type).run()
 
 		let pairs: [Keyword: Parameter.Decorator] = [

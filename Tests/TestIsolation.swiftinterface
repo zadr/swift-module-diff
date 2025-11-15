@@ -1,0 +1,19 @@
+// swift-interface-format-version: 1.0
+// swift-compiler-version: Apple Swift version 5.9
+// swift-module-flags: -module-name TestIsolation
+import Swift
+
+public actor MyActor {
+    public func regularMethod() -> Swift.Void
+    nonisolated public func nonisolatedMethod() -> Swift.Void
+}
+
+public func takesIsolatedParam(isolated param: MyActor) -> Swift.Void
+
+public func takesRegularParam(param: MyActor) -> Swift.Void
+
+public func multipleParams(isolated actor: MyActor, value: Swift.Int) -> Swift.Void
+
+public distributed actor DistributedActor {
+    distributed public func distributedMethod() -> Swift.Void
+}
