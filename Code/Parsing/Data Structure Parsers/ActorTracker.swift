@@ -29,6 +29,7 @@ class ActorTracker: SyntaxVisitor, AnyTypeParser {
 		let pairs: [Keyword: NamedType.Decorator] = [
 			.open: .open,
 			.final: .final,
+			.distributed: .distributed,
 		]
 
 		for (keyword, decorator) in pairs {

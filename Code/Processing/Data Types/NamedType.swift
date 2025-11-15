@@ -5,6 +5,7 @@ struct NamedType {
 		case `final`
 		case `open`
 		case `static`
+		case `distributed`
 		case `indirect`
 		case `prefix`
 		case `postfix`

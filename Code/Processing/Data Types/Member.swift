@@ -30,6 +30,7 @@ struct Member {
 		case `safe` = "unowned(safe)"
 		case `unowned`
 		case `nonisolated`
+		case `distributed`
 		case `mutating`
 		case `nonmutating`
 		case `optional`
