@@ -44,6 +44,7 @@ struct Member {
 		case `async`
 		case `throws`
 		case `rethrows`
+		case `reasync`
 	}
 
 	var accessors: [Accessor] = []

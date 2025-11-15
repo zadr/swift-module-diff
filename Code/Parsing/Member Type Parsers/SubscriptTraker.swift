@@ -27,8 +27,14 @@ class SubscriptTracker: SyntaxVisitor, AnyTypeParser {
 			if case .keyword(.async) = node.effectSpecifiers?.asyncSpecifier?.tokenKind {
 				value.effects.append(.async)
 			}
+			if case .keyword(.reasync) = node.effectSpecifiers?.asyncSpecifier?.tokenKind {
+				value.effects.append(.reasync)
+			}
 			if case .keyword(.throws) = node.effectSpecifiers?.throwsClause?.throwsSpecifier.tokenKind {
 				value.effects.append(.throws)
+			}
+			if case .keyword(.rethrows) = node.effectSpecifiers?.throwsClause?.throwsSpecifier.tokenKind {
+				value.effects.append(.rethrows)
 			}
 		default: break
 		}

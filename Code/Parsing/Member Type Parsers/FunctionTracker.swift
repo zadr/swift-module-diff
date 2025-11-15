@@ -47,6 +47,9 @@ class FunctionTracker: SyntaxVisitor, AnyTypeParser {
 		if case .keyword(.async) = node.signature.effectSpecifiers?.asyncSpecifier?.tokenKind {
 			value.effects.append(.async)
 		}
+		if case .keyword(.reasync) = node.signature.effectSpecifiers?.asyncSpecifier?.tokenKind {
+			value.effects.append(.reasync)
+		}
 		if case .keyword(.rethrows) = node.signature.effectSpecifiers?.throwsClause?.throwsSpecifier.tokenKind {
 			value.effects.append(.rethrows)
 		}
