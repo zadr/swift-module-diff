@@ -12,6 +12,11 @@ class ProtocolTracker: SyntaxVisitor, AnyTypeParser {
 	override func visit(_ node: ProtocolDeclSyntax) -> SyntaxVisitorContinueKind {
 		value.name = node.name.text
 
+		// Extract primary associated types (Swift 5.7+)
+		if let primaryTypes = node.primaryAssociatedTypeClause {
+			value.primaryAssociatedTypes = primaryTypes.primaryAssociatedTypes.map { $0.name.text }
+		}
+
 		let generics = GenericsTracker(parametersNode: nil, requirementsNode: node.genericWhereClause).run()
 		value.generics += generics.parameters
 		value.genericConstraints += generics.constraints

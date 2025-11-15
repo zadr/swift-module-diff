@@ -34,6 +34,10 @@ struct NamedType {
 
 	var conformances = [String]()
 
+	// Primary associated types (Swift 5.7+) - only for protocols
+	// Example: protocol Collection<Element> has ["Element"] as primary associated types
+	var primaryAssociatedTypes: [String] = []
+
 	// includes `var`, `let`, and `func`
 	var members = [Member]()
 
@@ -66,6 +70,13 @@ extension NamedType {
 		if !conformances.isEmpty {
 			conformances = ": \(conformances)"
 		}
+
+		// Primary associated types (for protocols only)
+		var primaryTypes = primaryAssociatedTypes.joined(separator: ", ")
+		if !primaryTypes.isEmpty {
+			primaryTypes = "<\(primaryTypes)>"
+		}
+
 		var generics = generics.map { $0.developerFacingValue }.joined(separator: ", ")
 		if !generics.isEmpty {
 			generics = "<\(generics)>"
@@ -89,7 +100,7 @@ extension NamedType {
 			decoratorsStr += " "
 		}
 
-		return "\(attributes)\(accessLevel)\(decoratorsStr)\(kind.rawValue) \(name)\(generics)\(conformances)\(genericConstraints)".trimmingCharacters(in: .whitespaces)
+		return "\(attributes)\(accessLevel)\(decoratorsStr)\(kind.rawValue) \(name)\(primaryTypes)\(generics)\(conformances)\(genericConstraints)".trimmingCharacters(in: .whitespaces)
 	}
 }
 
@@ -102,6 +113,7 @@ extension NamedType: Codable, CustomStringConvertible, Hashable, Sendable {
 		hasher.combine(conformances)
 		hasher.combine(generics)
 		hasher.combine(genericConstraints)
+		hasher.combine(primaryAssociatedTypes)
 	}
 
 	static func ==(lhs: NamedType, rhs: NamedType) -> Bool {
@@ -109,6 +121,7 @@ extension NamedType: Codable, CustomStringConvertible, Hashable, Sendable {
 			lhs.name == rhs.name &&
 			lhs.conformances == rhs.conformances &&
 			lhs.generics == rhs.generics &&
-			lhs.genericConstraints == rhs.genericConstraints
+			lhs.genericConstraints == rhs.genericConstraints &&
+			lhs.primaryAssociatedTypes == rhs.primaryAssociatedTypes
 	}
 }
