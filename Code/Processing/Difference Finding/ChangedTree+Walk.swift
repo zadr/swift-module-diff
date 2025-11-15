@@ -174,25 +174,51 @@ extension ChangedTree {
 	}
 
 	fileprivate func _enumerateNamedTypeDifferences(oldNamedTypes: [NamedType], newNamedTypes: [NamedType], visitor: ChangeVisitor) {
-		// First pass: find types that only differ in conformances
+		// First pass: find types that only differ in conformances and/or attributes
 		var remainingOld = oldNamedTypes
 		var remainingNew = newNamedTypes
-		var conformanceOnlyChanges: [(old: NamedType, new: NamedType)] = []
+		var metadataOnlyChanges: [(old: NamedType, new: NamedType)] = []
 
 		for oldType in oldNamedTypes {
-			if let newType = newNamedTypes.first(where: { $0.isSameExceptConformances(oldType) && $0 != oldType }) {
-				conformanceOnlyChanges.append((old: oldType, new: newType))
+			if let newType = newNamedTypes.first(where: { $0.isSameExceptConformancesAndAttributes(oldType) && $0 != oldType }) {
+				metadataOnlyChanges.append((old: oldType, new: newType))
 				remainingOld.removeAll { $0 == oldType }
 				remainingNew.removeAll { $0 == newType }
 			}
 		}
 
-		// Handle conformance-only changes as modified types with conformance child changes
-		for (oldType, newType) in conformanceOnlyChanges {
+		// Handle conformance/attribute-only changes as modified types with child changes
+		for (oldType, newType) in metadataOnlyChanges {
 			let typeChange = Change<NamedType>.modified(oldType, newType)
 			guard visitor.shouldVisitNamedType(typeChange) else { continue }
 
 			visitor.willVisitNamedType?(typeChange)
+
+			// Add attribute changes as synthetic members
+			let addedAttributes = Set(newType.attributes).subtracting(oldType.attributes)
+			let removedAttributes = Set(oldType.attributes).subtracting(newType.attributes)
+
+			for attribute in removedAttributes.sorted(by: { $0.name < $1.name }) {
+				let attributeChange = Change<Member>.removed(
+					Member(kind: .unknown, name: "Attribute: \(attribute.developerFacingValue)"),
+					Member(kind: .unknown, name: "Attribute: \(attribute.developerFacingValue)")
+				)
+				if visitor.shouldVisitMember(attributeChange) {
+					visitor.willVisitMember?(attributeChange)
+					visitor.didVisitMember?(attributeChange)
+				}
+			}
+
+			for attribute in addedAttributes.sorted(by: { $0.name < $1.name }) {
+				let attributeChange = Change<Member>.added(
+					Member(kind: .unknown, name: "Attribute: \(attribute.developerFacingValue)"),
+					Member(kind: .unknown, name: "Attribute: \(attribute.developerFacingValue)")
+				)
+				if visitor.shouldVisitMember(attributeChange) {
+					visitor.willVisitMember?(attributeChange)
+					visitor.didVisitMember?(attributeChange)
+				}
+			}
 
 			// Add conformance changes as synthetic members
 			let addedConformances = Set(newType.conformances).subtracting(oldType.conformances)
