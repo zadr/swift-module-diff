@@ -88,6 +88,10 @@ class SubscriptTracker: SyntaxVisitor, AnyTypeParser {
 			parameter.suffix = "..."
 		}
 
+		if let defaultValue = node.defaultValue {
+			parameter.defaultValue = ParseAnyType<DefaultValueTracker>(node: defaultValue).run()
+		}
+
 		value.parameters.append(parameter)
 		return super.visit(node)
 	}

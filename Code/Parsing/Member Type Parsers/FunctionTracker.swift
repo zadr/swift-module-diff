@@ -81,6 +81,10 @@ class FunctionTracker: SyntaxVisitor, AnyTypeParser {
 			parameter.attributes += attributes.map { ParseAnyType<AttributeTracker>(node: $0 ).run() }
 		}
 
+		if let defaultValue = node.defaultValue {
+			parameter.defaultValue = ParseAnyType<DefaultValueTracker>(node: defaultValue).run()
+		}
+
 		value.parameters.append(parameter)
 		return .skipChildren
 	}

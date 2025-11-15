@@ -68,6 +68,7 @@ extension Parameter {
 		copy.type = copy.type.dropAnySubstring(in: set)
 		copy.generics = copy.generics.dropAnySubstring(in: set)
 		copy.genericConstraints = copy.genericConstraints.dropAnySubstring(in: set)
+		copy.defaultValue = copy.defaultValue.dropAnySubstring(in: set)
 		return copy
 	}
 }
