@@ -89,28 +89,21 @@ class SubscriptTracker: SyntaxVisitor, AnyTypeParser {
 
 		parameter.type = ParseAnyType<TypeNameTracker>(node: node.type).run()
 
-		let pairs: [Keyword: Parameter.Decorator] = [
-			.inout: .inout,
-			.borrowing: .borrowing,
-			.consuming: .consuming,
-		]
-
-		for (keyword, decorator) in pairs {
-			if ParseDecl<AttributedTypeTracker>(node: node.type).run(keyword: keyword) {
-				parameter.decorators.insert(decorator)
-			}
-		}
-
-		// Check for underscored ownership modifiers which appear as identifiers
+		// Check for parameter decorators in AttributedTypeSyntax
 		if let attributedType = node.type.as(AttributedTypeSyntax.self),
 		   let specifier = attributedType.specifier {
-			switch specifier.text {
-			case "__owned":
-				parameter.decorators.insert(.__owned)
-			case "__shared":
-				parameter.decorators.insert(.__shared)
+			// Check for keyword-based decorators
+			switch specifier.tokenKind {
+			case .keyword(.inout): parameter.decorators.insert(.inout)
+			case .keyword(.borrowing): parameter.decorators.insert(.borrowing)
+			case .keyword(.consuming): parameter.decorators.insert(.consuming)
 			default:
-				break
+				// Check for underscored ownership modifiers which appear as identifiers
+				switch specifier.text {
+				case "__owned": parameter.decorators.insert(.__owned)
+				case "__shared": parameter.decorators.insert(.__shared)
+				default: break
+				}
 			}
 		}
 
