@@ -10,13 +10,6 @@ class AttributeTracker: SyntaxVisitor, AnyTypeParser {
 
 	override func visit(_ node: AttributeSyntax) -> SyntaxVisitorContinueKind {
 		value.name = ParseAnyType<TypeNameTracker>(node: node.attributeName).run()
-
-		if let argument = node.arguments, case .token(let tokenSyntax) = argument {
-			var parameter = Parameter()
-			parameter.name = tokenSyntax.text
-			value.parameters.append(parameter)
-		}
-
 		return super.visit(node)
 	}
 
@@ -45,11 +38,36 @@ class AttributeTracker: SyntaxVisitor, AnyTypeParser {
 	}
 
 	override func visit(_ node: LabeledExprSyntax) -> SyntaxVisitorContinueKind {
+		var parameter = Parameter()
+
+		// Handle identifier references (e.g., @attr(someIdentifier))
 		if let name = node.expression.as(DeclReferenceExprSyntax.self)?.baseName.text {
-			var parameter = Parameter()
 			parameter.name = name
 			value.parameters.append(parameter)
 		}
+		// Handle string literals (e.g., @_silgen_name("custom_name"))
+		else if let stringLiteral = node.expression.as(StringLiteralExprSyntax.self) {
+			// Extract the string value from the segments
+			let stringValue = stringLiteral.segments.map { segment in
+				if let stringSegment = segment.as(StringSegmentSyntax.self) {
+					return stringSegment.content.text
+				}
+				return ""
+			}.joined()
+			parameter.name = "\"\(stringValue)\""
+			value.parameters.append(parameter)
+		}
+		// Handle integer literals (e.g., @attr(42))
+		else if let intLiteral = node.expression.as(IntegerLiteralExprSyntax.self) {
+			parameter.name = intLiteral.literal.text
+			value.parameters.append(parameter)
+		}
+		// Handle boolean literals (e.g., @attr(true))
+		else if let boolLiteral = node.expression.as(BooleanLiteralExprSyntax.self) {
+			parameter.name = boolLiteral.literal.text
+			value.parameters.append(parameter)
+		}
+
 		return super.visit(node)
 	}
 
