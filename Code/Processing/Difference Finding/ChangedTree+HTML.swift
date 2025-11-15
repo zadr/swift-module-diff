@@ -1,5 +1,4 @@
 import Foundation
-import HTMLEntities
 
 extension ChangedTree {
 	static func htmlVisitor(from fromVersion: Version, to toVersion: Version, root: String, extraCSS: String?) -> ChangeVisitor {

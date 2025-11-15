@@ -12,9 +12,7 @@ Given a pair of Xcode apps (such as Xcode.app and Xcode-beta.app):
 #### Things Left To Do
 Swift is a big and evolving language, so it is likely that edge-cases are broken, or lesser-used features are missing. This tool is still under development.
 
-All major Swift language features are now tracked! For a comprehensive list of supported features, see `MISSING_FEATURES.md`.
-
-And there are some other features that could be nice to have, such as:
+There are some other features that could be nice to have, such as:
 
 - [ ] Using a DSL to generate HTML
 - [ ] Making HTML output more readable, such as by:
