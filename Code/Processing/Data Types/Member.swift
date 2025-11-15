@@ -123,9 +123,9 @@ extension Member {
 		case .var:
 			var accessors = accessors.map { $0.rawValue }.joined(separator: " ")
 			if !accessors.isEmpty {
-				accessors = " { \(accessors) }"
+				accessors = " { \(accessors)\(effects) }"
 			}
-			return "\(attributes) \(accessLevel)\(decoratorsStr)var \(name): \(returnType)\(accessors) \(effects)".trimmingCharacters(in: .whitespaces)
+			return "\(attributes) \(accessLevel)\(decoratorsStr)var \(name): \(returnType)\(accessors)".trimmingCharacters(in: .whitespaces)
 
 		case .func:
 			let parameters = parameters.map { $0.developerFacingValue }.joined(separator: ", ")

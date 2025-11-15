@@ -10,10 +10,9 @@ Given a pair of Xcode apps (such as Xcode.app and Xcode-beta.app):
 7. Be able to click into a framework to see all modifications to types, and members (additions, deprecations, etc)
 
 #### Things Left To Do
-Swift is a big and evolving language, so it is likely that edge-cases are broken, or lesser-used features are missing. This tool is still under development, and some known gaps are:
+Swift is a big and evolving language, so it is likely that edge-cases are broken, or lesser-used features are missing. This tool is still under development.
 
-- [ ] default values in function parameters
-- [ ] tracking headerdoc changes
+All major Swift language features are now tracked! For a comprehensive list of supported features, see `MISSING_FEATURES.md`.
 
 And there are some other features that could be nice to have, such as:
 
