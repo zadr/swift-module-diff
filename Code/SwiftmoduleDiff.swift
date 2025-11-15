@@ -44,7 +44,19 @@ struct SwiftmoduleDiff: ParsableCommand {
 		if let singleFile {
 			if trace { print("Single File: \(singleFile)") }
 
-			print(ParseSwiftmodule(path: singleFile, typePrefixesToRemove: []).run())
+			let framework = ParseSwiftmodule(path: singleFile, typePrefixesToRemove: []).run()
+			print("Framework: \(framework.name)")
+			print("\nTypes:")
+			for type in framework.namedTypes {
+				print("  \(type.developerFacingValue)")
+				for member in type.members {
+					print("    \(member.developerFacingValue)")
+				}
+			}
+			print("\nMembers:")
+			for member in framework.members {
+				print("  \(member.developerFacingValue)")
+			}
 		} else {
 			if trace {
 				print("Old Xcode: \(old)")

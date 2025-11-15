@@ -75,11 +75,21 @@ extension NamedType {
 			genericConstraints = " where \(genericConstraints)"
 		}
 
-		var decorators = Array(decorators).map { $0.rawValue }.sorted().joined(separator: " ")
-		if !decorators.isEmpty {
-			decorators = " \(decorators) "
+		// Separate access level from other decorators
+		var accessLevel = ""
+		var otherDecorators = decorators
+
+		if decorators.contains(.open) {
+			accessLevel = "open "
+			otherDecorators.remove(.open)
 		}
-		return "\(attributes)\(decorators)\(kind.rawValue) \(name)\(generics)\(conformances)\(genericConstraints)".trimmingCharacters(in: .whitespaces)
+
+		var decoratorsStr = Array(otherDecorators).map { $0.rawValue }.sorted().joined(separator: " ")
+		if !decoratorsStr.isEmpty {
+			decoratorsStr += " "
+		}
+
+		return "\(attributes)\(accessLevel)\(decoratorsStr)\(kind.rawValue) \(name)\(generics)\(conformances)\(genericConstraints)".trimmingCharacters(in: .whitespaces)
 	}
 }
 

@@ -93,8 +93,17 @@ extension Member {
 	var developerFacingValue: String {
 		let attributes = attributes.map { $0.developerFacingValue }.joined(separator: " ")
 
-		var decorators = decorators.map { $0.rawValue }.joined(separator: " ")
-		if !decorators.isEmpty { decorators += " " }
+		// Separate access level from other decorators
+		var accessLevel = ""
+		var otherDecorators = decorators
+
+		if decorators.contains(.open) {
+			accessLevel = "open "
+			otherDecorators.remove(.open)
+		}
+
+		var decoratorsStr = otherDecorators.map { $0.rawValue }.joined(separator: " ")
+		if !decoratorsStr.isEmpty { decoratorsStr += " " }
 
 		var effects = effects.map { $0.rawValue }.joined(separator: " ")
 		if !effects.isEmpty { effects = " \(effects) "}
@@ -104,28 +113,28 @@ extension Member {
 			return "<<MEMBER UNKNOWN>>"
 
 		case .let:
-			return "\(attributes) \(decorators)let \(name): \(returnType)".trimmingCharacters(in: .whitespaces)
+			return "\(attributes) \(accessLevel)\(decoratorsStr)let \(name): \(returnType)".trimmingCharacters(in: .whitespaces)
 
 		case .var:
 			var accessors = accessors.map { $0.rawValue }.joined(separator: " ")
 			if !accessors.isEmpty {
 				accessors = " { \(accessors) }"
 			}
-			return "\(attributes) \(decorators)var \(name): \(returnType)\(accessors) \(effects)".trimmingCharacters(in: .whitespaces)
+			return "\(attributes) \(accessLevel)\(decoratorsStr)var \(name): \(returnType)\(accessors) \(effects)".trimmingCharacters(in: .whitespaces)
 
 		case .func:
 			let parameters = parameters.map { $0.developerFacingValue }.joined(separator: ", ")
 			let returnType = returnType.isEmpty ? "" : " -> \(returnType)"
 			let generics = generics.isEmpty ? "" : "<\(generics.map { $0.developerFacingValue }.joined(separator: ", "))>"
 			let constraint = genericConstraints.isEmpty ? "" : " where \(genericConstraints.map { $0.developerFacingValue }.joined(separator: ", "))"
-			return "\(attributes) \(decorators)func \(name)\(generics)(\(parameters))\(effects)\(returnType)\(constraint)".trimmingCharacters(in: .whitespaces)
+			return "\(attributes) \(accessLevel)\(decoratorsStr)func \(name)\(generics)(\(parameters))\(effects)\(returnType)\(constraint)".trimmingCharacters(in: .whitespaces)
 
 		case .case:
 			var parameters = parameters.map { $0.developerFacingValue }.joined(separator: ", ")
 			if !parameters.isEmpty {
 				parameters = "(\(parameters))"
 			}
-			return "\(attributes) \(decorators)case \(name)\(parameters)".trimmingCharacters(in: .whitespaces)
+			return "\(attributes) \(accessLevel)\(decoratorsStr)case \(name)\(parameters)".trimmingCharacters(in: .whitespaces)
 
 		case .associatedtype:
 			return "associatedtype \(name)"
