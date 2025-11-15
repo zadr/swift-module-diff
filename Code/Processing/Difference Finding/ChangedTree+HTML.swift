@@ -1,22 +1,6 @@
 import Foundation
 import HTMLEntities
 
-func parseAttribute(_ str: String) -> (name: String, value: String) {
-    if str.hasPrefix("@") {
-        let cleanStr = str
-            .replacingOccurrences(of: "@", with: "")
-            .replacingOccurrences(of: "(", with: "")
-            .replacingOccurrences(of: ")", with: "")
-        
-        let components = cleanStr.split(separator: " ", maxSplits: 1)
-        if components.count > 1 {
-            return (String(components[0]), String(components[1]))
-        }
-        return (cleanStr, "")
-    }
-    return ("", "")
-}
-
 extension ChangedTree {
 	static func htmlVisitor(from fromVersion: Version, to toVersion: Version, root: String, extraCSS: String?) -> ChangeVisitor {
 		ChangeVisitor(
