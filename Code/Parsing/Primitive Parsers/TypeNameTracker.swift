@@ -110,4 +110,18 @@ class TypeNameTracker: SyntaxVisitor, AnyTypeParser {
 		value += ParseAnyType<TypeNameTracker>(node: node.pack).run()
 		return .skipChildren
 	}
+
+	override func visit(_ node: AttributedTypeSyntax) -> SyntaxVisitorContinueKind {
+		// Handle attributes on types (e.g., @unchecked Sendable)
+		for attribute in node.attributes {
+			if let attr = attribute.as(AttributeSyntax.self) {
+				let attrName = ParseAnyType<TypeNameTracker>(node: attr.attributeName).run()
+				value += "@\(attrName) "
+			}
+		}
+
+		// Parse the base type
+		value += ParseAnyType<TypeNameTracker>(node: node.baseType).run()
+		return .skipChildren
+	}
 }
