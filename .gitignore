@@ -17,3 +17,8 @@ syntax: glob
 *.xcworkspacedata
 *.xcodeproj/project.xcworkspace
 *.swiftpm
+
+.claude
+
+NEXT_STEPS.md
+MISSING_FEATURES.md
