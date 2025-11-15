@@ -98,4 +98,16 @@ class TypeNameTracker: SyntaxVisitor, AnyTypeParser {
 		value += ParseAnyType<TypeNameTracker>(node: node.type).run()
 		return .skipChildren
 	}
+
+	override func visit(_ node: PackExpansionTypeSyntax) -> SyntaxVisitorContinueKind {
+		value += "repeat "
+		value += ParseAnyType<TypeNameTracker>(node: node.repetitionPattern).run()
+		return .skipChildren
+	}
+
+	override func visit(_ node: PackElementTypeSyntax) -> SyntaxVisitorContinueKind {
+		value += "each "
+		value += ParseAnyType<TypeNameTracker>(node: node.pack).run()
+		return .skipChildren
+	}
 }
