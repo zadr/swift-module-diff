@@ -92,4 +92,10 @@ class TypeNameTracker: SyntaxVisitor, AnyTypeParser {
 
 		return .skipChildren
 	}
+
+	override func visit(_ node: SuppressedTypeSyntax) -> SyntaxVisitorContinueKind {
+		value += "~"
+		value += ParseAnyType<TypeNameTracker>(node: node.type).run()
+		return .skipChildren
+	}
 }

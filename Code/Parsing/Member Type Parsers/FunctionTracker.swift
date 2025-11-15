@@ -19,7 +19,9 @@ class FunctionTracker: SyntaxVisitor, AnyTypeParser {
 			.optional: .optional,
 			.dynamic: .dynamic,
 			.nonisolated: .nonisolated,
-			.distributed: .distributed
+			.distributed: .distributed,
+			.consuming: .consuming,
+			.borrowing: .borrowing
 		]
 
 		for (keyword, decorator) in pairs {

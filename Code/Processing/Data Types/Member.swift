@@ -39,6 +39,8 @@ struct Member {
 		case `indirect`
 		case `required`
 		case `convenience`
+		case `consuming`
+		case `borrowing`
 	}
 
 	enum Effect: Codable, Equatable, Hashable, Sendable {
