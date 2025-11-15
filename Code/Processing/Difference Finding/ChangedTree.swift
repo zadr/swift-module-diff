@@ -141,9 +141,15 @@ struct ChangedTree {
 	let old: Summary
 	let new: Summary
 
+	// Framework indices for O(1) lookup by name
+	let oldIndex: FrameworkIndex
+	let newIndex: FrameworkIndex
+
 	init(old: Summary, new: Summary) {
 		self.old = old
 		self.new = new
+		self.oldIndex = Summary.buildFrameworkIndex(from: old)
+		self.newIndex = Summary.buildFrameworkIndex(from: new)
 	}
 }
 

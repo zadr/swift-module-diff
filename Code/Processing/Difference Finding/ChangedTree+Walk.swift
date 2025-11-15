@@ -134,8 +134,8 @@ extension ChangedTree {
 	}
 
 	fileprivate func enumerateDependencyDifferences(for platform: SwiftmoduleFinder.Platform, architecture: SwiftmoduleFinder.Architecture, framework: Framework, visitor: ChangeVisitor) {
-		let oldDependencies = (old[platform]?[architecture] ?? .init()).first { $0.name == framework.name }?.dependencies ?? []
-		let newDependencies = (new[platform]?[architecture] ?? .init()).first { $0.name == framework.name }?.dependencies ?? []
+		let oldDependencies = oldIndex[platform]?[architecture]?[framework.name]?.dependencies ?? []
+		let newDependencies = newIndex[platform]?[architecture]?[framework.name]?.dependencies ?? []
 
 		for dependencyChange in Change<Framework>.differences(from: oldDependencies, to: newDependencies) {
 			guard visitor.shouldVisitDependency(dependencyChange) else { continue }
@@ -147,8 +147,8 @@ extension ChangedTree {
 	}
 
 	fileprivate func enumeratePrecedenceGroupDifferences(for platform: SwiftmoduleFinder.Platform, architecture: SwiftmoduleFinder.Architecture, framework: Framework, visitor: ChangeVisitor) {
-		let oldPrecedenceGroups = (old[platform]?[architecture] ?? .init()).first { $0.name == framework.name }?.precedenceGroups ?? []
-		let newPrecedenceGroups = (new[platform]?[architecture] ?? .init()).first { $0.name == framework.name }?.precedenceGroups ?? []
+		let oldPrecedenceGroups = oldIndex[platform]?[architecture]?[framework.name]?.precedenceGroups ?? []
+		let newPrecedenceGroups = newIndex[platform]?[architecture]?[framework.name]?.precedenceGroups ?? []
 
 		for precedenceGroupChange in Change<PrecedenceGroup>.differences(from: oldPrecedenceGroups, to: newPrecedenceGroups) {
 			guard visitor.shouldVisitPrecedenceGroup(precedenceGroupChange) else { continue }
@@ -160,15 +160,15 @@ extension ChangedTree {
 	}
 
 	fileprivate func enumerateMemberDifferences(for platform: SwiftmoduleFinder.Platform, architecture: SwiftmoduleFinder.Architecture, framework: Framework, visitor: ChangeVisitor) {
-		let oldMembers = (old[platform]?[architecture] ?? .init()).first { $0.name == framework.name }?.members ?? []
-		let newMembers = (new[platform]?[architecture] ?? .init()).first { $0.name == framework.name }?.members ?? []
+		let oldMembers = oldIndex[platform]?[architecture]?[framework.name]?.members ?? []
+		let newMembers = newIndex[platform]?[architecture]?[framework.name]?.members ?? []
 
 		_enumerateMemberDifferences(oldMembers: oldMembers, newMembers: newMembers, visitor: visitor)
 	}
 
 	fileprivate func enumerateNamedTypeDifferences(for platform: SwiftmoduleFinder.Platform, architecture: SwiftmoduleFinder.Architecture, framework: Framework, visitor: ChangeVisitor) {
-		let oldNamedTypes = (old[platform]?[architecture] ?? .init()).first { $0.name == framework.name }?.namedTypes ?? []
-		let newNamedTypes = (new[platform]?[architecture] ?? .init()).first { $0.name == framework.name }?.namedTypes ?? []
+		let oldNamedTypes = oldIndex[platform]?[architecture]?[framework.name]?.namedTypes ?? []
+		let newNamedTypes = newIndex[platform]?[architecture]?[framework.name]?.namedTypes ?? []
 
 		_enumerateNamedTypeDifferences(oldNamedTypes: oldNamedTypes, newNamedTypes: newNamedTypes, visitor: visitor)
 	}

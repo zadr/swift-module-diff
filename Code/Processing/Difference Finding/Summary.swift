@@ -2,6 +2,7 @@ import Foundation
 import os
 
 typealias Summary = [SwiftmoduleFinder.Platform: [SwiftmoduleFinder.Architecture: Set<Framework>]]
+typealias FrameworkIndex = [SwiftmoduleFinder.Platform: [SwiftmoduleFinder.Architecture: [String: Framework]]]
 
 extension Summary {
 	static func listFrameworks(for path: String, progress: Bool) -> Set<String> {
@@ -72,5 +73,24 @@ extension Summary {
 		}
 
 		return results
+	}
+
+	/// Build an index mapping framework names to Framework objects for O(1) lookup
+	static func buildFrameworkIndex(from summary: Summary) -> FrameworkIndex {
+		var index = FrameworkIndex()
+
+		for (platform, architectures) in summary {
+			var archIndex: [SwiftmoduleFinder.Architecture: [String: Framework]] = [:]
+			for (architecture, frameworks) in architectures {
+				var frameworkDict: [String: Framework] = [:]
+				for framework in frameworks {
+					frameworkDict[framework.name] = framework
+				}
+				archIndex[architecture] = frameworkDict
+			}
+			index[platform] = archIndex
+		}
+
+		return index
 	}
 }
