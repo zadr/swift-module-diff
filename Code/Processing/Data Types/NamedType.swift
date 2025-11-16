@@ -173,9 +173,11 @@ extension NamedType: Codable, CustomStringConvertible, Hashable, Sendable {
 				primaryAssociatedTypes == other.primaryAssociatedTypes
 		}
 
-		// For non-extensions (class, struct, enum, protocol), conformances are metadata
+		// For non-extensions (class, struct, enum, protocol), conformances and attributes are metadata
+		// BUT decorators like @unsafe are part of the type's identity (different declarations)
 		return kind == other.kind &&
 			name == other.name &&
+			decorators == other.decorators &&
 			generics == other.generics &&
 			genericConstraints == other.genericConstraints &&
 			primaryAssociatedTypes == other.primaryAssociatedTypes

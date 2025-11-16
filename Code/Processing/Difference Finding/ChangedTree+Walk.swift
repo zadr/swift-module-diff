@@ -158,13 +158,16 @@ extension ChangedTree {
 							}
 						}
 
-						// Build display: base type, then attributes inline, then conformances inline with spacing
+						// Build display: base type, then changes
 						var display = baseTypeName.htmlEscape()
-						if !attributeChanges.isEmpty {
-							display += " (\(attributeChanges.joined(separator: ", ")))"
-						}
+
+						// If we have conformance changes, show them (they include attributes like @unsafe)
+						// Don't show separate attribute changes as they're likely part of the conformance
 						if !conformanceChanges.isEmpty {
 							display += " " + conformanceChanges.joined(separator: " ")
+						} else if !attributeChanges.isEmpty {
+							// Only show attribute changes if there are no conformance changes
+							display += " (\(attributeChanges.joined(separator: ", ")))"
 						}
 
 						completedType.displayName = display
