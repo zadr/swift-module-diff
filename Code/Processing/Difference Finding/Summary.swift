@@ -69,7 +69,7 @@ extension Summary {
 			resultsPerThread[threadIndex][it.platform, default: [:]][it.architecture, default: []].insert(framework)
 		}
 
-		// Merge all thread-local results into final results (no lock needed during merge since it's single-threaded)
+		// Merge all thread-local results into final results
 		for threadResults in resultsPerThread {
 			for (platform, architectures) in threadResults {
 				for (architecture, frameworks) in architectures {

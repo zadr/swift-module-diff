@@ -115,32 +115,49 @@ extension ChangedTree {
 				}
 
 				if isMetadataOnlyChange {
-					var changes: [String] = []
-
-					for attrChange in completedType.attributeChanges {
-						switch attrChange {
-						case .added(_, let value):
-							changes.append("<span class=\"added\">\(value.htmlEscape())</span>")
-						case .removed(_, let value):
-							changes.append("<span class=\"removed\">\(value.htmlEscape())</span>")
-						default:
-							break
+					if !completedType.attributeChanges.isEmpty || !completedType.conformanceChanges.isEmpty {
+						// Strip conformances from the base type name (they appear after ":")
+						var baseTypeName = qualifiedName
+						if let colonIndex = baseTypeName.range(of: ":", options: .backwards)?.lowerBound {
+							baseTypeName = String(baseTypeName[..<colonIndex]).trimmingCharacters(in: .whitespaces)
 						}
-					}
 
-					for confChange in completedType.conformanceChanges {
-						switch confChange {
-						case .added(_, let value):
-							changes.append("<span class=\"added\">\(value.htmlEscape())</span>")
-						case .removed(_, let value):
-							changes.append("<span class=\"removed\">\(value.htmlEscape())</span>")
-						default:
-							break
+						// Separate attribute and conformance changes
+						var attributeChanges: [String] = []
+						var conformanceChanges: [String] = []
+
+						for attrChange in completedType.attributeChanges {
+							switch attrChange {
+							case .added(_, let value):
+								attributeChanges.append("<span class=\"added\">\(value.htmlEscape())</span>")
+							case .removed(_, let value):
+								attributeChanges.append("<span class=\"removed\">\(value.htmlEscape())</span>")
+							default:
+								break
+							}
 						}
-					}
 
-					if !changes.isEmpty {
-						completedType.displayName = "\(qualifiedName.htmlEscape()) (\(changes.joined(separator: ", ")))"
+						for confChange in completedType.conformanceChanges {
+							switch confChange {
+							case .added(_, let value):
+								conformanceChanges.append("<span class=\"added\">\(value.htmlEscape())</span>")
+							case .removed(_, let value):
+								conformanceChanges.append("<span class=\"removed\">\(value.htmlEscape())</span>")
+							default:
+								break
+							}
+						}
+
+						// Build display: base type, then attributes inline, then conformances inline with spacing
+						var display = baseTypeName.htmlEscape()
+						if !attributeChanges.isEmpty {
+							display += " (\(attributeChanges.joined(separator: ", ")))"
+						}
+						if !conformanceChanges.isEmpty {
+							display += " " + conformanceChanges.joined(separator: " ")
+						}
+
+						completedType.displayName = display
 					}
 				} else if activeNamedTypeStack.last is ChangedTree.Platform.Architecture.Framework.NamedType {
 					// For non-metadata-only nested types, still show qualified name
