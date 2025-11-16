@@ -180,6 +180,14 @@ extension ChangedTree {
 								// Use pre-computed display name if available, otherwise escape the value
 								const typeName = type.display_name || escapeHtml(type.value.value);
 
+								// If this is a metadata-only change (only conformance/attribute changes, no members or nested types),
+								// don't show a details element, just show the type name as a list item
+								const isMetadataOnly = (hasConformanceChanges || hasAttributeChanges) && !hasMembers && !hasTypes;
+
+								if (isMetadataOnly) {
+									return `<div style="padding: 0.5em;">${typeName}</div>`;
+								}
+
 								return `
 									<details>
 										<summary>${typeName}</summary>
