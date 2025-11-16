@@ -15,11 +15,16 @@ struct ChangedTree {
 					var name: String { value.any }
 					var members = [Change<String>]()
 					var namedTypes = [ChangedTree.Platform.Architecture.Framework.NamedType]()
+					var conformanceChanges = [Change<String>]()
+					var attributeChanges = [Change<String>]()
+					var displayName: String? = nil  // Pre-rendered display name with inline changes
 
 					var isInteresting: Bool {
 						return value.isNotUnchanged ||
 						members.reduce(false) { $0 || $1.isNotUnchanged } ||
-						namedTypes.reduce(false) { $0 || $1.isInteresting }
+						namedTypes.reduce(false) { $0 || $1.isInteresting } ||
+						!conformanceChanges.isEmpty ||
+						!attributeChanges.isEmpty
 					}
 
 					init(value: Change<String>) {

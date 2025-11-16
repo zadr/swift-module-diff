@@ -59,6 +59,21 @@ extension ChangedTree {
 								padding-right: 5px;
 							}
 
+							span.added {
+								color: #22863a;
+								background-color: #f0fff4;
+								padding: 2px 4px;
+								border-radius: 3px;
+							}
+
+							span.removed {
+								color: #cb2431;
+								background-color: #ffeef0;
+								padding: 2px 4px;
+								border-radius: 3px;
+								text-decoration: line-through;
+							}
+
 							details {
 								border: 1px solid #aaa;
 								border-radius: 4px;
@@ -153,14 +168,21 @@ extension ChangedTree {
 								const hasTypes = type.named_types && type.named_types.some(t =>
 									t.value.change !== 'unchanged' ||
 									(t.members && t.members.some(m => m.change !== 'unchanged')) ||
-									(t.named_types && t.named_types.length > 0)
+									(t.named_types && t.named_types.length > 0) ||
+									(t.conformance_changes && t.conformance_changes.length > 0) ||
+									(t.attribute_changes && t.attribute_changes.length > 0)
 								);
+								const hasConformanceChanges = type.conformance_changes && type.conformance_changes.length > 0;
+								const hasAttributeChanges = type.attribute_changes && type.attribute_changes.length > 0;
 
-								if (!hasMembers && !hasTypes) return '';
+								if (!hasMembers && !hasTypes && !hasConformanceChanges && !hasAttributeChanges) return '';
+
+								// Use pre-computed display name if available, otherwise escape the value
+								const typeName = type.display_name || escapeHtml(type.value.value);
 
 								return `
 									<details>
-										<summary>${escapeHtml(type.value.value)}</summary>
+										<summary>${typeName}</summary>
 										${renderMembers(type.members)}
 										${type.named_types ? type.named_types.map(renderNamedType).join('') : ''}
 									</details>

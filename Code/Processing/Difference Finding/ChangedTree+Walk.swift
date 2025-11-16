@@ -38,11 +38,80 @@ extension ChangedTree {
 			}, didVisitDependency: { dependency in
 				visitors.forEach { v in if v.shouldVisitDependency(dependency) { v.didVisitDependency?(dependency) } }
 			}, willVisitNamedType: { namedType in
-				activeNamedTypeStack.append(ChangedTree.Platform.Architecture.Framework.NamedType(value: namedType.change(keyPath: \.developerFacingValue)))
+				let newType = ChangedTree.Platform.Architecture.Framework.NamedType(value: namedType.change(keyPath: \.developerFacingValue))
+
+				// If this is a modification, check for conformance and attribute changes
+				if case .modified(let oldNT, let newNT) = namedType {
+					// Add attribute changes
+					let addedAttributes = Set(newNT.attributes).subtracting(oldNT.attributes)
+					let removedAttributes = Set(oldNT.attributes).subtracting(newNT.attributes)
+
+					for attribute in removedAttributes.sorted(by: { $0.name < $1.name }) {
+						newType.attributeChanges.append(.removed(attribute.developerFacingValue, attribute.developerFacingValue))
+					}
+
+					for attribute in addedAttributes.sorted(by: { $0.name < $1.name }) {
+						newType.attributeChanges.append(.added(attribute.developerFacingValue, attribute.developerFacingValue))
+					}
+
+					// Add conformance changes
+					let addedConformances = Set(newNT.conformances).subtracting(oldNT.conformances)
+					let removedConformances = Set(oldNT.conformances).subtracting(newNT.conformances)
+
+					for conformance in removedConformances.sorted() {
+						newType.conformanceChanges.append(.removed(conformance, conformance))
+					}
+
+					for conformance in addedConformances.sorted() {
+						newType.conformanceChanges.append(.added(conformance, conformance))
+					}
+				}
+
+				activeNamedTypeStack.append(newType)
 
 				visitors.forEach { v in if v.shouldVisitNamedType(namedType) { v.willVisitNamedType?(namedType) } }
 			}, didVisitNamedType: { namedType in
-				let completedType = activeNamedTypeStack.removeLast() as! ChangedTree.Platform.Architecture.Framework.NamedType
+				// Pre-compute display name with inline changes for the completed type
+				var completedType = activeNamedTypeStack.removeLast() as! ChangedTree.Platform.Architecture.Framework.NamedType
+
+				// Check if this is a metadata-only change
+				let hasMembers = completedType.members.contains { $0.isNotUnchanged }
+				let hasNestedTypes = completedType.namedTypes.contains { $0.isInteresting }
+				let hasConformanceChanges = !completedType.conformanceChanges.isEmpty
+				let hasAttributeChanges = !completedType.attributeChanges.isEmpty
+				let isMetadataOnlyChange = (hasConformanceChanges || hasAttributeChanges) &&
+					completedType.value.kind == "modified" && !hasMembers && !hasNestedTypes
+
+				if isMetadataOnlyChange {
+					var changes: [String] = []
+
+					for attrChange in completedType.attributeChanges {
+						switch attrChange {
+						case .added(_, let value):
+							changes.append("<span class=\"added\">\(value.htmlEscape())</span>")
+						case .removed(_, let value):
+							changes.append("<span class=\"removed\">\(value.htmlEscape())</span>")
+						default:
+							break
+						}
+					}
+
+					for confChange in completedType.conformanceChanges {
+						switch confChange {
+						case .added(_, let value):
+							changes.append("<span class=\"added\">\(value.htmlEscape())</span>")
+						case .removed(_, let value):
+							changes.append("<span class=\"removed\">\(value.htmlEscape())</span>")
+						default:
+							break
+						}
+					}
+
+					if !changes.isEmpty {
+						completedType.displayName = "\(completedType.value.any.htmlEscape()) (\(changes.joined(separator: ", ")))"
+					}
+				}
+
 				var copy = activeNamedTypeStack.removeLast()
 				copy.namedTypes.append(completedType)
 				activeNamedTypeStack.append(copy)
@@ -187,64 +256,12 @@ extension ChangedTree {
 			}
 		}
 
-		// Handle conformance/attribute-only changes as modified types with child changes
+		// Handle conformance/attribute-only changes as modified types
 		for (oldType, newType) in metadataOnlyChanges {
 			let typeChange = Change<NamedType>.modified(oldType, newType)
 			guard visitor.shouldVisitNamedType(typeChange) else { continue }
 
 			visitor.willVisitNamedType?(typeChange)
-
-			// Add attribute changes as synthetic members
-			let addedAttributes = Set(newType.attributes).subtracting(oldType.attributes)
-			let removedAttributes = Set(oldType.attributes).subtracting(newType.attributes)
-
-			for attribute in removedAttributes.sorted(by: { $0.name < $1.name }) {
-				let attributeChange = Change<Member>.removed(
-					Member(kind: .unknown, name: "Attribute: \(attribute.developerFacingValue)"),
-					Member(kind: .unknown, name: "Attribute: \(attribute.developerFacingValue)")
-				)
-				if visitor.shouldVisitMember(attributeChange) {
-					visitor.willVisitMember?(attributeChange)
-					visitor.didVisitMember?(attributeChange)
-				}
-			}
-
-			for attribute in addedAttributes.sorted(by: { $0.name < $1.name }) {
-				let attributeChange = Change<Member>.added(
-					Member(kind: .unknown, name: "Attribute: \(attribute.developerFacingValue)"),
-					Member(kind: .unknown, name: "Attribute: \(attribute.developerFacingValue)")
-				)
-				if visitor.shouldVisitMember(attributeChange) {
-					visitor.willVisitMember?(attributeChange)
-					visitor.didVisitMember?(attributeChange)
-				}
-			}
-
-			// Add conformance changes as synthetic members
-			let addedConformances = Set(newType.conformances).subtracting(oldType.conformances)
-			let removedConformances = Set(oldType.conformances).subtracting(newType.conformances)
-
-			for conformance in removedConformances.sorted() {
-				let conformanceChange = Change<Member>.removed(
-					Member(kind: .unknown, name: "Conformance: \(conformance)"),
-					Member(kind: .unknown, name: "Conformance: \(conformance)")
-				)
-				if visitor.shouldVisitMember(conformanceChange) {
-					visitor.willVisitMember?(conformanceChange)
-					visitor.didVisitMember?(conformanceChange)
-				}
-			}
-
-			for conformance in addedConformances.sorted() {
-				let conformanceChange = Change<Member>.added(
-					Member(kind: .unknown, name: "Conformance: \(conformance)"),
-					Member(kind: .unknown, name: "Conformance: \(conformance)")
-				)
-				if visitor.shouldVisitMember(conformanceChange) {
-					visitor.willVisitMember?(conformanceChange)
-					visitor.didVisitMember?(conformanceChange)
-				}
-			}
 
 			// Process nested types and members normally
 			_enumerateNamedTypeDifferences(oldNamedTypes: oldType.nestedTypes, newNamedTypes: newType.nestedTypes, visitor: visitor)
