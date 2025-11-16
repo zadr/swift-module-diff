@@ -96,22 +96,32 @@ extension ChangedTree {
 				let isMetadataOnlyChange = (hasConformanceChanges || hasAttributeChanges) &&
 					completedType.value.kind == "modified" && !hasMembers && !hasNestedTypes
 
-				// Build fully qualified name for nested types
-				// The parent is at the top of activeNamedTypeStack (after we removed completedType)
+				// Build fully qualified name for nested types by traversing all parents
 				var qualifiedName = completedType.value.any
-				if let parent = activeNamedTypeStack.last as? ChangedTree.Platform.Architecture.Framework.NamedType {
-					// This is a nested type, prefix with parent name
-					let parentName = parent.value.any
-					// Extract just the type name from parent (strip attributes, conformances, etc.)
-					// Parent format is like "struct Foo" or "class Bar: Protocol"
-					if let typeNameRange = parentName.range(of: "^(?:@[^\\s]+\\s+)*(?:open\\s+|package\\s+|public\\s+|internal\\s+|fileprivate\\s+|private\\s+)?(?:final\\s+|static\\s+)?(?:class|struct|enum|protocol|actor|extension)\\s+([^:<{]+)", options: .regularExpression) {
-						let extractedParent = String(parentName[typeNameRange])
-						// Get just the name part after the keyword
-						let parts = extractedParent.split(separator: " ")
-						if let lastName = parts.last {
-							qualifiedName = "\(lastName).\(qualifiedName)"
+
+				// Extract simple type name from a full type declaration
+				func extractTypeName(from fullDeclaration: String) -> String? {
+					// Pattern matches: [@attrs] [modifiers] <kind> <name>[: conformances]
+					if let range = fullDeclaration.range(of: "^(?:@[^\\s]+\\s+)*(?:open\\s+|package\\s+|public\\s+|internal\\s+|fileprivate\\s+|private\\s+)?(?:final\\s+|static\\s+)?(?:class|struct|enum|protocol|actor|extension)\\s+([^:<{\\s]+)", options: .regularExpression) {
+						let extracted = String(fullDeclaration[range])
+						let parts = extracted.split(separator: " ")
+						return parts.last.map(String.init)
+					}
+					return nil
+				}
+
+				// Build path from all parents (excluding the framework level)
+				var parentNames: [String] = []
+				for item in activeNamedTypeStack {
+					if let namedType = item as? ChangedTree.Platform.Architecture.Framework.NamedType {
+						if let name = extractTypeName(from: namedType.value.any) {
+							parentNames.append(name)
 						}
 					}
+				}
+
+				if !parentNames.isEmpty {
+					qualifiedName = parentNames.joined(separator: ".") + "." + (extractTypeName(from: qualifiedName) ?? qualifiedName)
 				}
 
 				if isMetadataOnlyChange {

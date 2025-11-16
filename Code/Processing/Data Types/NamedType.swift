@@ -162,7 +162,19 @@ extension NamedType: Codable, CustomStringConvertible, Hashable, Sendable {
 
 	/// Check if two types are identical except for their conformances and/or attributes
 	func isSameExceptConformancesAndAttributes(_ other: NamedType) -> Bool {
-		kind == other.kind &&
+		// For extensions, conformances are part of the identity since Swift allows
+		// multiple extensions of the same type with different conformance lists
+		if kind == .extension {
+			return kind == other.kind &&
+				name == other.name &&
+				conformances == other.conformances &&
+				generics == other.generics &&
+				genericConstraints == other.genericConstraints &&
+				primaryAssociatedTypes == other.primaryAssociatedTypes
+		}
+
+		// For non-extensions (class, struct, enum, protocol), conformances are metadata
+		return kind == other.kind &&
 			name == other.name &&
 			generics == other.generics &&
 			genericConstraints == other.genericConstraints &&
