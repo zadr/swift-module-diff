@@ -5,7 +5,7 @@ extension ChangedTree {
 	static func dynamicHTMLVisitor(from fromVersion: Version, to toVersion: Version, root: String) -> ChangeVisitor {
 		ChangeVisitor(
 			didEnd: { tree in
-				let title = "Xcode \(fromVersion.name) to Xcode \(toVersion.name) Diff (Dynamic)"
+				let title = "Xcode \(fromVersion.name) to Xcode \(toVersion.name) Diff"
 				let description = "API changes between Xcode \(fromVersion.name) and Xcode \(toVersion.name)"
 
 				// Convert tree to JSON (minified)

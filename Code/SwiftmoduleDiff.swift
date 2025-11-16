@@ -91,14 +91,13 @@ struct SwiftmoduleDiff: ParsableCommand {
 			let toVersion = ChangedTree.Version(appPath: new)!
 
 			let progressVisitor = progress ? ChangedTree.progressVisitor() : nil
-			let htmlVisitor = html ? ChangedTree.htmlVisitor(from: fromVersion, to: toVersion, root: output, extraCSS: extraCSS) : nil
 			let dynamicHTMLVisitor = html ? ChangedTree.dynamicHTMLVisitor(from: fromVersion, to: toVersion, root: output) : nil
 			let jsonVisitor = json ? ChangedTree.jsonVisitor(from: fromVersion, to: toVersion, root: output) : nil
 			let signpostVisitor = trace ? ChangedTree.signpostVisitor(from: fromVersion, to: toVersion) : nil
 
 			ChangedTree(old: oldFrameworks, new: newFrameworks)
 				.walk(
-					visitors: progressVisitor, htmlVisitor, dynamicHTMLVisitor, jsonVisitor, signpostVisitor,
+					visitors: progressVisitor, dynamicHTMLVisitor, jsonVisitor, signpostVisitor,
 					trace: trace
 				)
 		}
