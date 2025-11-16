@@ -6,25 +6,36 @@ var __dropAnySubstringCache__ = [String: String]()
 
 extension String {
 	func dropAnySubstring(in set: [String]) -> String {
-		__dropAnySubstringCacheLock__.lock()
-		defer { __dropAnySubstringCacheLock__.unlock() }
+		  __dropAnySubstringCacheLock__.lock()
+		  defer { __dropAnySubstringCacheLock__.unlock() }
 
-		if let result = __dropAnySubstringCache__[self] {
-			return result
-		}
+		  if let result = __dropAnySubstringCache__[self] {
+			  return result
+		  }
 
-		var copy = self
-		for substring in set {
-			let ranges = copy.ranges(of: substring).reversed()
-			for range in ranges {
-				copy = copy.replacingCharacters(in: range, with: "")
-			}
-		}
+		  let mutableCopy = NSMutableString(string: self)
 
-		__dropAnySubstringCache__[self] = copy
-		return copy
-	}
-}
+		  // Combine all patterns into one regex
+		  let escapedPatterns = set.map { NSRegularExpression.escapedPattern(for: $0) }
+		  let pattern = escapedPatterns.joined(separator: "|")
+
+		  guard let regex = try? NSRegularExpression(pattern: pattern, options: []) else {
+			  // Fallback if regex fails
+			  __dropAnySubstringCache__[self] = self
+			  return self
+		  }
+
+		  // Process all matches in reverse to avoid index shifting issues
+		  let matches = regex.matches(in: mutableCopy as String, options: [], range: NSRange(location: 0, length: mutableCopy.length))
+
+		  for match in matches.reversed() {
+			  mutableCopy.deleteCharacters(in: match.range)
+		  }
+
+		  let result = mutableCopy as String
+		  __dropAnySubstringCache__[self] = result
+		  return result
+	  }}
 
 extension NamedType {
 	func dropAnySubstring(in set: [String]) -> NamedType {

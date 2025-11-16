@@ -55,21 +55,27 @@ extension Summary {
 			}
 		}
 
-		let lock = OSAllocatedUnfairLock()
+		let threadCount = ProcessInfo.processInfo.activeProcessorCount
+		var resultsPerThread = (0..<threadCount).map { _ -> Summary in [:] }
+
 		DispatchQueue.concurrentPerform(iterations: everything.count) { i in
 			let it = everything[i]
 			if progress { print("\(it.platform) \(it.architecture) \(it.url)") }
 
-			let path = it.url.absoluteString.replacingOccurrences(of: "file://", with: "")
+			let path = it.url.path(percentEncoded: false)
 			let framework = ParseSwiftmodule(path: path, typePrefixesToRemove: qualifiedTypePrefixesToRemove).run()
 
-			lock.lock()
-			var p = results[it.platform]
-			var a = p?[it.architecture]
-			a?.insert(framework)
-			p?[it.architecture] = a
-			results[it.platform] = p
-			lock.unlock()
+			let threadIndex = i % threadCount
+			resultsPerThread[threadIndex][it.platform, default: [:]][it.architecture, default: []].insert(framework)
+		}
+
+		// Merge all thread-local results into final results (no lock needed during merge since it's single-threaded)
+		for threadResults in resultsPerThread {
+			for (platform, architectures) in threadResults {
+				for (architecture, frameworks) in architectures {
+					results[platform, default: [:]][architecture, default: []].formUnion(frameworks)
+				}
+			}
 		}
 
 		return results
