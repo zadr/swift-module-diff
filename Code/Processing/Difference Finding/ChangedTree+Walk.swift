@@ -278,21 +278,22 @@ extension ChangedTree {
 	}
 
 	fileprivate func _enumerateNamedTypeDifferences(oldNamedTypes: [NamedType], newNamedTypes: [NamedType], visitor: ChangeVisitor) {
-		// First pass: find types that only differ in conformances and/or attributes
+		// First pass: match types that are the same except for conformances/attributes
+		// This prevents them from being treated as removed+added
 		var remainingOld = oldNamedTypes
 		var remainingNew = newNamedTypes
-		var metadataOnlyChanges: [(old: NamedType, new: NamedType)] = []
+		var matchedChanges: [(old: NamedType, new: NamedType)] = []
 
 		for oldType in oldNamedTypes {
 			if let newType = newNamedTypes.first(where: { $0.isSameExceptConformancesAndAttributes(oldType) && $0 != oldType }) {
-				metadataOnlyChanges.append((old: oldType, new: newType))
+				matchedChanges.append((old: oldType, new: newType))
 				remainingOld.removeAll { $0 == oldType }
 				remainingNew.removeAll { $0 == newType }
 			}
 		}
 
-		// Handle conformance/attribute-only changes as modified types
-		for (oldType, newType) in metadataOnlyChanges {
+		// Handle matched types as modified (even if they have other changes beyond conformances)
+		for (oldType, newType) in matchedChanges {
 			let typeChange = Change<NamedType>.modified(oldType, newType)
 			guard visitor.shouldVisitNamedType(typeChange) else { continue }
 
