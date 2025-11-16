@@ -40,8 +40,22 @@ extension ChangedTree {
 			}, willVisitNamedType: { namedType in
 				let newType = ChangedTree.Platform.Architecture.Framework.NamedType(value: namedType.change(keyPath: \.developerFacingValue))
 
-				// If this is a modification, check for conformance and attribute changes
-				if case .modified(let oldNT, let newNT) = namedType {
+				// For ALL changes (not just modifications), check if base type is the same
+				// This handles cases where conformances differ but everything else matches
+				let (oldNT, newNT): (NamedType?, NamedType?) = {
+					switch namedType {
+					case .modified(let old, let new):
+						return (old, new)
+					case .added(_, let new), .removed(_, let new):
+						// For added/removed, check if there's a matching type with different conformances
+						// This shouldn't happen in normal diff, but we'll be defensive
+						return (nil, new)
+					case .unchanged(let old, let new):
+						return (old, new)
+					}
+				}()
+
+				if let oldNT = oldNT, let newNT = newNT {
 					// Add attribute changes
 					let addedAttributes = Set(newNT.attributes).subtracting(oldNT.attributes)
 					let removedAttributes = Set(oldNT.attributes).subtracting(newNT.attributes)
@@ -82,6 +96,24 @@ extension ChangedTree {
 				let isMetadataOnlyChange = (hasConformanceChanges || hasAttributeChanges) &&
 					completedType.value.kind == "modified" && !hasMembers && !hasNestedTypes
 
+				// Build fully qualified name for nested types
+				// The parent is at the top of activeNamedTypeStack (after we removed completedType)
+				var qualifiedName = completedType.value.any
+				if let parent = activeNamedTypeStack.last as? ChangedTree.Platform.Architecture.Framework.NamedType {
+					// This is a nested type, prefix with parent name
+					let parentName = parent.value.any
+					// Extract just the type name from parent (strip attributes, conformances, etc.)
+					// Parent format is like "struct Foo" or "class Bar: Protocol"
+					if let typeNameRange = parentName.range(of: "^(?:@[^\\s]+\\s+)*(?:open\\s+|package\\s+|public\\s+|internal\\s+|fileprivate\\s+|private\\s+)?(?:final\\s+|static\\s+)?(?:class|struct|enum|protocol|actor|extension)\\s+([^:<{]+)", options: .regularExpression) {
+						let extractedParent = String(parentName[typeNameRange])
+						// Get just the name part after the keyword
+						let parts = extractedParent.split(separator: " ")
+						if let lastName = parts.last {
+							qualifiedName = "\(lastName).\(qualifiedName)"
+						}
+					}
+				}
+
 				if isMetadataOnlyChange {
 					var changes: [String] = []
 
@@ -108,8 +140,11 @@ extension ChangedTree {
 					}
 
 					if !changes.isEmpty {
-						completedType.displayName = "\(completedType.value.any.htmlEscape()) (\(changes.joined(separator: ", ")))"
+						completedType.displayName = "\(qualifiedName.htmlEscape()) (\(changes.joined(separator: ", ")))"
 					}
+				} else if activeNamedTypeStack.last is ChangedTree.Platform.Architecture.Framework.NamedType {
+					// For non-metadata-only nested types, still show qualified name
+					completedType.displayName = qualifiedName.htmlEscape()
 				}
 
 				var copy = activeNamedTypeStack.removeLast()
