@@ -174,7 +174,15 @@ extension ChangedTree {
 								);
 								const hasConformanceChanges = type.conformance_changes && type.conformance_changes.length > 0;
 								const hasAttributeChanges = type.attribute_changes && type.attribute_changes.length > 0;
+								const typeChanged = type.value.change !== 'unchanged';
 
+								// If the type itself changed (added/removed) but has no content, show it as a simple item
+								if (typeChanged && !hasMembers && !hasTypes && !hasConformanceChanges && !hasAttributeChanges) {
+									const typeName = type.display_name || escapeHtml(type.value.value);
+									return `<div style="padding: 0.5em;">${typeName}</div>`;
+								}
+
+								// If nothing changed at all, don't show it
 								if (!hasMembers && !hasTypes && !hasConformanceChanges && !hasAttributeChanges) return '';
 
 								// Use pre-computed display name if available, otherwise escape the value
@@ -249,13 +257,17 @@ extension ChangedTree {
 
 								const emoji = framework.value.change === 'added' ? '➕' : (framework.value.change === 'modified' ? '〰️' : '');
 
+								// Render types and only show if there's actual content
+								const renderedTypes = hasTypes ? framework.named_types.map(renderNamedType).join('') : '';
+								const typesSection = renderedTypes ? '<details><summary>Types</summary>' + renderedTypes + '</details>' : '';
+
 								return `
 									<details>
 										<summary>${emoji} <a href="https://developer.apple.com/documentation/${framework.value.value}">${escapeHtml(framework.value.value)}</a></summary>
 										${renderDependencies(framework.dependencies)}
 										${renderPrecedenceGroups(framework.precedence_groups)}
 										${renderMembers(framework.members)}
-										${hasTypes ? '<details><summary>Types</summary>' + framework.named_types.map(renderNamedType).join('') + '</details>' : ''}
+										${typesSection}
 									</details>
 								`;
 							}
