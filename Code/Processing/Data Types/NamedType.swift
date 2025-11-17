@@ -119,7 +119,10 @@ extension NamedType: Codable, CustomStringConvertible, Hashable, Sendable {
 	func hash(into hasher: inout Hasher) {
 		hasher.combine(kind)
 		hasher.combine(name)
+
+		// Conformances are always sorted during parsing, so we can hash directly
 		hasher.combine(conformances)
+
 		hasher.combine(generics)
 		hasher.combine(genericConstraints)
 		hasher.combine(primaryAssociatedTypes)
@@ -134,6 +137,7 @@ extension NamedType: Codable, CustomStringConvertible, Hashable, Sendable {
 	}
 
 	static func ==(lhs: NamedType, rhs: NamedType) -> Bool {
+		// Conformances are always sorted during parsing, so direct comparison works
 		lhs.kind == rhs.kind &&
 			lhs.name == rhs.name &&
 			lhs.conformances == rhs.conformances &&
@@ -160,12 +164,17 @@ extension NamedType: Codable, CustomStringConvertible, Hashable, Sendable {
 	}
 
 	func isSameExceptConformancesAndAttributes(_ other: NamedType) -> Bool {
-		// For extensions, conformances are part of the identity since Swift allows
-		// multiple extensions of the same type with different conformance lists
+		// For extensions, generic constraints (where clauses) are part of the identity because
+		// Swift allows multiple extensions with different conditional conformances:
+		//   extension Array: Encodable where Element: Encodable
+		//   extension Array: Decodable where Element: Decodable
+		// However, conformances are treated as metadata (can change), allowing us to track
+		// conformance additions/removals as modifications.
+		// Note: Conformances are sorted at parse time, so order doesn't matter.
 		if kind == .extension {
 			return kind == other.kind &&
 				name == other.name &&
-				conformances == other.conformances &&
+				decorators == other.decorators &&
 				generics == other.generics &&
 				genericConstraints == other.genericConstraints &&
 				primaryAssociatedTypes == other.primaryAssociatedTypes

@@ -63,7 +63,10 @@ extension Summary {
 			if progress { print("\(it.platform) \(it.architecture) \(it.url)") }
 
 			let path = it.url.path(percentEncoded: false)
-			let framework = ParseSwiftmodule(path: path, typePrefixesToRemove: qualifiedTypePrefixesToRemove).run()
+			var framework = ParseSwiftmodule(path: path, typePrefixesToRemove: qualifiedTypePrefixesToRemove).run()
+
+			// Merge duplicate extensions (e.g., "extension Never: A" + "extension Never: B" → "extension Never: A, B")
+			framework.mergeExtensions()
 
 			let threadIndex = i % threadCount
 			resultsPerThread[threadIndex][it.platform, default: [:]][it.architecture, default: []].insert(framework)

@@ -428,8 +428,22 @@ extension ChangedTree {
 		var remainingNew = newNamedTypes
 		var matchedChanges: [(old: NamedType, new: NamedType)] = []
 
+		// First pass: Try to match types with exact conformances (for extensions)
+		// This handles the case where we have multiple extensions of the same type
+		// with different conformances that haven't changed
 		for oldType in oldNamedTypes {
-			if let newType = newNamedTypes.first(where: { $0.isSameExceptConformancesAndAttributes(oldType) && $0 != oldType }) {
+			// Try to find exact match first (including conformances)
+			if let exactMatch = newNamedTypes.first(where: { $0.isSameExceptAttributes(oldType) && $0 != oldType }) {
+				matchedChanges.append((old: oldType, new: exactMatch))
+				remainingOld.removeAll { $0 == oldType }
+				remainingNew.removeAll { $0 == exactMatch }
+			}
+		}
+
+		// Second pass: Match remaining types ignoring conformances/attributes
+		// This handles types where conformances/attributes actually changed
+		for oldType in remainingOld {
+			if let newType = remainingNew.first(where: { $0.isSameExceptConformancesAndAttributes(oldType) && $0 != oldType }) {
 				matchedChanges.append((old: oldType, new: newType))
 				remainingOld.removeAll { $0 == oldType }
 				remainingNew.removeAll { $0 == newType }

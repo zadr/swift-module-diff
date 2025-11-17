@@ -46,7 +46,7 @@ class StructTracker: SyntaxVisitor, AnyTypeParser {
 	}
 
 	override func visit(_ node: InheritedTypeListSyntax) -> SyntaxVisitorContinueKind {
-		value.conformances = ParseAnyType<InheritanceTracker>(node: node).run()
+		value.conformances = ParseAnyType<InheritanceTracker>(node: node).run().sorted()
 		return super.visit(node)
 	}
 
