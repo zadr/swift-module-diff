@@ -539,10 +539,12 @@ extension ChangedTree {
 									(t.members && t.members.some(m => m.change !== 'unchanged')) ||
 									(t.named_types && t.named_types.length > 0) ||
 									(t.conformance_changes && t.conformance_changes.length > 0) ||
-									(t.attribute_changes && t.attribute_changes.length > 0)
+									(t.attribute_changes && t.attribute_changes.length > 0) ||
+									(t.generic_constraint_changes && t.generic_constraint_changes.length > 0)
 								);
 								const hasConformanceChanges = type.conformance_changes && type.conformance_changes.length > 0;
 								const hasAttributeChanges = type.attribute_changes && type.attribute_changes.length > 0;
+								const hasConstraintChanges = type.generic_constraint_changes && type.generic_constraint_changes.length > 0;
 								const typeChanged = type.value.change !== 'unchanged';
 
 								// Get the type name (from display_name if available, otherwise from value)
@@ -574,16 +576,16 @@ extension ChangedTree {
 								`;
 
 								// If the type itself changed (added/removed) but has no content, show it styled like details but not expandable
-								if (typeChanged && !hasMembers && !hasTypes && !hasConformanceChanges && !hasAttributeChanges) {
+								if (typeChanged && !hasMembers && !hasTypes && !hasConformanceChanges && !hasAttributeChanges && !hasConstraintChanges) {
 									return '<div class="' + filterClass + ' type-no-content"' + dataAttrs + '>' + typeNameDisplay + '</div>';
 								}
 
 								// If nothing changed at all, don't show it
-								if (!hasMembers && !hasTypes && !hasConformanceChanges && !hasAttributeChanges) return '';
+								if (!hasMembers && !hasTypes && !hasConformanceChanges && !hasAttributeChanges && !hasConstraintChanges) return '';
 
-								// If this is a metadata-only change (only conformance/attribute changes, no members or nested types),
+								// If this is a metadata-only change (only conformance/attribute/constraint changes, no members or nested types),
 								// show it styled like details but not expandable
-								const isMetadataOnly = (hasConformanceChanges || hasAttributeChanges) && !hasMembers && !hasTypes;
+								const isMetadataOnly = (hasConformanceChanges || hasAttributeChanges || hasConstraintChanges) && !hasMembers && !hasTypes;
 
 								if (isMetadataOnly) {
 									return '<div class="' + filterClass + ' type-no-content"' + dataAttrs + '>' + typeNameDisplay + '</div>';

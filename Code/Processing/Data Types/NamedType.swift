@@ -171,13 +171,15 @@ extension NamedType: Codable, CustomStringConvertible, Hashable, Sendable {
 				primaryAssociatedTypes == other.primaryAssociatedTypes
 		}
 
-		// For non-extensions (class, struct, enum, protocol), conformances and attributes are metadata
-		// BUT decorators like @unsafe are part of the type's identity (different declarations)
+		// For non-extensions (class, struct, enum, protocol), conformances, attributes,
+		// and generic constraints are metadata that can change.
+		// However, decorators like @unsafe are part of the type's identity (different declarations).
+		// Generic parameters (e.g., <T, U>) are part of identity, but constraints (e.g., where T: Sendable)
+		// are metadata that can be added/removed without creating a new type.
 		return kind == other.kind &&
 			name == other.name &&
 			decorators == other.decorators &&
 			generics == other.generics &&
-			genericConstraints == other.genericConstraints &&
 			primaryAssociatedTypes == other.primaryAssociatedTypes
 	}
 }

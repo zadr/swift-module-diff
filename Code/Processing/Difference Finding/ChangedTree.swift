@@ -17,6 +17,7 @@ struct ChangedTree {
 					var namedTypes = [ChangedTree.Platform.Architecture.Framework.NamedType]()
 					var conformanceChanges = [Change<String>]()
 					var attributeChanges = [Change<String>]()
+					var genericConstraintChanges = [Change<String>]()
 					var displayName: String? = nil  // Pre-rendered display name with inline changes
 
 					var isInteresting: Bool {
@@ -24,7 +25,8 @@ struct ChangedTree {
 						members.reduce(false) { $0 || $1.isNotUnchanged } ||
 						namedTypes.reduce(false) { $0 || $1.isInteresting } ||
 						!conformanceChanges.isEmpty ||
-						!attributeChanges.isEmpty
+						!attributeChanges.isEmpty ||
+						!genericConstraintChanges.isEmpty
 					}
 
 					init(value: Change<String>) {

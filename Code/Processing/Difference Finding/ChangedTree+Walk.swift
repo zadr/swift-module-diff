@@ -79,6 +79,20 @@ extension ChangedTree {
 					for conformance in addedConformances.sorted() {
 						newType.conformanceChanges.append(.added(conformance, conformance))
 					}
+
+					// Add generic constraint changes (where clauses)
+					let oldConstraintSet = Set(oldNT.genericConstraints)
+					let newConstraintSet = Set(newNT.genericConstraints)
+					let addedConstraints = newConstraintSet.subtracting(oldConstraintSet)
+					let removedConstraints = oldConstraintSet.subtracting(newConstraintSet)
+
+					for constraint in removedConstraints.sorted() {
+						newType.genericConstraintChanges.append(.removed(constraint.developerFacingValue, constraint.developerFacingValue))
+					}
+
+					for constraint in addedConstraints.sorted() {
+						newType.genericConstraintChanges.append(.added(constraint.developerFacingValue, constraint.developerFacingValue))
+					}
 				}
 
 				activeNamedTypeStack.append(newType)
@@ -212,13 +226,14 @@ extension ChangedTree {
 					qualifiedTypeDecl = baseTypeDecl
 				}
 
-				// Generate styled display name if there are attribute or conformance changes
-				if !completedType.attributeChanges.isEmpty || !completedType.conformanceChanges.isEmpty {
+				// Generate styled display name if there are attribute, conformance, or constraint changes
+				if !completedType.attributeChanges.isEmpty || !completedType.conformanceChanges.isEmpty || !completedType.genericConstraintChanges.isEmpty {
 					let baseTypeName = qualifiedTypeDecl
 
-					// Separate attribute and conformance changes
+					// Separate attribute, conformance, and constraint changes
 					var attributeChanges: [String] = []
 					var conformanceChanges: [String] = []
+					var constraintChanges: [String] = []
 
 					for attrChange in completedType.attributeChanges {
 						switch attrChange {
@@ -242,7 +257,18 @@ extension ChangedTree {
 						}
 					}
 
-					// Build display: attributes first (Swift syntax), then type declaration, then conformances
+					for constraintChange in completedType.genericConstraintChanges {
+						switch constraintChange {
+						case .added(_, let value):
+							constraintChanges.append("<span class=\"added\">\(value.htmlEscape())</span>")
+						case .removed(_, let value):
+							constraintChanges.append("<span class=\"removed\">\(value.htmlEscape())</span>")
+						default:
+							break
+						}
+					}
+
+					// Build display: attributes first (Swift syntax), then type declaration, then conformances, then constraints
 					var display = ""
 
 					// Attributes go before the type declaration
@@ -256,6 +282,11 @@ extension ChangedTree {
 					// Conformances go after the type declaration
 					if !conformanceChanges.isEmpty {
 						display += " " + conformanceChanges.joined(separator: " ")
+					}
+
+					// Generic constraints go at the end (where clause)
+					if !constraintChanges.isEmpty {
+						display += " where " + constraintChanges.joined(separator: ", ")
 					}
 
 					completedType.displayName = display
