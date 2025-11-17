@@ -1,82 +1,95 @@
 import Foundation
 import os
 
-extension StaticString: Hashable {
-	public static func ==(lhs: StaticString, rhs: StaticString) -> Bool {
-		lhs.withUTF8Buffer { lhsBuffer in
-			rhs.withUTF8Buffer { rhsBuffer in
-				return lhsBuffer.elementsEqual(rhsBuffer)
-			}
-		}
-	}
-
-	public func hash(into hasher: inout Hasher) {
-		withUTF8Buffer { buffer in
-			hasher.combine(bytes: UnsafeRawBufferPointer(buffer))
-		}
-	}
+private struct Signpost {
+	let name: StaticString
+	let id: OSSignpostID
+	let state: OSSignpostIntervalState
 }
+
+private let signposter = OSSignposter()
+
+// Create static signposts for each operation
+private let signpostingSignpost = Signpost(
+	name: "signposting",
+	id: signposter.makeSignpostID(),
+	state: signposter.beginInterval("signposting", id: signposter.makeSignpostID())
+)
+private let platformSignpost = Signpost(
+	name: "platform",
+	id: signposter.makeSignpostID(),
+	state: signposter.beginInterval("platform", id: signposter.makeSignpostID())
+)
+private let architectureSignpost = Signpost(
+	name: "architecture",
+	id: signposter.makeSignpostID(),
+	state: signposter.beginInterval("architecture", id: signposter.makeSignpostID())
+)
+private let frameworkSignpost = Signpost(
+	name: "framework",
+	id: signposter.makeSignpostID(),
+	state: signposter.beginInterval("framework", id: signposter.makeSignpostID())
+)
+private let dependencySignpost = Signpost(
+	name: "dependency",
+	id: signposter.makeSignpostID(),
+	state: signposter.beginInterval("dependency", id: signposter.makeSignpostID())
+)
+private let typeSignpost = Signpost(
+	name: "type",
+	id: signposter.makeSignpostID(),
+	state: signposter.beginInterval("type", id: signposter.makeSignpostID())
+)
+private let memberSignpost = Signpost(
+	name: "member",
+	id: signposter.makeSignpostID(),
+	state: signposter.beginInterval("member", id: signposter.makeSignpostID())
+)
 
 extension ChangedTree {
 	static func signpostVisitor(from fromVersion: Version, to toVersion: Version) -> ChangeVisitor {
-		let signposter = OSSignposter()
-		var signpostIDCache = [StaticString: OSSignpostID]()
-		var signpostStateCache = [StaticString: OSSignpostIntervalState]()
-
-		func beginSignpost(_ name: StaticString) {
-			let id = signposter.makeSignpostID()
-			signpostIDCache[name] = id
-			signpostStateCache[name] = signposter.beginInterval(name, id: id)
-		}
-
-		func endSignpost(_ name: StaticString) {
-			let id = signpostIDCache[name]!
-			let state = signposter.beginInterval(name, id: id)
-			signposter.endInterval(name, state)
-		}
-
-		return ChangeVisitor(
+		ChangeVisitor(
 			willBegin: {
-				beginSignpost("signposting")
+				_ = signposter.beginInterval(signpostingSignpost.name, id: signpostingSignpost.id)
 			},
 			didEnd: { _ in
-				endSignpost("signposting")
+				signposter.endInterval(signpostingSignpost.name, signpostingSignpost.state)
 			},
 			willVisitPlatform: { _ in
-				beginSignpost("platform")
+				_ = signposter.beginInterval(platformSignpost.name, id: platformSignpost.id)
 			},
 			didVisitPlatform: { _ in
-				endSignpost("platform")
+				signposter.endInterval(platformSignpost.name, platformSignpost.state)
 			},
 			willVisitArchitecture: { _ in
-				beginSignpost("architecture")
+				_ = signposter.beginInterval(architectureSignpost.name, id: architectureSignpost.id)
 			},
 			didVisitArchitecture: { _ in
-				endSignpost("architecture")
+				signposter.endInterval(architectureSignpost.name, architectureSignpost.state)
 			},
 			willVisitFramework: { _ in
-				beginSignpost("framework")
+				_ = signposter.beginInterval(frameworkSignpost.name, id: frameworkSignpost.id)
 			},
 			didVisitFramework: { _ in
-				endSignpost("framework")
+				signposter.endInterval(frameworkSignpost.name, frameworkSignpost.state)
 			},
 			willVisitDependency: { _ in
-				beginSignpost("dependency")
+				_ = signposter.beginInterval(dependencySignpost.name, id: dependencySignpost.id)
 			},
 			didVisitDependency: { _ in
-				endSignpost("dependency")
+				signposter.endInterval(dependencySignpost.name, dependencySignpost.state)
 			},
 			willVisitNamedType: { _ in
-				beginSignpost("type")
+				_ = signposter.beginInterval(typeSignpost.name, id: typeSignpost.id)
 			},
 			didVisitNamedType: { _ in
-				endSignpost("type")
+				signposter.endInterval(typeSignpost.name, typeSignpost.state)
 			},
 			willVisitMember: { _ in
-				beginSignpost("member")
+				_ = signposter.beginInterval(memberSignpost.name, id: memberSignpost.id)
 			},
 			didVisitMember: { _ in
-				endSignpost("member")
+				signposter.endInterval(memberSignpost.name, memberSignpost.state)
 			}
 		)
 	}
