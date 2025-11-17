@@ -99,11 +99,61 @@ extension ChangedTree {
 				// Build fully qualified name for nested types by traversing all parents
 				var qualifiedName = completedType.value.any
 
+				// Skip over an attribute with properly balanced parentheses
+				func skipAttribute(in string: String, startingAt index: String.Index) -> String.Index {
+					var current = index
+
+					// Skip '@' and attribute name
+					guard current < string.endIndex, string[current] == "@" else { return index }
+					current = string.index(after: current)
+
+					// Skip attribute name (word characters)
+					while current < string.endIndex, string[current].isLetter || string[current].isNumber || string[current] == "_" {
+						current = string.index(after: current)
+					}
+
+					// If followed by '(', skip balanced parentheses
+					if current < string.endIndex, string[current] == "(" {
+						current = string.index(after: current)
+						var depth = 1
+						while current < string.endIndex, depth > 0 {
+							if string[current] == "(" {
+								depth += 1
+							} else if string[current] == ")" {
+								depth -= 1
+							}
+							current = string.index(after: current)
+						}
+					}
+
+					return current
+				}
+
 				// Extract simple type name from a full type declaration
 				func extractTypeName(from fullDeclaration: String) -> String? {
 					// Pattern matches: [@attrs] [modifiers] <kind> <name>[: conformances]
-					if let range = fullDeclaration.range(of: "^(?:@[^\\s]+\\s+)*(?:open\\s+|package\\s+|public\\s+|internal\\s+|fileprivate\\s+|private\\s+)?(?:final\\s+|static\\s+)?(?:class|struct|enum|protocol|actor|extension)\\s+([^:<{\\s]+)", options: .regularExpression) {
-						let extracted = String(fullDeclaration[range])
+					// We need to manually skip attributes because they can have nested parentheses
+					var current = fullDeclaration.startIndex
+
+					// Skip whitespace and attributes
+					while current < fullDeclaration.endIndex {
+						// Skip leading whitespace
+						while current < fullDeclaration.endIndex, fullDeclaration[current].isWhitespace {
+							current = fullDeclaration.index(after: current)
+						}
+
+						// If we hit an attribute, skip it
+						if current < fullDeclaration.endIndex, fullDeclaration[current] == "@" {
+							current = skipAttribute(in: fullDeclaration, startingAt: current)
+						} else {
+							break
+						}
+					}
+
+					// Now use regex to match modifiers + type kind + name
+					let remainingString = String(fullDeclaration[current...])
+					if let range = remainingString.range(of: "^(?:open\\s+|package\\s+|public\\s+|internal\\s+|fileprivate\\s+|private\\s+)?(?:final\\s+|static\\s+)?(?:class|struct|enum|protocol|actor|extension)\\s+([^:<{\\s]+)", options: .regularExpression) {
+						let extracted = String(remainingString[range])
 						let parts = extracted.split(separator: " ")
 						return parts.last.map(String.init)
 					}
