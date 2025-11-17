@@ -123,6 +123,14 @@ extension NamedType: Codable, CustomStringConvertible, Hashable, Sendable {
 		hasher.combine(generics)
 		hasher.combine(genericConstraints)
 		hasher.combine(primaryAssociatedTypes)
+
+		// For extensions with no conformances, include members in hash to distinguish
+		// between multiple extensions of the same type with different member sets
+		// This prevents hash collisions when using Set operations in diff algorithm
+		if kind == .extension && conformances.isEmpty {
+			hasher.combine(members)
+			hasher.combine(nestedTypes)
+		}
 	}
 
 	static func ==(lhs: NamedType, rhs: NamedType) -> Bool {
