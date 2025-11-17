@@ -49,7 +49,8 @@ extension Framework: Codable, CustomStringConvertible, Equatable, Hashable, Send
 			guard type.kind == .extension else { continue }
 
 			// Create a key from the extension's identity (everything except conformances)
-			let key = "\(type.name)|\(type.attributes.map { $0.name }.sorted().joined(separator: ","))|\(type.generics.map { $0.developerFacingValue }.joined(separator: ","))|\(type.genericConstraints.map { $0.developerFacingValue }.joined(separator: ","))|\(type.decorators.map { $0.rawValue }.sorted().joined(separator: ","))"
+			// Use full developerFacingValue for attributes to distinguish @available(iOS 15) from @available(iOS 16)
+			let key = "\(type.name)|\(type.attributes.map { $0.developerFacingValue }.sorted().joined(separator: ","))|\(type.generics.map { $0.developerFacingValue }.joined(separator: ","))|\(type.genericConstraints.map { $0.developerFacingValue }.joined(separator: ","))|\(type.decorators.map { $0.rawValue }.sorted().joined(separator: ","))"
 
 			extensionGroups[key, default: []].append(index)
 		}
