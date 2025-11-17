@@ -8,7 +8,6 @@ let package = Package(
 	dependencies: [
 	    .package(url: "https://github.com/apple/swift-argument-parser.git", .upToNextMajor(from: "1.6.2")),
 	    .package(url: "https://github.com/swiftlang/swift-syntax.git", branch: "release/6.3"),
-	    .package(url: "https://github.com/Kitura/swift-html-entities.git", from: "3.0.0"),
 	],
     targets: [
         .executableTarget(
@@ -17,7 +16,6 @@ let package = Package(
 				.product(name: "ArgumentParser", package: "swift-argument-parser"),
 				.product(name: "SwiftParser", package: "swift-syntax"),
 				.product(name: "SwiftSyntax", package: "swift-syntax"),
-				.product(name: "HTMLEntities", package: "swift-html-entities")
 			],
 			path: "Code",
             swiftSettings: [.enableUpcomingFeature("BareSlashRegexLiterals")]

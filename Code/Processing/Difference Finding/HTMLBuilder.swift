@@ -53,3 +53,40 @@ func div(id: String? = nil, class classAttr: String? = nil, @HTMLBuilder content
 func tag(_ name: String, @HTMLBuilder content: () -> String) -> String {
 	"<\(name)>\(content().htmlEscape())</\(name)>\n"
 }
+
+// reference https://github.com/Kitura/swift-html-entities/blob/master/Sources/HTMLEntities/Utilities.swift
+extension UInt32 {
+	var isASCII: Bool { self < 0x80 }
+	var isASCIIAndNotEscapeCharacter: Bool {
+		isASCII && // is ascii
+			(self != 0x22 && self != 0x27) && // is not a " or a '
+			(self != 0x26) && // is not an &
+			(self != 0x3C && self != 0x3E) // is not a < or a >
+	}
+
+}
+
+// reference https://github.com/Kitura/swift-html-entities/blob/master/Sources/HTMLEntities/String%2BHTMLEntities.swift
+extension String {
+	func htmlEscape() -> String {
+		map { c in
+			let unicodes = String(c).unicodeScalars
+
+			// inline the common case to be fast
+			if unicodes.count == 1, let unicode = unicodes.first?.value, unicode.isASCII || unicode.isASCIIAndNotEscapeCharacter {
+				return String(c)
+			}
+
+			// handle each component of a glyph individually
+			return unicodes.map { scalar in
+				let unicode = scalar.value
+
+				if unicode.isASCIIAndNotEscapeCharacter {
+					return String(scalar)
+				}
+
+				return "&#\(String(unicode, radix: 16, uppercase: true));"
+			}.joined()
+		}.joined()
+	}
+}
