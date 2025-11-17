@@ -10,15 +10,12 @@ Given a pair of Xcode apps (such as Xcode.app and Xcode-beta.app):
 7. Be able to click into a framework to see all modifications to types, and members (additions, deprecations, etc)
 
 #### Things Left To Do
-Swift is a big and evolving language, so it is likely that edge-cases are broken, or lesser-used features are missing. This tool is still under development.
+Swift is a big and evolving language, so it is likely that some edge-cases are broken, or some less popular features are missing. This tool is still under development.
 
 There are some other features that could be nice to have, such as:
 
-- [ ] Using a DSL to generate HTML
-- [ ] Making HTML output more readable, such as by:
-- Selectively hiding attributes, or parameters of attributes (i.e. macOS @availability parameter isn't helpful on iOS API diff)
+- [ ] Making HTML output more readable
 - [ ] Making HTML interactable, such as by linking to more docs, or adding an option to expand all details with one click
-- [ ] Filtering output by platform, architecture, or framework
 - [ ] Extending CLI to expose diffing swiftmodule directories outside of Xcode.app bundles
 
 #### But Why?

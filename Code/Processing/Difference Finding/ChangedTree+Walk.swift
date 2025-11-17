@@ -86,7 +86,7 @@ extension ChangedTree {
 				visitors.forEach { v in if v.shouldVisitNamedType(namedType) { v.willVisitNamedType?(namedType) } }
 			}, didVisitNamedType: { namedType in
 				// Pre-compute display name with inline changes for the completed type
-				var completedType = activeNamedTypeStack.removeLast() as! ChangedTree.Platform.Architecture.Framework.NamedType
+				let completedType = activeNamedTypeStack.removeLast() as! ChangedTree.Platform.Architecture.Framework.NamedType
 
 				// Check if this is a metadata-only change
 				let hasMembers = completedType.members.contains { $0.isNotUnchanged }
@@ -211,13 +211,12 @@ extension ChangedTree {
 						// Build display: base type, then changes
 						var display = baseTypeName.htmlEscape()
 
-						// If we have conformance changes, show them (they include attributes like @unsafe)
-						// Don't show separate attribute changes as they're likely part of the conformance
+						// Show both attribute and conformance changes with red/green styling
+						if !attributeChanges.isEmpty {
+							display += " " + attributeChanges.joined(separator: " ")
+						}
 						if !conformanceChanges.isEmpty {
 							display += " " + conformanceChanges.joined(separator: " ")
-						} else if !attributeChanges.isEmpty {
-							// Only show attribute changes if there are no conformance changes
-							display += " (\(attributeChanges.joined(separator: ", ")))"
 						}
 
 						completedType.displayName = display
