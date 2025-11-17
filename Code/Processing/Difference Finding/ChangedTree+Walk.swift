@@ -5,12 +5,19 @@ extension ChangedTree {
 		var tree = StorageTree()
 
 		var activeNamedTypeStack = [Nested]()
+		var currentPlatform: String = ""  // Track current platform for @available normalization
 
 		let visitors = visitors.compactMap { $0 }
 		let aggregateVisitor = ChangeVisitor(
 			willBegin: { visitors.forEach { v in v.willBegin() } },
 			didEnd: { tree in visitors.forEach { v in v.didEnd(tree) } },
 			willVisitPlatform: { platform in
+				// Update current platform for attribute normalization
+				switch platform {
+				case .added(_, let p), .removed(_, let p), .modified(let p, _), .unchanged(let p, _):
+					currentPlatform = p.rawValue
+				}
+
 				tree.append(.init(value: platform.change(keyPath: \.rawValue)))
 
 				visitors.forEach { v in if v.shouldVisitPlatform(platform) { v.willVisitPlatform?(platform) } }
@@ -56,9 +63,12 @@ extension ChangedTree {
 				}()
 
 				if let oldNT = oldNT, let newNT = newNT {
-					// Add attribute changes
-					let addedAttributes = Set(newNT.attributes).subtracting(oldNT.attributes)
-					let removedAttributes = Set(oldNT.attributes).subtracting(newNT.attributes)
+					// Add attribute changes (normalize @available for current platform)
+					let normalizedOldAttrs = oldNT.attributes.compactMap { $0.normalized(for: currentPlatform) }
+					let normalizedNewAttrs = newNT.attributes.compactMap { $0.normalized(for: currentPlatform) }
+
+					let addedAttributes = Set(normalizedNewAttrs).subtracting(normalizedOldAttrs)
+					let removedAttributes = Set(normalizedOldAttrs).subtracting(normalizedNewAttrs)
 
 					for attribute in removedAttributes.sorted(by: { $0.name < $1.name }) {
 						newType.attributeChanges.append(.removed(attribute.developerFacingValue, attribute.developerFacingValue))
@@ -421,49 +431,69 @@ extension ChangedTree {
 		let oldNamedTypes = oldIndex[platform]?[architecture]?[framework.name]?.namedTypes ?? []
 		let newNamedTypes = newIndex[platform]?[architecture]?[framework.name]?.namedTypes ?? []
 
-		_enumerateNamedTypeDifferences(oldNamedTypes: oldNamedTypes, newNamedTypes: newNamedTypes, visitor: visitor)
+		_enumerateNamedTypeDifferences(oldNamedTypes: oldNamedTypes, newNamedTypes: newNamedTypes, platform: platform.rawValue, visitor: visitor)
 	}
 
-	fileprivate func _enumerateNamedTypeDifferences(oldNamedTypes: [NamedType], newNamedTypes: [NamedType], visitor: ChangeVisitor) {
+	fileprivate func _enumerateNamedTypeDifferences(oldNamedTypes: [NamedType], newNamedTypes: [NamedType], platform: String, visitor: ChangeVisitor) {
 		var remainingOld = oldNamedTypes
 		var remainingNew = newNamedTypes
-		var matchedChanges: [(old: NamedType, new: NamedType)] = []
+		var unchangedMatches: [(old: NamedType, new: NamedType)] = []
+		var modifiedMatches: [(old: NamedType, new: NamedType)] = []
+
+		// Helper to check if normalized attributes are the same
+		func attributesMatch(_ old: NamedType, _ new: NamedType) -> Bool {
+			let normalizedOld = old.attributes.compactMap { $0.normalized(for: platform) }
+			let normalizedNew = new.attributes.compactMap { $0.normalized(for: platform) }
+			return Set(normalizedOld) == Set(normalizedNew)
+		}
 
 		// First pass: Try to match types with exact conformances (for extensions)
 		// This handles the case where we have multiple extensions of the same type
 		// with different conformances that haven't changed
 		for oldType in oldNamedTypes {
-			// Try to find exact match first (including conformances, excluding attributes)
-			// We need to check that attributes differ to avoid matching identical types
-			if let exactMatch = newNamedTypes.first(where: { $0.isSameExceptAttributes(oldType) && $0.attributes != oldType.attributes }) {
-				matchedChanges.append((old: oldType, new: exactMatch))
+			// Try to find exact match first (including conformances)
+			// We check if they're the same except for attributes, then verify attributes are also the same (after normalization)
+			if let exactMatch = newNamedTypes.first(where: {
+				$0.isSameExceptAttributes(oldType) && attributesMatch(oldType, $0)
+			}) {
+				unchangedMatches.append((old: oldType, new: exactMatch))
 				remainingOld.removeAll { $0 == oldType }
 				remainingNew.removeAll { $0 == exactMatch }
 			}
 		}
 
-		// Second pass: Match remaining types ignoring conformances/attributes
-		// This handles types where conformances/attributes actually changed
+		// Second pass: Match remaining types with same identity but different conformances/attributes
+		// This handles types where conformances or attributes actually changed
 		for oldType in remainingOld {
-			// Match types that have the same identity but different conformances/attributes
-			// Check that either conformances or attributes differ to avoid matching identical types
-			if let newType = remainingNew.first(where: {
-				$0.isSameExceptConformancesAndAttributes(oldType) &&
-				($0.conformances != oldType.conformances || $0.attributes != oldType.attributes)
-			}) {
-				matchedChanges.append((old: oldType, new: newType))
+			// Match types that have the same identity but different conformances and/or attributes
+			if let newType = remainingNew.first(where: { $0.isSameExceptConformancesAndAttributes(oldType) }) {
+				modifiedMatches.append((old: oldType, new: newType))
 				remainingOld.removeAll { $0 == oldType }
 				remainingNew.removeAll { $0 == newType }
 			}
 		}
 
-		for (oldType, newType) in matchedChanges {
+		// Process unchanged matches
+		for (oldType, newType) in unchangedMatches {
+			let typeChange = Change<NamedType>.unchanged(oldType, newType)
+			guard visitor.shouldVisitNamedType(typeChange) else { continue }
+
+			visitor.willVisitNamedType?(typeChange)
+
+			_enumerateNamedTypeDifferences(oldNamedTypes: oldType.nestedTypes, newNamedTypes: newType.nestedTypes, platform: platform, visitor: visitor)
+			_enumerateMemberDifferences(oldMembers: oldType.members, newMembers: newType.members, visitor: visitor)
+
+			visitor.didVisitNamedType?(typeChange)
+		}
+
+		// Process modified matches
+		for (oldType, newType) in modifiedMatches {
 			let typeChange = Change<NamedType>.modified(oldType, newType)
 			guard visitor.shouldVisitNamedType(typeChange) else { continue }
 
 			visitor.willVisitNamedType?(typeChange)
 
-			_enumerateNamedTypeDifferences(oldNamedTypes: oldType.nestedTypes, newNamedTypes: newType.nestedTypes, visitor: visitor)
+			_enumerateNamedTypeDifferences(oldNamedTypes: oldType.nestedTypes, newNamedTypes: newType.nestedTypes, platform: platform, visitor: visitor)
 			_enumerateMemberDifferences(oldMembers: oldType.members, newMembers: newType.members, visitor: visitor)
 
 			visitor.didVisitNamedType?(typeChange)
@@ -475,13 +505,13 @@ extension ChangedTree {
 			visitor.willVisitNamedType?(namedTypeChange)
 			switch namedTypeChange {
 			case .added(_, let new):
-				_enumerateNamedTypeDifferences(oldNamedTypes: [], newNamedTypes: new.nestedTypes, visitor: visitor)
+				_enumerateNamedTypeDifferences(oldNamedTypes: [], newNamedTypes: new.nestedTypes, platform: platform, visitor: visitor)
 				_enumerateMemberDifferences(oldMembers: [], newMembers: new.members, visitor: visitor)
 			case .removed(let old, _):
-				_enumerateNamedTypeDifferences(oldNamedTypes: old.nestedTypes, newNamedTypes: [], visitor: visitor)
+				_enumerateNamedTypeDifferences(oldNamedTypes: old.nestedTypes, newNamedTypes: [], platform: platform, visitor: visitor)
 				_enumerateMemberDifferences(oldMembers: old.members, newMembers: [], visitor: visitor)
 			case .modified(let old, let new), .unchanged(let old, let new):
-				_enumerateNamedTypeDifferences(oldNamedTypes: old.nestedTypes, newNamedTypes: new.nestedTypes, visitor: visitor)
+				_enumerateNamedTypeDifferences(oldNamedTypes: old.nestedTypes, newNamedTypes: new.nestedTypes, platform: platform, visitor: visitor)
 				_enumerateMemberDifferences(oldMembers: old.members, newMembers: new.members, visitor: visitor)
 			}
 			visitor.didVisitNamedType?(namedTypeChange)

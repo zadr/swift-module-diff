@@ -66,7 +66,8 @@ extension Summary {
 			var framework = ParseSwiftmodule(path: path, typePrefixesToRemove: qualifiedTypePrefixesToRemove).run()
 
 			// Merge duplicate extensions (e.g., "extension Never: A" + "extension Never: B" → "extension Never: A, B")
-			framework.mergeExtensions()
+			// Normalize @available attributes for the current platform before merging
+			framework.mergeExtensions(platform: it.platform.rawValue)
 
 			let threadIndex = i % threadCount
 			resultsPerThread[threadIndex][it.platform, default: [:]][it.architecture, default: []].insert(framework)

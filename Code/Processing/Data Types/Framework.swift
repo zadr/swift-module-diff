@@ -41,7 +41,7 @@ extension Framework: Codable, CustomStringConvertible, Equatable, Hashable, Send
 	///   extension Never : TransferRepresentation { ... }
 	///   extension Never : Transferable { ... }
 	/// We want to treat these as a single extension: `extension Never : TransferRepresentation, Transferable`
-	mutating func mergeExtensions() {
+	mutating func mergeExtensions(platform: String) {
 		// Group extensions by their identity (name, attributes, generic constraints)
 		var extensionGroups: [String: [Int]] = [:]
 
@@ -49,8 +49,10 @@ extension Framework: Codable, CustomStringConvertible, Equatable, Hashable, Send
 			guard type.kind == .extension else { continue }
 
 			// Create a key from the extension's identity (everything except conformances)
-			// Use full developerFacingValue for attributes to distinguish @available(iOS 15) from @available(iOS 16)
-			let key = "\(type.name)|\(type.attributes.map { $0.developerFacingValue }.sorted().joined(separator: ","))|\(type.generics.map { $0.developerFacingValue }.joined(separator: ","))|\(type.genericConstraints.map { $0.developerFacingValue }.joined(separator: ","))|\(type.decorators.map { $0.rawValue }.sorted().joined(separator: ","))"
+			// Normalize @available attributes for the current platform to avoid false duplicates
+			// e.g., @available(iOS 16, *) and @available(macOS 13, iOS 16, *) are the same for iOS
+			let normalizedAttrs = type.attributes.compactMap { $0.normalized(for: platform)?.developerFacingValue }.sorted().joined(separator: ",")
+			let key = "\(type.name)|\(normalizedAttrs)|\(type.generics.map { $0.developerFacingValue }.joined(separator: ","))|\(type.genericConstraints.map { $0.developerFacingValue }.joined(separator: ","))|\(type.decorators.map { $0.rawValue }.sorted().joined(separator: ","))"
 
 			extensionGroups[key, default: []].append(index)
 		}
