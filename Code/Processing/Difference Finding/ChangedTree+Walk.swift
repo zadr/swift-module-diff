@@ -1,6 +1,85 @@
 import Foundation
 
 extension ChangedTree {
+	/// Renders an inline diff for modified attributes (e.g., @available version changes)
+	/// Example: @available(iOS: <del>17.2</del><ins>18.0</ins>, *)
+	private func renderInlineDiff(old: String, new: String) -> String {
+		// For @available attributes, split by common tokens and diff at token level
+		// This ensures version numbers like "17.2" and "18.0" are treated as whole units
+
+		// Split into tokens: words, numbers (including decimals), and punctuation
+		func tokenize(_ str: String) -> [String] {
+			var tokens: [String] = []
+			var current = ""
+			var lastWasDigit = false
+
+			for char in str {
+				let isDigit = char.isNumber || char == "."
+
+				if isDigit == lastWasDigit && !current.isEmpty {
+					current.append(char)
+				} else {
+					if !current.isEmpty {
+						tokens.append(current)
+					}
+					current = String(char)
+					lastWasDigit = isDigit
+				}
+			}
+
+			if !current.isEmpty {
+				tokens.append(current)
+			}
+
+			return tokens
+		}
+
+		let oldTokens = tokenize(old)
+		let newTokens = tokenize(new)
+
+		var result = ""
+		var i = 0
+		var j = 0
+
+		// Find common prefix
+		while i < oldTokens.count && j < newTokens.count && oldTokens[i] == newTokens[j] {
+			result += oldTokens[i].htmlEscape()
+			i += 1
+			j += 1
+		}
+
+		// Find where they differ
+		if i < oldTokens.count || j < newTokens.count {
+			// Find common suffix
+			var oldSuffixStart = oldTokens.count
+			var newSuffixStart = newTokens.count
+
+			while oldSuffixStart > i && newSuffixStart > j &&
+				  oldTokens[oldSuffixStart - 1] == newTokens[newSuffixStart - 1] {
+				oldSuffixStart -= 1
+				newSuffixStart -= 1
+			}
+
+			// Render the difference
+			if i < oldSuffixStart {
+				let removed = oldTokens[i..<oldSuffixStart].joined()
+				result += "<span class=\"removed\">\(removed.htmlEscape())</span>"
+			}
+
+			if j < newSuffixStart {
+				let added = newTokens[j..<newSuffixStart].joined()
+				result += "<span class=\"added\">\(added.htmlEscape())</span>"
+			}
+
+			// Add common suffix
+			if oldSuffixStart < oldTokens.count {
+				result += oldTokens[oldSuffixStart...].joined().htmlEscape()
+			}
+		}
+
+		return result
+	}
+
 	func walk(visitors: ChangeVisitor?..., trace: Bool) {
 		var tree = StorageTree()
 
@@ -67,15 +146,43 @@ extension ChangedTree {
 					let normalizedOldAttrs = oldNT.attributes.compactMap { $0.normalized(for: currentPlatform) }
 					let normalizedNewAttrs = newNT.attributes.compactMap { $0.normalized(for: currentPlatform) }
 
-					let addedAttributes = Set(normalizedNewAttrs).subtracting(normalizedOldAttrs)
-					let removedAttributes = Set(normalizedOldAttrs).subtracting(normalizedNewAttrs)
+					// Group attributes by name for comparison
+					var oldAttrsByName: [String: Attribute] = [:]
+					var newAttrsByName: [String: Attribute] = [:]
 
-					for attribute in removedAttributes.sorted(by: { $0.name < $1.name }) {
-						newType.attributeChanges.append(.removed(attribute.developerFacingValue, attribute.developerFacingValue))
+					for attr in normalizedOldAttrs {
+						oldAttrsByName[attr.name] = attr
+					}
+					for attr in normalizedNewAttrs {
+						newAttrsByName[attr.name] = attr
 					}
 
-					for attribute in addedAttributes.sorted(by: { $0.name < $1.name }) {
-						newType.attributeChanges.append(.added(attribute.developerFacingValue, attribute.developerFacingValue))
+					// Find added, removed, and modified attributes
+					let oldNames = Set(oldAttrsByName.keys)
+					let newNames = Set(newAttrsByName.keys)
+
+					let removedNames = oldNames.subtracting(newNames)
+					let addedNames = newNames.subtracting(oldNames)
+					let commonNames = oldNames.intersection(newNames)
+
+					for name in removedNames.sorted() {
+						let attr = oldAttrsByName[name]!
+						newType.attributeChanges.append(.removed(attr.developerFacingValue, attr.developerFacingValue))
+					}
+
+					for name in addedNames.sorted() {
+						let attr = newAttrsByName[name]!
+						newType.attributeChanges.append(.added(attr.developerFacingValue, attr.developerFacingValue))
+					}
+
+					for name in commonNames.sorted() {
+						let oldAttr = oldAttrsByName[name]!
+						let newAttr = newAttrsByName[name]!
+
+						// Check if the attribute parameters changed
+						if oldAttr.parameters != newAttr.parameters {
+							newType.attributeChanges.append(.modified(oldAttr.developerFacingValue, newAttr.developerFacingValue))
+						}
 					}
 
 					// Add conformance changes
@@ -251,6 +358,10 @@ extension ChangedTree {
 							attributeChanges.append("<span class=\"added\">\(value.htmlEscape())</span>")
 						case .removed(_, let value):
 							attributeChanges.append("<span class=\"removed\">\(value.htmlEscape())</span>")
+						case .modified(let old, let new):
+							// Render inline diff for modified attributes
+							let inlineDiff = renderInlineDiff(old: old, new: new)
+							attributeChanges.append(inlineDiff)
 						default:
 							break
 						}
