@@ -1,5 +1,4 @@
 import Foundation
-import HTMLEntities
 
 extension ChangedTree {
 	static func dynamicHTMLVisitor(from fromVersion: Version, to toVersion: Version, root: String) -> ChangeVisitor {
@@ -39,230 +38,233 @@ extension ChangedTree {
 						meta(property: "og:type", content: "website")
 						link(rel: "canonical", href: "https://example.com/")
 						style {
-							"""
-							a {
-								color: black;
+							cssRule("a") {
+								property("color", "black")
 							}
-
-							ul {
-								list-style: none;
+							cssRule("ul") {
+								property("list-style", "none")
 							}
-
-							li.added:before {
-								content: "➕";
-								padding-right: 5px;
+							cssRule("li.added:before") {
+								properties(
+									("content", "\"➕\""),
+									("padding-right", "5px")
+								)
 							}
-
-							li.modified:before {
-								content: "〰️";
-								padding-right: 5px;
+							cssRule("li.modified:before") {
+								properties(
+									("content", "\"〰️\""),
+									("padding-right", "5px")
+								)
 							}
-
-							li.removed:before {
-								content: "➖";
-								padding-right: 5px;
+							cssRule("li.removed:before") {
+								properties(
+									("content", "\"➖\""),
+									("padding-right", "5px")
+								)
 							}
-
-							span.added {
-								color: #22863a;
-								background-color: #f0fff4;
-								padding: 2px 4px;
-								border-radius: 3px;
+							cssRule("span.added") {
+								properties(
+									("color", "#22863a"),
+									("background-color", "#f0fff4"),
+									("padding", "2px 4px"),
+									("border-radius", "3px")
+								)
 							}
-
-							span.removed {
-								color: #cb2431;
-								background-color: #ffeef0;
-								padding: 2px 4px;
-								border-radius: 3px;
-								text-decoration: line-through;
+							cssRule("span.removed") {
+								properties(
+									("color", "#cb2431"),
+									("background-color", "#ffeef0"),
+									("padding", "2px 4px"),
+									("border-radius", "3px"),
+									("text-decoration", "line-through")
+								)
 							}
-
-							details {
-								border: 1px solid #aaa;
-								border-radius: 4px;
-								padding: 0.5em;
-								margin: 0.5em 0;
+							cssRule("details") {
+								properties(
+									("border", "1px solid #aaa"),
+									("border-radius", "4px"),
+									("padding", "0.5em"),
+									("margin", "0.5em 0")
+								)
 							}
-
-							summary {
-								font-weight: bold;
-								padding: 0.5em;
-								cursor: pointer;
+							cssRule("summary") {
+								properties(
+									("font-weight", "bold"),
+									("padding", "0.5em"),
+									("cursor", "pointer")
+								)
 							}
-
-							.type-no-content {
-								border: 1px solid #aaa;
-								border-radius: 4px;
-								padding: 0.5em;
-								margin: 0.5em 0;
-								font-weight: bold;
+							cssRule(".type-no-content") {
+								properties(
+									("border", "1px solid #aaa"),
+									("border-radius", "4px"),
+									("padding", "0.5em"),
+									("margin", "0.5em 0"),
+									("font-weight", "bold")
+								)
 							}
-
-							.tabs {
-								margin: 20px 0;
+							cssRule(".tabs") {
+								property("margin", "20px 0")
 							}
-
-							.tab-buttons {
-								display: flex;
-								gap: 0;
-								border-bottom: 2px solid #ccc;
-								margin-bottom: 20px;
+							cssRule(".tab-buttons") {
+								properties(
+									("display", "flex"),
+									("gap", "0"),
+									("border-bottom", "2px solid #ccc"),
+									("margin-bottom", "20px")
+								)
 							}
-
-							.tab-button {
-								background: #f5f5f5;
-								border: 1px solid #ccc;
-								border-bottom: none;
-								padding: 10px 20px;
-								cursor: pointer;
-								font-size: 16px;
-								border-radius: 4px 4px 0 0;
-								margin-bottom: -2px;
+							cssRule(".tab-button") {
+								properties(
+									("background", "#f5f5f5"),
+									("border", "1px solid #ccc"),
+									("border-bottom", "none"),
+									("padding", "10px 20px"),
+									("cursor", "pointer"),
+									("font-size", "16px"),
+									("border-radius", "4px 4px 0 0"),
+									("margin-bottom", "-2px")
+								)
 							}
-
-							.tab-button:hover {
-								background: #e8e8e8;
+							cssRule(".tab-button:hover") {
+								property("background", "#e8e8e8")
 							}
-
-							.tab-button.active {
-								background: white;
-								border-bottom: 2px solid white;
-								font-weight: bold;
-								z-index: 1;
+							cssRule(".tab-button.active") {
+								properties(
+									("background", "white"),
+									("border-bottom", "2px solid white"),
+									("font-weight", "bold"),
+									("z-index", "1")
+								)
 							}
-
-							.tab-content {
-								display: none;
+							cssRule(".tab-content") {
+								property("display", "none")
 							}
-
-							.tab-content.active {
-								display: block;
+							cssRule(".tab-content.active") {
+								property("display", "block")
 							}
-
-							.filter-control {
-								margin: 20px 0;
-								padding: 10px;
-								background: #f5f5f5;
-								border-radius: 4px;
-								border: 1px solid #ccc;
+							cssRule(".filter-control") {
+								properties(
+									("margin", "20px 0"),
+									("padding", "10px"),
+									("background", "#f5f5f5"),
+									("border-radius", "4px"),
+									("border", "1px solid #ccc")
+								)
 							}
-
-							.filter-control label {
-								cursor: pointer;
-								font-size: 14px;
+							cssRule(".filter-control label") {
+								properties(
+									("cursor", "pointer"),
+									("font-size", "14px"),
+									("display", "inline-block"),
+									("margin-right", "15px")
+								)
 							}
-
-							.filter-control input[type="checkbox"] {
-								margin-right: 8px;
-								cursor: pointer;
+							cssRule(".filter-control input[type=\"checkbox\"]") {
+								properties(
+									("margin-right", "8px"),
+									("cursor", "pointer")
+								)
 							}
-
-							.filter-control label {
-								display: inline-block;
-								margin-right: 15px;
+							cssRule(".attr-dropdown") {
+								properties(
+									("position", "relative"),
+									("display", "inline-block"),
+									("margin-left", "20px")
+								)
 							}
-
-							/* Custom dropdown for attribute filtering */
-							.attr-dropdown {
-								position: relative;
-								display: inline-block;
-								margin-left: 20px;
+							cssRule(".attr-dropdown-button") {
+								properties(
+									("background", "white"),
+									("border", "1px solid #ccc"),
+									("padding", "5px 30px 5px 10px"),
+									("cursor", "pointer"),
+									("border-radius", "3px"),
+									("font-size", "14px"),
+									("position", "relative")
+								)
 							}
-
-							.attr-dropdown-button {
-								background: white;
-								border: 1px solid #ccc;
-								padding: 5px 30px 5px 10px;
-								cursor: pointer;
-								border-radius: 3px;
-								font-size: 14px;
-								position: relative;
+							cssRule(".attr-dropdown-button:hover") {
+								property("background", "#f9f9f9")
 							}
-
-							.attr-dropdown-button:hover {
-								background: #f9f9f9;
+							cssRule(".attr-dropdown-button .dropdown-arrow") {
+								properties(
+									("position", "absolute"),
+									("right", "8px"),
+									("top", "50%"),
+									("transform", "translateY(-50%)"),
+									("font-size", "10px"),
+									("transition", "transform 0.2s ease")
+								)
 							}
-
-							.attr-dropdown-button .dropdown-arrow {
-								position: absolute;
-								right: 8px;
-								top: 50%;
-								transform: translateY(-50%);
-								font-size: 10px;
-								transition: transform 0.2s ease;
+							cssRule(".attr-dropdown-button.open .dropdown-arrow") {
+								property("transform", "translateY(-50%) rotate(180deg)")
 							}
-
-							.attr-dropdown-button.open .dropdown-arrow {
-								transform: translateY(-50%) rotate(180deg);
+							cssRule(".attr-dropdown-menu") {
+								properties(
+									("display", "none"),
+									("position", "absolute"),
+									("top", "100%"),
+									("left", "0"),
+									("background", "white"),
+									("border", "1px solid #ccc"),
+									("border-radius", "3px"),
+									("box-shadow", "0 2px 8px rgba(0,0,0,0.15)"),
+									("min-width", "200px"),
+									("max-height", "400px"),
+									("overflow-y", "auto"),
+									("z-index", "1000"),
+									("margin-top", "2px")
+								)
 							}
-
-							.attr-dropdown-menu {
-								display: none;
-								position: absolute;
-								top: 100%;
-								left: 0;
-								background: white;
-								border: 1px solid #ccc;
-								border-radius: 3px;
-								box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-								min-width: 200px;
-								max-height: 400px;
-								overflow-y: auto;
-								z-index: 1000;
-								margin-top: 2px;
+							cssRule(".attr-dropdown-menu.show") {
+								property("display", "block")
 							}
-
-							.attr-dropdown-menu.show {
-								display: block;
+							cssRule(".attr-dropdown-item") {
+								properties(
+									("padding", "0"),
+									("cursor", "pointer"),
+									("border-bottom", "1px solid #f0f0f0"),
+									("display", "block"),
+									("font-size", "14px"),
+									("margin", "0")
+								)
 							}
-
-							.attr-dropdown-item {
-								padding: 0;
-								cursor: pointer;
-								border-bottom: 1px solid #f0f0f0;
-								display: block;
-								font-size: 14px;
-								margin: 0;
+							cssRule(".attr-dropdown-item:last-child") {
+								property("border-bottom", "none")
 							}
-
-							.attr-dropdown-item:last-child {
-								border-bottom: none;
+							cssRule(".attr-dropdown-item:hover") {
+								property("background", "#f5f5f5")
 							}
-
-							.attr-dropdown-item:hover {
-								background: #f5f5f5;
+							cssRule(".attr-dropdown-item label") {
+								properties(
+									("display", "flex"),
+									("align-items", "center"),
+									("padding", "8px 12px"),
+									("cursor", "pointer"),
+									("margin", "0"),
+									("width", "100%"),
+									("box-sizing", "border-box")
+								)
 							}
-
-							.attr-dropdown-item label {
-								display: flex;
-								align-items: center;
-								padding: 8px 12px;
-								cursor: pointer;
-								margin: 0;
-								width: 100%;
-								box-sizing: border-box;
+							cssRule(".attr-dropdown-item input[type=\"checkbox\"]") {
+								properties(
+									("margin-right", "8px"),
+									("cursor", "pointer"),
+									("flex-shrink", "0")
+								)
 							}
-
-							.attr-dropdown-item input[type="checkbox"] {
-								margin-right: 8px;
-								cursor: pointer;
-								flex-shrink: 0;
+							cssRule(".attr-dropdown-item span") {
+								properties(
+									("flex", "1"),
+									("white-space", "nowrap"),
+									("overflow", "hidden"),
+									("text-overflow", "ellipsis")
+								)
 							}
-
-							.attr-dropdown-item span {
-								flex: 1;
-								white-space: nowrap;
-								overflow: hidden;
-								text-overflow: ellipsis;
+							cssRule("body.filtering-enabled .platform-filtered") {
+								property("display", "none !important")
 							}
-
-							/* Hide filtered members when filtering is enabled */
-							body.filtering-enabled .platform-filtered {
-								display: none !important;
-							}
-
-							"""
 						}
 					}
 					body {
