@@ -4,7 +4,6 @@ struct Attribute {
 	var name: String = ""
 	var parameters: [Parameter] = []
 
-	// Cache for developerFacingValue to avoid repeated string construction
 	private var _cachedDeveloperFacingValue: String?
 
 	var description: String {

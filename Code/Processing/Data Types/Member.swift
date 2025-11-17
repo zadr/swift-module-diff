@@ -76,7 +76,6 @@ struct Member {
 	var returnType: String = ""
 	var parameters: [Parameter] = []
 
-	// Cache for developerFacingValue to avoid repeated string construction
 	private var _cachedDeveloperFacingValue: String?
 
 	var description: String {
@@ -102,7 +101,6 @@ extension Member {
 
 		let attributes = attributes.map { $0.developerFacingValue }.joined(separator: " ")
 
-		// Separate access level from other decorators
 		var accessLevel = ""
 		var otherDecorators = decorators
 

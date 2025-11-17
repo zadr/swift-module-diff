@@ -24,7 +24,6 @@ class VariableTracker: SyntaxVisitor, AnyTypeCollectionParser {
 		case .keyword(.lazy): decorator = .lazy
 		case .keyword(.dynamic): decorator = .dynamic
 		case .keyword(.unowned):
-			// Check for unowned(safe) vs unowned(unsafe) vs unowned
 			if let detail = node.detail?.detail.tokenKind {
 				if case .identifier("unsafe") = detail {
 					decorator = .unsafe

@@ -88,17 +88,6 @@ extension ChangedTree {
 				// Pre-compute display name with inline changes for the completed type
 				let completedType = activeNamedTypeStack.removeLast() as! ChangedTree.Platform.Architecture.Framework.NamedType
 
-				// Check if this is a metadata-only change
-				let hasMembers = completedType.members.contains { $0.isNotUnchanged }
-				let hasNestedTypes = completedType.namedTypes.contains { $0.isInteresting }
-				let hasConformanceChanges = !completedType.conformanceChanges.isEmpty
-				let hasAttributeChanges = !completedType.attributeChanges.isEmpty
-				let isMetadataOnlyChange = (hasConformanceChanges || hasAttributeChanges) &&
-					completedType.value.kind == "modified" && !hasMembers && !hasNestedTypes
-
-				// Build fully qualified name for nested types by traversing all parents
-				var qualifiedName = completedType.value.any
-
 				// Skip over an attribute with properly balanced parentheses
 				func skipAttribute(in string: String, startingAt index: String.Index) -> String.Index {
 					var current = index
@@ -160,6 +149,33 @@ extension ChangedTree {
 					return nil
 				}
 
+				// Extract the type kind and name (without attributes/conformances)
+				// e.g., "@available(...) struct Foo: Bar" -> "struct Foo"
+				func extractTypeDeclaration(from fullDeclaration: String) -> String {
+					// Skip attributes first
+					var current = fullDeclaration.startIndex
+					while current < fullDeclaration.endIndex {
+						while current < fullDeclaration.endIndex, fullDeclaration[current].isWhitespace {
+							current = fullDeclaration.index(after: current)
+						}
+						if current < fullDeclaration.endIndex, fullDeclaration[current] == "@" {
+							current = skipAttribute(in: fullDeclaration, startingAt: current)
+						} else {
+							break
+						}
+					}
+
+					// Now extract everything up to the colon or opening brace
+					let remainingString = String(fullDeclaration[current...])
+					if let colonRange = remainingString.range(of: ":") {
+						return remainingString[..<colonRange.lowerBound].trimmingCharacters(in: .whitespaces)
+					} else if let braceRange = remainingString.range(of: "{") {
+						return remainingString[..<braceRange.lowerBound].trimmingCharacters(in: .whitespaces)
+					} else {
+						return remainingString.trimmingCharacters(in: .whitespaces)
+					}
+				}
+
 				// Build path from all parents (excluding the framework level)
 				var parentNames: [String] = []
 				for item in activeNamedTypeStack {
@@ -170,60 +186,77 @@ extension ChangedTree {
 					}
 				}
 
-				if !parentNames.isEmpty {
-					qualifiedName = parentNames.joined(separator: ".") + "." + (extractTypeName(from: qualifiedName) ?? qualifiedName)
+				// Build the base type declaration (with kind like "struct", "class", etc)
+				let baseTypeDecl = extractTypeDeclaration(from: completedType.value.any)
+
+				// For nested types, we want to show: "struct ParentType.ChildType"
+				// Extract the type kind and name separately
+				var typeKind = ""
+				var simpleName = ""
+				if let typeName = extractTypeName(from: baseTypeDecl) {
+					// baseTypeDecl is like "struct Metadata" or "class Foo"
+					// Extract the kind (struct/class/etc) by removing the name
+					let nameIndex = baseTypeDecl.range(of: typeName, options: .backwards)
+					if let idx = nameIndex {
+						typeKind = String(baseTypeDecl[..<idx.lowerBound]).trimmingCharacters(in: .whitespaces)
+						simpleName = typeName
+					}
 				}
 
-				if isMetadataOnlyChange {
-					if !completedType.attributeChanges.isEmpty || !completedType.conformanceChanges.isEmpty {
-						// Strip conformances from the base type name (they appear after ":")
-						var baseTypeName = qualifiedName
-						if let colonIndex = baseTypeName.range(of: ":", options: .backwards)?.lowerBound {
-							baseTypeName = String(baseTypeName[..<colonIndex]).trimmingCharacters(in: .whitespaces)
+				// Build qualified name with type kind
+				var qualifiedTypeDecl: String
+				if !parentNames.isEmpty {
+					let fullPath = parentNames.joined(separator: ".") + "." + simpleName
+					qualifiedTypeDecl = typeKind.isEmpty ? fullPath : "\(typeKind) \(fullPath)"
+				} else {
+					qualifiedTypeDecl = baseTypeDecl
+				}
+
+				// Generate styled display name if there are attribute or conformance changes
+				if !completedType.attributeChanges.isEmpty || !completedType.conformanceChanges.isEmpty {
+					let baseTypeName = qualifiedTypeDecl
+
+					// Separate attribute and conformance changes
+					var attributeChanges: [String] = []
+					var conformanceChanges: [String] = []
+
+					for attrChange in completedType.attributeChanges {
+						switch attrChange {
+						case .added(_, let value):
+							attributeChanges.append("<span class=\"added\">\(value.htmlEscape())</span>")
+						case .removed(_, let value):
+							attributeChanges.append("<span class=\"removed\">\(value.htmlEscape())</span>")
+						default:
+							break
 						}
-
-						// Separate attribute and conformance changes
-						var attributeChanges: [String] = []
-						var conformanceChanges: [String] = []
-
-						for attrChange in completedType.attributeChanges {
-							switch attrChange {
-							case .added(_, let value):
-								attributeChanges.append("<span class=\"added\">\(value.htmlEscape())</span>")
-							case .removed(_, let value):
-								attributeChanges.append("<span class=\"removed\">\(value.htmlEscape())</span>")
-							default:
-								break
-							}
-						}
-
-						for confChange in completedType.conformanceChanges {
-							switch confChange {
-							case .added(_, let value):
-								conformanceChanges.append("<span class=\"added\">\(value.htmlEscape())</span>")
-							case .removed(_, let value):
-								conformanceChanges.append("<span class=\"removed\">\(value.htmlEscape())</span>")
-							default:
-								break
-							}
-						}
-
-						// Build display: base type, then changes
-						var display = baseTypeName.htmlEscape()
-
-						// Show both attribute and conformance changes with red/green styling
-						if !attributeChanges.isEmpty {
-							display += " " + attributeChanges.joined(separator: " ")
-						}
-						if !conformanceChanges.isEmpty {
-							display += " " + conformanceChanges.joined(separator: " ")
-						}
-
-						completedType.displayName = display
 					}
+
+					for confChange in completedType.conformanceChanges {
+						switch confChange {
+						case .added(_, let value):
+							conformanceChanges.append("<span class=\"added\">\(value.htmlEscape())</span>")
+						case .removed(_, let value):
+							conformanceChanges.append("<span class=\"removed\">\(value.htmlEscape())</span>")
+						default:
+							break
+						}
+					}
+
+					// Build display: base type, then changes
+					var display = baseTypeName.htmlEscape()
+
+					// Show both attribute and conformance changes with red/green styling
+					if !attributeChanges.isEmpty {
+						display += " " + attributeChanges.joined(separator: " ")
+					}
+					if !conformanceChanges.isEmpty {
+						display += " " + conformanceChanges.joined(separator: " ")
+					}
+
+					completedType.displayName = display
 				} else if activeNamedTypeStack.last is ChangedTree.Platform.Architecture.Framework.NamedType {
-					// For non-metadata-only nested types, still show qualified name
-					completedType.displayName = qualifiedName.htmlEscape()
+					// For nested types without changes, still show qualified name with type kind
+					completedType.displayName = qualifiedTypeDecl.htmlEscape()
 				}
 
 				var copy = activeNamedTypeStack.removeLast()
@@ -324,7 +357,6 @@ extension ChangedTree {
 			guard visitor.shouldVisitDependency(dependencyChange) else { continue }
 
 			visitor.willVisitDependency?(dependencyChange)
-			// nothing to do; imports are leaf nodes
 			visitor.didVisitDependency?(dependencyChange)
 		}
 	}
@@ -337,7 +369,6 @@ extension ChangedTree {
 			guard visitor.shouldVisitPrecedenceGroup(precedenceGroupChange) else { continue }
 
 			visitor.willVisitPrecedenceGroup?(precedenceGroupChange)
-			// nothing to do; precedence groups are leaf nodes
 			visitor.didVisitPrecedenceGroup?(precedenceGroupChange)
 		}
 	}
@@ -357,8 +388,6 @@ extension ChangedTree {
 	}
 
 	fileprivate func _enumerateNamedTypeDifferences(oldNamedTypes: [NamedType], newNamedTypes: [NamedType], visitor: ChangeVisitor) {
-		// First pass: match types that are the same except for conformances/attributes
-		// This prevents them from being treated as removed+added
 		var remainingOld = oldNamedTypes
 		var remainingNew = newNamedTypes
 		var matchedChanges: [(old: NamedType, new: NamedType)] = []
@@ -371,21 +400,18 @@ extension ChangedTree {
 			}
 		}
 
-		// Handle matched types as modified (even if they have other changes beyond conformances)
 		for (oldType, newType) in matchedChanges {
 			let typeChange = Change<NamedType>.modified(oldType, newType)
 			guard visitor.shouldVisitNamedType(typeChange) else { continue }
 
 			visitor.willVisitNamedType?(typeChange)
 
-			// Process nested types and members normally
 			_enumerateNamedTypeDifferences(oldNamedTypes: oldType.nestedTypes, newNamedTypes: newType.nestedTypes, visitor: visitor)
 			_enumerateMemberDifferences(oldMembers: oldType.members, newMembers: newType.members, visitor: visitor)
 
 			visitor.didVisitNamedType?(typeChange)
 		}
 
-		// Second pass: handle regular changes for remaining types
 		for namedTypeChange in Change<NamedType>.differences(from: remainingOld, to: remainingNew) {
 			guard visitor.shouldVisitNamedType(namedTypeChange) else { continue }
 
@@ -410,7 +436,6 @@ extension ChangedTree {
 			guard visitor.shouldVisitMember(memberChange) else { continue }
 
 			visitor.willVisitMember?(memberChange)
-			// nothing to do; members are leaf nodes
 			visitor.didVisitMember?(memberChange)
 		}
 	}

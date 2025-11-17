@@ -10,6 +10,10 @@ class ActorTracker: SyntaxVisitor, AnyTypeParser {
 	}
 
 	override func visit(_ node: ActorDeclSyntax) -> SyntaxVisitorContinueKind {
+		if !value.name.isEmpty {
+			return .skipChildren
+		}
+
 		value.name = node.name.text
 
 		let generics = GenericsTracker(parametersNode: node.genericParameterClause, requirementsNode: node.genericWhereClause).run()

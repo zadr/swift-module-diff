@@ -17,7 +17,6 @@ struct GenericsTracker {
 		for genericParameter in parametersNode?.parameters ?? [] {
 			var parameter = Parameter()
 
-			// Check for 'each' keyword (parameter pack)
 			var namePrefix = ""
 			if let specifier = genericParameter.specifier, case .keyword(.each) = specifier.tokenKind {
 				namePrefix = "each "
@@ -36,7 +35,6 @@ struct GenericsTracker {
 			var parameter = Parameter()
 
 			if let sameType = constraint.requirement.as(SameTypeRequirementSyntax.self) {
-				// TypeNameTracker will handle 'repeat' if it's a PackExpansionTypeSyntax
 				parameter.name = ParseAnyType<TypeNameTracker>(node: sameType.leftType).run()
 
 				if case .binaryOperator = sameType.equal.tokenKind {
@@ -45,7 +43,6 @@ struct GenericsTracker {
 
 				parameter.type = ParseAnyType<TypeNameTracker>(node: sameType.rightType).run()
 			} else if let conformance = constraint.requirement.as(ConformanceRequirementSyntax.self) {
-				// TypeNameTracker will handle 'repeat' if it's a PackExpansionTypeSyntax
 				parameter.name = ParseAnyType<TypeNameTracker>(node: conformance.leftType).run()
 
 				if case .colon = conformance.colon.tokenKind {

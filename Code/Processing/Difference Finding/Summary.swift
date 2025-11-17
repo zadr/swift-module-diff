@@ -69,7 +69,6 @@ extension Summary {
 			resultsPerThread[threadIndex][it.platform, default: [:]][it.architecture, default: []].insert(framework)
 		}
 
-		// Merge all thread-local results into final results
 		for threadResults in resultsPerThread {
 			for (platform, architectures) in threadResults {
 				for (architecture, frameworks) in architectures {
@@ -81,7 +80,6 @@ extension Summary {
 		return results
 	}
 
-	/// Build an index mapping framework names to Framework objects for O(1) lookup
 	static func buildFrameworkIndex(from summary: Summary) -> FrameworkIndex {
 		var index = FrameworkIndex()
 

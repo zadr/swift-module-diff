@@ -47,11 +47,20 @@ struct SwiftmoduleDiff: ParsableCommand {
 			let framework = ParseSwiftmodule(path: singleFile, typePrefixesToRemove: []).run()
 			print("Framework: \(framework.name)")
 			print("\nTypes:")
-			for type in framework.namedTypes {
-				print("  \(type.developerFacingValue)")
+
+			func printType(_ type: NamedType, indent: String = "  ") {
+				print("\(indent)\(type.developerFacingValue)")
+				print("\(indent)  Attributes: \(type.attributes.map { $0.developerFacingValue })")
 				for member in type.members {
-					print("    \(member.developerFacingValue)")
+					print("\(indent)  \(member.developerFacingValue)")
 				}
+				for nested in type.nestedTypes {
+					printType(nested, indent: indent + "    ")
+				}
+			}
+
+			for type in framework.namedTypes {
+				printType(type)
 			}
 			print("\nMembers:")
 			for member in framework.members {

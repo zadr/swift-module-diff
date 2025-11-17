@@ -9,7 +9,6 @@ private struct Signpost {
 
 private let signposter = OSSignposter()
 
-// Create static signposts for each operation
 private let signpostingSignpost = Signpost(
 	name: "signposting",
 	id: signposter.makeSignpostID(),

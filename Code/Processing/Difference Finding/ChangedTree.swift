@@ -146,7 +146,6 @@ struct ChangedTree {
 	let old: Summary
 	let new: Summary
 
-	// Framework indices for O(1) lookup by name
 	let oldIndex: FrameworkIndex
 	let newIndex: FrameworkIndex
 

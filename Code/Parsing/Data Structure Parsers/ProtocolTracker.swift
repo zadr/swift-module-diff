@@ -17,6 +17,10 @@ class ProtocolTracker: SyntaxVisitor, AnyTypeParser {
 	}
 
 	override func visit(_ node: ProtocolDeclSyntax) -> SyntaxVisitorContinueKind {
+		if !value.name.isEmpty {
+			return .skipChildren
+		}
+
 		value.name = node.name.text
 
 		// Extract primary associated types (Swift 5.7+)

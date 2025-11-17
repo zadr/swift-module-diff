@@ -125,16 +125,12 @@ class AttributeTracker: SyntaxVisitor, AnyTypeParser {
 	}
 
 	override func visit(_ node: DocumentationAttributeArgumentSyntax) -> SyntaxVisitorContinueKind {
-		// Handle @_documentation(visibility: private) or @_documentation(metadata: "string")
 		var parameter = Parameter()
 		parameter.name = node.label.text
 
-		// Check if value is a token (identifier or keyword)
 		if case .token(let tokenChoice) = node.value {
 			parameter.type = tokenChoice.text
-		}
-		// Check if value is a string literal
-		else if case .string(let stringLiteral) = node.value {
+		} else if case .string(let stringLiteral) = node.value {
 			let stringValue = stringLiteral.segments.map { segment in
 				if let stringSegment = segment.as(StringSegmentSyntax.self) {
 					return stringSegment.content.text
@@ -149,7 +145,6 @@ class AttributeTracker: SyntaxVisitor, AnyTypeParser {
 	}
 
 	override func visit(_ node: DynamicReplacementAttributeArgumentsSyntax) -> SyntaxVisitorContinueKind {
-		// Handle @_dynamicReplacement(for: declName)
 		var parameter = Parameter()
 		parameter.name = "for"
 		parameter.type = node.declName.baseName.text
@@ -158,16 +153,13 @@ class AttributeTracker: SyntaxVisitor, AnyTypeParser {
 	}
 
 	override func visit(_ node: ImplementsAttributeArgumentsSyntax) -> SyntaxVisitorContinueKind {
-		// Handle @_implements(Type, declName)
-		// First parameter: the type
 		var typeParam = Parameter()
 		typeParam.name = node.type.description.trimmingCharacters(in: .whitespacesAndNewlines)
 		value.parameters.append(typeParam)
 
-		// Second parameter: the declaration name
 		var declParam = Parameter()
 		declParam.name = node.declName.baseName.text
-		// Handle function signatures like ==(_:_:)
+
 		if let args = node.declName.argumentNames {
 			let argList = args.arguments.map { arg in
 				arg.name.text + ":"
@@ -179,21 +171,9 @@ class AttributeTracker: SyntaxVisitor, AnyTypeParser {
 		return super.visit(node)
 	}
 
-	// Note: @abi attribute arguments would need AbiAttributeArgumentsSyntax,
-	// but this type is not available in swift-syntax 6.3.
-	// The @abi attribute will fall through to LabeledExprSyntax handling.
-
 	// MARK: - Advanced/Rare Attributes
 
-	override func visit(_ node: SpecializeAttributeArgumentListSyntax) -> SyntaxVisitorContinueKind {
-		// Handle @_specialize(target: func, exported: true, where T == Int)
-		// This is a complex attribute with multiple argument types
-		// The children will be visited automatically (labeledSpecializeArgument, specializeTargetFunctionArgument, genericWhereClause)
-		return super.visit(node)
-	}
-
 	override func visit(_ node: LabeledSpecializeArgumentSyntax) -> SyntaxVisitorContinueKind {
-		// Handle labeled arguments in @_specialize like exported: true, kind: partial
 		var parameter = Parameter()
 		parameter.name = node.label.text
 		parameter.type = node.value.description.trimmingCharacters(in: .whitespacesAndNewlines)
@@ -202,11 +182,10 @@ class AttributeTracker: SyntaxVisitor, AnyTypeParser {
 	}
 
 	override func visit(_ node: SpecializeTargetFunctionArgumentSyntax) -> SyntaxVisitorContinueKind {
-		// Handle target: funcName(_:) in @_specialize
 		var parameter = Parameter()
 		parameter.name = "target"
 		parameter.type = node.declName.baseName.text
-		// Add argument names if present
+
 		if let args = node.declName.argumentNames {
 			let argList = args.arguments.map { arg in
 				arg.name.text + ":"
@@ -218,11 +197,10 @@ class AttributeTracker: SyntaxVisitor, AnyTypeParser {
 	}
 
 	override func visit(_ node: GenericWhereClauseSyntax) -> SyntaxVisitorContinueKind {
-		// Handle where clause in @_specialize, @specialized, @differentiable
-		// Format: where T == Int, U: Codable
+
 		var parameter = Parameter()
 		parameter.name = "where"
-		// Get the full where clause text
+
 		let whereText = node.requirements.map { req in
 			req.description.trimmingCharacters(in: .whitespacesAndNewlines)
 		}.joined(separator: ", ")
@@ -231,32 +209,20 @@ class AttributeTracker: SyntaxVisitor, AnyTypeParser {
 		return super.visit(node)
 	}
 
-	override func visit(_ node: SpecializedAttributeArgumentSyntax) -> SyntaxVisitorContinueKind {
-		// Handle @specialized(where T == Int)
-		// The where clause will be handled by visit(_ node: GenericWhereClauseSyntax)
-		return super.visit(node)
-	}
-
 	override func visit(_ node: DifferentiableAttributeArgumentsSyntax) -> SyntaxVisitorContinueKind {
-		// Handle @differentiable(reverse, wrt: x, where T: Differentiable)
-
-		// Optional kind specifier (reverse, _forward, _linear)
 		if let kind = node.kindSpecifier {
 			var parameter = Parameter()
 			parameter.name = kind.text
 			value.parameters.append(parameter)
 		}
 
-		// The wrt: arguments and where clause will be handled by their respective visitors
 		return super.visit(node)
 	}
 
 	override func visit(_ node: DifferentiabilityWithRespectToArgumentSyntax) -> SyntaxVisitorContinueKind {
-		// Handle wrt: x or wrt: (x, y) in @differentiable and @derivative
 		var parameter = Parameter()
 		parameter.name = "wrt"
 
-		// Check if it's a single argument or multiple arguments
 		if case .argument(let singleArg) = node.arguments {
 			parameter.type = singleArg.argument.text
 		} else if case .argumentList(let argList) = node.arguments {
@@ -269,27 +235,20 @@ class AttributeTracker: SyntaxVisitor, AnyTypeParser {
 	}
 
 	override func visit(_ node: DerivativeAttributeArgumentsSyntax) -> SyntaxVisitorContinueKind {
-		// Handle @derivative(of: compute, wrt: x) or @transpose(of: forward)
 		var parameter = Parameter()
 		parameter.name = "of"
-
-		// Get the original declaration name
 		parameter.type = node.originalDeclName.description.trimmingCharacters(in: .whitespacesAndNewlines)
 
-		// Add accessor if present (.get, .set, ._modify)
 		if let accessor = node.accessorSpecifier {
 			parameter.type += "." + accessor.text
 		}
 
 		value.parameters.append(parameter)
 
-		// The wrt: arguments will be handled by visit(_ node: DifferentiabilityWithRespectToArgumentSyntax)
 		return super.visit(node)
 	}
 
 	override func visit(_ node: EffectsAttributeArgumentListSyntax) -> SyntaxVisitorContinueKind {
-		// Handle @_effects(readnone, readonly, etc.)
-		// The arguments are just tokens, collect them all
 		for token in node {
 			var parameter = Parameter()
 			parameter.name = token.description.trimmingCharacters(in: .whitespacesAndNewlines)

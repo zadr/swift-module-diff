@@ -17,6 +17,10 @@ class StructTracker: SyntaxVisitor, AnyTypeParser {
 	}
 
 	override func visit(_ node: StructDeclSyntax) -> SyntaxVisitorContinueKind {
+		if !value.name.isEmpty {
+			return .skipChildren
+		}
+
 		value.name = node.name.text
 
 		let generics = GenericsTracker(parametersNode: node.genericParameterClause, requirementsNode: node.genericWhereClause).run()

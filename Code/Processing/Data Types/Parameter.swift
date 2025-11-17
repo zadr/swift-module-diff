@@ -32,7 +32,6 @@ struct Parameter {
 	var suffix: String = ""
 	var defaultValue: String = ""
 
-	// Cache for developerFacingValue to avoid repeated string construction
 	private var _cachedDeveloperFacingValue: String?
 
 	var description: String {

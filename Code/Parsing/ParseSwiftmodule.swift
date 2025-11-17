@@ -43,6 +43,23 @@ private class SwiftmoduleTracker: SyntaxVisitor {
 		super.init(viewMode: .sourceAccurate)
 	}
 
+	private func popTypeStack() {
+		let completed = typeStack.removeLast()
+		if let lastIndex = typeStack.indices.last {
+			// Copy completed nested type back to parent
+			var parent = typeStack[lastIndex]
+			if let idx = parent.nestedTypes.firstIndex(where: { $0.name == completed.name && $0.kind == completed.kind }) {
+				parent.nestedTypes[idx] = completed
+			}
+			typeStack[lastIndex] = parent
+		} else {
+			// Copy completed top-level type back to framework
+			if let idx = framework.namedTypes.firstIndex(where: { $0.name == completed.name && $0.kind == completed.kind }) {
+				framework.namedTypes[idx] = completed
+			}
+		}
+	}
+
 	override func visit(_ node: ImportDeclSyntax) -> SyntaxVisitorContinueKind {
 		let name = ParseAnyType<DependencyTracker>(node: node).run()
 		framework.dependencies.append(name)
@@ -58,7 +75,9 @@ private class SwiftmoduleTracker: SyntaxVisitor {
 			.dropAnySubstring(in: typePrefixesToRemove)
 
 		if let lastIndex = typeStack.indices.last {
-			typeStack[lastIndex].nestedTypes.append(p)
+			var parent = typeStack[lastIndex]
+			parent.nestedTypes.append(p)
+			typeStack[lastIndex] = parent
 		} else {
 			framework.namedTypes.append(p)
 		}
@@ -67,7 +86,7 @@ private class SwiftmoduleTracker: SyntaxVisitor {
 	}
 
 	override func visitPost(_ node: ProtocolDeclSyntax) {
-		typeStack.removeLast()
+		popTypeStack()
 		nestingCount -= 1
 		super.visitPost(node)
 	}
@@ -79,7 +98,9 @@ private class SwiftmoduleTracker: SyntaxVisitor {
 			.dropAnySubstring(in: typePrefixesToRemove)
 
 		if let lastIndex = typeStack.indices.last {
-			typeStack[lastIndex].nestedTypes.append(e)
+			var parent = typeStack[lastIndex]
+			parent.nestedTypes.append(e)
+			typeStack[lastIndex] = parent
 		} else {
 			framework.namedTypes.append(e)
 		}
@@ -88,7 +109,7 @@ private class SwiftmoduleTracker: SyntaxVisitor {
 	}
 
 	override func visitPost(_ node: EnumDeclSyntax) {
-		typeStack.removeLast()
+		popTypeStack()
 		nestingCount -= 1
 		super.visitPost(node)
 	}
@@ -100,7 +121,9 @@ private class SwiftmoduleTracker: SyntaxVisitor {
 			.dropAnySubstring(in: typePrefixesToRemove)
 
 		if let lastIndex = typeStack.indices.last {
-			typeStack[lastIndex].nestedTypes.append(a)
+			var parent = typeStack[lastIndex]
+			parent.nestedTypes.append(a)
+			typeStack[lastIndex] = parent
 		} else {
 			framework.namedTypes.append(a)
 		}
@@ -109,7 +132,7 @@ private class SwiftmoduleTracker: SyntaxVisitor {
 	}
 
 	override func visitPost(_ node: ActorDeclSyntax) {
-		typeStack.removeLast()
+		popTypeStack()
 		nestingCount -= 1
 		super.visitPost(node)
 	}
@@ -121,7 +144,9 @@ private class SwiftmoduleTracker: SyntaxVisitor {
 			.dropAnySubstring(in: typePrefixesToRemove)
 
 		if let lastIndex = typeStack.indices.last {
-			typeStack[lastIndex].nestedTypes.append(s)
+			var parent = typeStack[lastIndex]
+			parent.nestedTypes.append(s)
+			typeStack[lastIndex] = parent
 		} else {
 			framework.namedTypes.append(s)
 		}
@@ -130,7 +155,7 @@ private class SwiftmoduleTracker: SyntaxVisitor {
 	}
 
 	override func visitPost(_ node: StructDeclSyntax) {
-		typeStack.removeLast()
+		popTypeStack()
 		nestingCount -= 1
 		super.visitPost(node)
 	}
@@ -142,7 +167,9 @@ private class SwiftmoduleTracker: SyntaxVisitor {
 			.dropAnySubstring(in: typePrefixesToRemove)
 
 		if let lastIndex = typeStack.indices.last {
-			typeStack[lastIndex].nestedTypes.append(c)
+			var parent = typeStack[lastIndex]
+			parent.nestedTypes.append(c)
+			typeStack[lastIndex] = parent
 		} else {
 			framework.namedTypes.append(c)
 		}
@@ -151,7 +178,7 @@ private class SwiftmoduleTracker: SyntaxVisitor {
 	}
 
 	override func visitPost(_ node: ClassDeclSyntax) {
-		typeStack.removeLast()
+		popTypeStack()
 		nestingCount -= 1
 		super.visitPost(node)
 	}
@@ -163,7 +190,9 @@ private class SwiftmoduleTracker: SyntaxVisitor {
 			.dropAnySubstring(in: typePrefixesToRemove)
 
 		if let lastIndex = typeStack.indices.last {
-			typeStack[lastIndex].nestedTypes.append(e)
+			var parent = typeStack[lastIndex]
+			parent.nestedTypes.append(e)
+			typeStack[lastIndex] = parent
 		} else {
 			framework.namedTypes.append(e)
 		}
@@ -172,7 +201,7 @@ private class SwiftmoduleTracker: SyntaxVisitor {
 	}
 
 	override func visitPost(_ node: ExtensionDeclSyntax) {
-		typeStack.removeLast()
+		popTypeStack()
 		nestingCount -= 1
 		super.visitPost(node)
 	}
@@ -182,7 +211,9 @@ private class SwiftmoduleTracker: SyntaxVisitor {
 	override func visit(_ node: MacroDeclSyntax) -> SyntaxVisitorContinueKind {
 		let m = ParseAnyType<MacroTracker>(node: node).run()
 		if let lastIndex = typeStack.indices.last {
-			typeStack[lastIndex].nestedTypes.append(m)
+			var parent = typeStack[lastIndex]
+			parent.nestedTypes.append(m)
+			typeStack[lastIndex] = parent
 		} else {
 			framework.namedTypes.append(m)
 		}
@@ -193,7 +224,9 @@ private class SwiftmoduleTracker: SyntaxVisitor {
 		var o = ParseAnyType<OperatorTracker>(node: node).run()
 		o.name = o.name.dropAnySubstring(in: typePrefixesToRemove)
 		if let lastIndex = typeStack.indices.last {
-			typeStack[lastIndex].nestedTypes.append(o)
+			var parent = typeStack[lastIndex]
+			parent.nestedTypes.append(o)
+			typeStack[lastIndex] = parent
 		} else {
 			framework.namedTypes.append(o)
 		}

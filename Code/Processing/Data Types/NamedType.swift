@@ -38,14 +38,9 @@ struct NamedType {
 	// Primary associated types (Swift 5.7+) - only for protocols
 	// Example: protocol Collection<Element> has ["Element"] as primary associated types
 	var primaryAssociatedTypes: [String] = []
-
-	// includes `var`, `let`, and `func`
 	var members = [Member]()
-
-	// includes `enum`, `struct`, `class`, extension`, and `associatedtype`
 	var nestedTypes = [NamedType]()
 
-	// Cache for developerFacingValue to avoid repeated string construction
 	private var _cachedDeveloperFacingValue: String?
 
 	var description: String {
@@ -79,7 +74,6 @@ extension NamedType {
 			conformances = ": \(conformances)"
 		}
 
-		// Primary associated types (for protocols only)
 		var primaryTypes = primaryAssociatedTypes.joined(separator: ", ")
 		if !primaryTypes.isEmpty {
 			primaryTypes = "<\(primaryTypes)>"
@@ -94,7 +88,6 @@ extension NamedType {
 			genericConstraints = " where \(genericConstraints)"
 		}
 
-		// Separate access level from other decorators
 		var accessLevel = ""
 		var otherDecorators = decorators
 
@@ -141,7 +134,6 @@ extension NamedType: Codable, CustomStringConvertible, Hashable, Sendable {
 			lhs.primaryAssociatedTypes == rhs.primaryAssociatedTypes
 	}
 
-	/// Check if two types are identical except for their conformances
 	func isSameExceptConformances(_ other: NamedType) -> Bool {
 		kind == other.kind &&
 			name == other.name &&
@@ -150,7 +142,6 @@ extension NamedType: Codable, CustomStringConvertible, Hashable, Sendable {
 			primaryAssociatedTypes == other.primaryAssociatedTypes
 	}
 
-	/// Check if two types are identical except for their attributes
 	func isSameExceptAttributes(_ other: NamedType) -> Bool {
 		kind == other.kind &&
 			name == other.name &&
@@ -160,7 +151,6 @@ extension NamedType: Codable, CustomStringConvertible, Hashable, Sendable {
 			primaryAssociatedTypes == other.primaryAssociatedTypes
 	}
 
-	/// Check if two types are identical except for their conformances and/or attributes
 	func isSameExceptConformancesAndAttributes(_ other: NamedType) -> Bool {
 		// For extensions, conformances are part of the identity since Swift allows
 		// multiple extensions of the same type with different conformance lists

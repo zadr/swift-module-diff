@@ -9,7 +9,6 @@ class DefaultValueTracker: SyntaxVisitor, AnyTypeParser {
 	}
 
 	override func visit(_ node: InitializerClauseSyntax) -> SyntaxVisitorContinueKind {
-		// Get the string representation of the default value expression
 		value = node.value.trimmedDescription
 		return .skipChildren
 	}

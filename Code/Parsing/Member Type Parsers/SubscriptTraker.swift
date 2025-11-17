@@ -67,7 +67,6 @@ class SubscriptTracker: SyntaxVisitor, AnyTypeParser {
 			default: break
 			}
 
-			// Check for underscored __consuming modifier
 			if modifier.name.text == "__consuming" {
 				value.decorators.insert(.__consuming)
 			}
@@ -79,7 +78,6 @@ class SubscriptTracker: SyntaxVisitor, AnyTypeParser {
 	override func visit(_ node: FunctionParameterSyntax) -> SyntaxVisitorContinueKind {
 		var parameter = Parameter()
 
-		// Check if firstName is "isolated" - if so, it's a decorator, not part of the name
 		if node.firstName.text == "isolated", let secondName = node.secondName {
 			parameter.decorators.insert(.isolated)
 			parameter.name = secondName.text
@@ -89,16 +87,13 @@ class SubscriptTracker: SyntaxVisitor, AnyTypeParser {
 
 		parameter.type = ParseAnyType<TypeNameTracker>(node: node.type).run()
 
-		// Check for parameter decorators in AttributedTypeSyntax
 		if let attributedType = node.type.as(AttributedTypeSyntax.self),
 		   let specifier = attributedType.specifier {
-			// Check for keyword-based decorators
 			switch specifier.tokenKind {
 			case .keyword(.inout): parameter.decorators.insert(.inout)
 			case .keyword(.borrowing): parameter.decorators.insert(.borrowing)
 			case .keyword(.consuming): parameter.decorators.insert(.consuming)
 			default:
-				// Check for underscored ownership modifiers which appear as identifiers
 				switch specifier.text {
 				case "__owned": parameter.decorators.insert(.__owned)
 				case "__shared": parameter.decorators.insert(.__shared)

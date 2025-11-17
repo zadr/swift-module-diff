@@ -14,18 +14,14 @@ extension String {
 		  }
 
 		  let mutableCopy = NSMutableString(string: self)
-
-		  // Combine all patterns into one regex
 		  let escapedPatterns = set.map { NSRegularExpression.escapedPattern(for: $0) }
 		  let pattern = escapedPatterns.joined(separator: "|")
 
 		  guard let regex = try? NSRegularExpression(pattern: pattern, options: []) else {
-			  // Fallback if regex fails
 			  __dropAnySubstringCache__[self] = self
 			  return self
 		  }
 
-		  // Process all matches in reverse to avoid index shifting issues
 		  let matches = regex.matches(in: mutableCopy as String, options: [], range: NSRange(location: 0, length: mutableCopy.length))
 
 		  for match in matches.reversed() {

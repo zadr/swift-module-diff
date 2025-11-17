@@ -10,6 +10,10 @@ class ExtensionTracker: SyntaxVisitor, AnyTypeParser {
 	}
 
 	override func visit(_ node: ExtensionDeclSyntax) -> SyntaxVisitorContinueKind {
+		if !value.name.isEmpty {
+			return .skipChildren
+		}
+
 		value.name = ParseAnyType<TypeNameTracker>(node: node.extendedType).run()
 
 		let generics = GenericsTracker(parametersNode: nil, requirementsNode: node.genericWhereClause).run()

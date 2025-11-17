@@ -546,7 +546,10 @@ extension ChangedTree {
 								const typeChanged = type.value.change !== 'unchanged';
 
 								// Get the type name (from display_name if available, otherwise from value)
-								const rawTypeName = type.display_name || type.value.value;
+								// display_name already contains styled HTML, so don't escape it
+								const hasDisplayName = type.display_name ? true : false;
+								const rawTypeName = type.value.value; // Always use raw value for filtering analysis
+								const styledTypeName = type.display_name || rawTypeName;
 
 								// Extract all attributes (including @available) for filtering
 								const attrs = extractAttributes(rawTypeName);
@@ -564,9 +567,10 @@ extension ChangedTree {
 									'" data-filtered="' + escapeHtml(filteredTypeName).replace(/"/g, '&quot;') + '"';
 
 								// Create the dual display spans
+								// If display_name exists, it already contains HTML, so use it directly
 								const typeNameDisplay = `
-									<span class="member-text-filtered">${type.display_name ? filteredTypeName : escapeHtml(filteredTypeName)}</span>
-									<span class="member-text-unfiltered" style="display:none">${type.display_name ? rawTypeName : escapeHtml(rawTypeName)}</span>
+									<span class="member-text-filtered">${hasDisplayName ? styledTypeName : escapeHtml(filteredTypeName)}</span>
+									<span class="member-text-unfiltered" style="display:none">${hasDisplayName ? styledTypeName : escapeHtml(rawTypeName)}</span>
 								`;
 
 								// If the type itself changed (added/removed) but has no content, show it styled like details but not expandable
@@ -683,12 +687,7 @@ extension ChangedTree {
 								return {
 									id: `platform_${index}`,
 									name: platform.value.value,
-									content: `
-										<details open>
-											<summary>${escapeHtml(platform.value.value)}</summary>
-											${architectures}
-										</details>
-									`
+									content: architectures
 								};
 							}
 
@@ -705,15 +704,15 @@ extension ChangedTree {
 							}
 
 							// Remove a specific attribute from text, handling nested parens
+							// attrName should include the @ (e.g., "@_spi")
 							function removeAttribute(text, attrName) {
 								let result = text;
-								const attrPattern = '@' + attrName;
 
 								while (true) {
-									const idx = result.indexOf(attrPattern);
+									const idx = result.indexOf(attrName);
 									if (idx === -1) break;
 
-									let endIdx = idx + attrPattern.length;
+									let endIdx = idx + attrName.length;
 
 									// Check if followed by parentheses
 									if (endIdx < result.length && result[endIdx] === '(') {
