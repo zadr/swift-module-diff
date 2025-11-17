@@ -242,13 +242,18 @@ extension ChangedTree {
 						}
 					}
 
-					// Build display: base type, then changes
-					var display = baseTypeName.htmlEscape()
+					// Build display: attributes first (Swift syntax), then type declaration, then conformances
+					var display = ""
 
-					// Show both attribute and conformance changes with red/green styling
+					// Attributes go before the type declaration
 					if !attributeChanges.isEmpty {
-						display += " " + attributeChanges.joined(separator: " ")
+						display = attributeChanges.joined(separator: " ") + " "
 					}
+
+					// Add the base type name
+					display += baseTypeName.htmlEscape()
+
+					// Conformances go after the type declaration
 					if !conformanceChanges.isEmpty {
 						display += " " + conformanceChanges.joined(separator: " ")
 					}
