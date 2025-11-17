@@ -53,7 +53,7 @@ private class SwiftmoduleTracker: SyntaxVisitor {
 
 	override func visit(_ node: ProtocolDeclSyntax) -> SyntaxVisitorContinueKind {
 		nestingCount += 1
-		var p = ParseAnyType<ProtocolTracker>(node: node)
+		let p = ParseAnyType<ProtocolTracker>(node: node)
 			.run()
 			.dropAnySubstring(in: typePrefixesToRemove)
 
@@ -74,7 +74,7 @@ private class SwiftmoduleTracker: SyntaxVisitor {
 
 	override func visit(_ node: EnumDeclSyntax) -> SyntaxVisitorContinueKind {
 		nestingCount += 1
-		var e = ParseAnyType<EnumTracker>(node: node)
+		let e = ParseAnyType<EnumTracker>(node: node)
 			.run()
 			.dropAnySubstring(in: typePrefixesToRemove)
 
@@ -95,7 +95,7 @@ private class SwiftmoduleTracker: SyntaxVisitor {
 
 	override func visit(_ node: ActorDeclSyntax) -> SyntaxVisitorContinueKind {
 		nestingCount += 1
-		var a = ParseAnyType<ActorTracker>(node: node)
+		let a = ParseAnyType<ActorTracker>(node: node)
 			.run()
 			.dropAnySubstring(in: typePrefixesToRemove)
 
@@ -116,7 +116,7 @@ private class SwiftmoduleTracker: SyntaxVisitor {
 
 	override func visit(_ node: StructDeclSyntax) -> SyntaxVisitorContinueKind {
 		nestingCount += 1
-		var s = ParseAnyType<StructTracker>(node: node)
+		let s = ParseAnyType<StructTracker>(node: node)
 			.run()
 			.dropAnySubstring(in: typePrefixesToRemove)
 
@@ -137,7 +137,7 @@ private class SwiftmoduleTracker: SyntaxVisitor {
 
 	override func visit(_ node: ClassDeclSyntax) -> SyntaxVisitorContinueKind {
 		nestingCount += 1
-		var c = ParseAnyType<ClassTracker>(node: node)
+		let c = ParseAnyType<ClassTracker>(node: node)
 			.run()
 			.dropAnySubstring(in: typePrefixesToRemove)
 
@@ -158,7 +158,7 @@ private class SwiftmoduleTracker: SyntaxVisitor {
 
 	override func visit(_ node: ExtensionDeclSyntax) -> SyntaxVisitorContinueKind {
 		nestingCount += 1
-		var e = ParseAnyType<ExtensionTracker>(node: node)
+		let e = ParseAnyType<ExtensionTracker>(node: node)
 			.run()
 			.dropAnySubstring(in: typePrefixesToRemove)
 
