@@ -10,13 +10,13 @@ Given a pair of Xcode apps (such as Xcode.app and Xcode-beta.app):
 7. Be able to click into a framework to see all modifications to types, and members (additions, deprecations, etc)
 
 #### Things Left To Do
-Swift is a big and evolving language, so it is likely that some edge-cases are broken, or some less popular features are missing. This tool is still under development.
+Swift is a big and evolving language, so it is likely that some edge-cases are broken, or some less popular features are missing.
 
 There are some other features that could be nice to have, such as:
 
-- [ ] Making HTML output more readable
+- [ ] Tracking headerdoc changes
 - [ ] Making HTML interactable, such as by linking to more docs, or adding an option to expand all details with one click
-- [ ] Extending CLI to expose diffing swiftmodule directories outside of Xcode.app bundles
+- [ ] Extending CLI to expose diffing swiftmodule directories outside of Xcode.app bundles, e.g. to support other frameworks
 
 #### But Why?
 Having everything that changed one one page can be nice
